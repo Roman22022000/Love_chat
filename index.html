@@ -1,0 +1,2259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Переворот</title>
+<style>
+/* =========================================================
+   TELEGRAM-СТИЛЬ: ШРИФТ И ПАЛИТРА
+   Официальный шрифт Telegram — системный (Roboto/SF/Helvetica),
+   но для веба используем Inter как ближайший аналог.
+   ========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Палитра Telegram */
+  --tg-blue: #0088cc;
+  --tg-blue-light: #54a9eb;
+  --tg-bg-dark: #17212b;
+  --tg-panel-dark: #232e3c;
+  --tg-header-dark: #1c2733;
+  --tg-text-dark: #e4ecf3;
+  --tg-muted-dark: #7d8b99;
+  --tg-border-dark: #2f3d4c;
+  
+  --tg-bg-light: #e6ebee;
+  --tg-panel-light: #ffffff;
+  --tg-header-light: #ffffff;
+  --tg-text-light: #1a1a1a;
+  --tg-muted-light: #707579;
+  --tg-border-light: #d6dce1;
+
+  --accent: var(--tg-blue);
+  --accent2: var(--tg-blue-light);
+  --panel: var(--tg-panel-dark);
+  --text: var(--tg-text-dark);
+  --muted: var(--tg-muted-dark);
+  --border-color: var(--tg-border-dark);
+  --menu-bg: var(--tg-header-dark);
+  --modal-bg: var(--tg-panel-dark);
+  --input-bg: #1e2836;
+  --btn-bg: rgba(255,255,255,.06);
+  --btn-bg-hover: rgba(255,255,255,.12);
+  
+  --card-radius: 14px;
+  --bottom-bar-height: 64px;
+}
+
+body.light-theme {
+  --panel: var(--tg-panel-light);
+  --text: var(--tg-text-light);
+  --muted: var(--tg-muted-light);
+  --border-color: var(--tg-border-light);
+  --menu-bg: var(--tg-header-light);
+  --modal-bg: var(--tg-panel-light);
+  --input-bg: #f4f4f5;
+  --btn-bg: rgba(0,0,0,.04);
+  --btn-bg-hover: rgba(0,0,0,.08);
+}
+
+* { box-sizing: border-box; }
+html { min-height: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  background: linear-gradient(-45deg,#17212b,#2b5278,#17212b,#4a76a8,#1c2733);
+  background-size: 400% 400%;
+  animation: wallpaper 20s ease infinite;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: color .3s;
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes wallpaper {
+  0%,100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+button, input, textarea { font: inherit; }
+button {
+  color: var(--text);
+  border: 1px solid var(--border-color);
+  background: var(--btn-bg);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: transform .15s, background .15s;
+}
+button:hover { background: var(--btn-bg-hover); }
+button:active { transform: scale(.98); }
+button:disabled { opacity: .4; cursor: default; }
+
+input, textarea {
+  color: var(--text);
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 10px 12px;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
+  transition: border-color .2s;
+}
+input:focus, textarea:focus { border-color: var(--accent); }
+textarea { resize: vertical; min-height: 72px; user-select: text; }
+button, .card, .star { -webkit-tap-highlight-color: transparent; }
+
+/* Убираем тени и подсветку */
+.panel, .bottom-bar, .profile-menu, .modal, .card, .card-inner,
+.card-face, .gender-option, .form-section, .dropdown, .toast,
+.theme-switch, .profile-avatar-preview, .profile-button,
+.back-button, .action-button, .small-button, .icon-button {
+  box-shadow: none !important;
+}
+button:focus, button:focus-visible, input:focus, textarea:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* =========================================================
+   ЭКРАН ЗАГРУЗКИ
+   ========================================================= */
+#splashScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(84,169,235,.2), transparent 60%),
+    linear-gradient(160deg, #17212b 0%, #2b5278 50%, #0e1620 100%);
+  padding: 20px;
+  text-align: center;
+  transition: opacity .5s ease;
+}
+#splashScreen.fade-out { opacity: 0; pointer-events: none; }
+
+.splash-table {
+  position: relative;
+  width: min(340px, 80vw);
+  height: 180px;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+}
+.splash-card {
+  width: 90px;
+  height: 130px;
+  border-radius: 12px;
+  border: 2px solid #c9a050;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(84,169,235,.2), transparent 50%),
+    linear-gradient(145deg,#232e3c,#4a76a8 52%,#17212b);
+  position: relative;
+  display: grid;
+  place-items: center;
+  font-size: 34px;
+  color: #a8d4ff;
+  animation: cardFloat 3s ease-in-out infinite;
+}
+.splash-card:nth-child(2) { animation-delay: .6s; }
+.splash-card::before { content: "✦"; }
+@keyframes cardFloat {
+  0%,100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-8px) rotate(3deg); }
+}
+.splash-crowd {
+  position: absolute;
+  inset: -40px -30px;
+  pointer-events: none;
+  font-size: 24px;
+  opacity: .6;
+}
+.splash-crowd span {
+  position: absolute;
+  animation: crowdSway 3.5s ease-in-out infinite;
+}
+.splash-crowd span:nth-child(1) { top: -10px; left: 15%; }
+.splash-crowd span:nth-child(2) { top: -5px; right: 18%; animation-delay: .4s; }
+.splash-crowd span:nth-child(3) { top: 20%; left: -10px; animation-delay: .8s; }
+.splash-crowd span:nth-child(4) { top: 18%; right: -12px; animation-delay: 1.2s; }
+.splash-crowd span:nth-child(5) { bottom: -15px; left: 25%; animation-delay: .6s; }
+.splash-crowd span:nth-child(6) { bottom: -18px; right: 22%; animation-delay: 1s; }
+@keyframes crowdSway {
+  0%,100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-5px) scale(1.06); }
+}
+.splash-title {
+  font-size: clamp(22px, 5vw, 32px);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -.02em;
+  margin-bottom: 10px;
+}
+.splash-sub {
+  font-size: clamp(13px, 3vw, 16px);
+  color: #a8d4ff;
+  margin-bottom: 28px;
+  letter-spacing: .05em;
+}
+.splash-bar {
+  width: min(240px, 70vw);
+  height: 6px;
+  background: rgba(255,255,255,.15);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.splash-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--tg-blue), var(--tg-blue-light));
+  border-radius: 3px;
+  animation: splashLoad 3s ease forwards;
+}
+@keyframes splashLoad {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+/* =========================================================
+   ОСНОВНОЙ КАРКАС
+   ========================================================= */
+.app {
+  min-height: 100vh;
+  max-width: 1080px;
+  margin: auto;
+  padding: 18px 18px 104px;
+}
+
+.topline {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 10;
+}
+.icon-button {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  font-size: 22px;
+  display: grid; place-items: center;
+  background: var(--btn-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text);
+}
+.dropdown {
+  position: absolute;
+  top: 48px; right: 0;
+  width: min(260px, calc(100vw - 36px));
+  padding: 6px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--menu-bg);
+  z-index: 30;
+}
+.dropdown button {
+  width: 100%; text-align: left;
+  padding: 10px 12px; border-radius: 8px;
+  border-color: transparent; background: transparent;
+  font-size: 14px;
+}
+.dropdown button:hover { background: var(--btn-bg-hover); }
+
+main { width: 100%; max-width: 800px; margin: 14px auto 0; }
+.hero { text-align: center; padding: 10px 8px 16px; }
+.eyebrow {
+  color: var(--accent2);
+  text-transform: uppercase;
+  letter-spacing: .2em; font-size: 11px;
+  font-weight: 600;
+}
+h1 { font-size: clamp(28px, 6vw, 42px); margin: 8px 0; letter-spacing: -.03em; font-weight: 800; }
+.subtitle { color: var(--muted); line-height: 1.5; margin: 0 auto; max-width: 520px; }
+
+.panel {
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  background: var(--panel);
+  padding: clamp(15px, 3vw, 22px);
+  margin-bottom: 14px;
+}
+.section-title { font-size: 15px; font-weight: 700; margin: 0 0 12px; }
+.muted { color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+/* =========================================================
+   ВЫБОР ПАРЫ
+   ========================================================= */
+.gender-options { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.gender-option {
+  border-radius: 12px;
+  padding: 12px 6px;
+  min-height: 84px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1.2;
+  font-size: 11px;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  font-weight: 600;
+  border: 1px solid var(--border-color);
+  background: var(--btn-bg);
+}
+.gender-option .pair-icons {
+  display: flex;
+  gap: 6px;
+  font-size: 26px;
+  line-height: 1;
+}
+.gender-option.selected {
+  border-color: var(--accent);
+  background: rgba(0,136,204,.15);
+  color: var(--accent2);
+}
+
+/* =========================================================
+   ФОРМА
+   ========================================================= */
+.form-section {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-color);
+  transition: opacity .3s ease, filter .3s ease;
+  opacity: .55;
+  filter: grayscale(85%);
+}
+.form-section.is-active { opacity: 1; filter: grayscale(0%); }
+.form-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+.name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.field-label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+.comment-box { margin-top: 14px; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+
+/* =========================================================
+   КНОПКИ С ГРАДИЕНТОМ
+   ========================================================= */
+.primary {
+  border: 0 !important;
+  background: linear-gradient(135deg, #00c853, #00b0ff, #ff9100, #00c853, #00b0ff, #ff9100) !important;
+  background-size: 400% 400% !important;
+  animation: btnGlow 6s ease infinite;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,.35);
+}
+.primary:hover {
+  background: linear-gradient(135deg, #00e676, #40c4ff, #ffab40, #00e676, #40c4ff, #ffab40) !important;
+  background-size: 400% 400% !important;
+  animation: btnGlow 3s ease infinite;
+}
+@keyframes btnGlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.action-button { min-height: 42px; padding: 10px 16px; border-radius: 10px; font-size: 14px; }
+.actions .primary { flex: 1; }
+.hidden { display: none !important; }
+
+.status {
+  min-height: 22px; margin: 0 0 12px;
+  text-align: center; color: var(--muted); font-size: 13px;
+}
+
+/* =========================================================
+   КАРТЫ
+   ========================================================= */
+.cards {
+  display: grid; grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: clamp(12px,3vw,20px);
+  max-width: 560px; margin: 0 auto;
+}
+.card {
+  width: 100%; aspect-ratio: 3 / 4;
+  perspective: 1000px;
+  padding: 0; border: 0; background: transparent;
+  border-radius: var(--card-radius);
+  min-width: 0;
+}
+.card:disabled { opacity: 1; cursor: default; }
+.card-inner {
+  display: block; position: relative; width: 100%; height: 100%;
+  border-radius: var(--card-radius);
+  transform-style: preserve-3d;
+  transition: transform .72s cubic-bezier(.2,.75,.2,1);
+}
+.card.flipped .card-inner { transform: rotateY(180deg); }
+.card-face {
+  display: flex; position: absolute; inset: 0;
+  width: 100%; height: 100%; box-sizing: border-box;
+  flex-direction: column; align-items: center; justify-content: center;
+  overflow: hidden; border-radius: var(--card-radius);
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+}
+.card-back {
+  background:
+    radial-gradient(circle at 50% 40%, rgba(84,169,235,.15), transparent 45%),
+    linear-gradient(145deg,#232e3c,#4a76a8 52%,#17212b);
+  border: 1px solid var(--border-color);
+}
+.card-back::before {
+  content: "✦"; display: grid; place-items: center;
+  width: 70px; height: 70px; border: 1px solid rgba(255,255,255,.25);
+  border-radius: 50%; font-size: 32px; color: #a8d4ff;
+}
+.card-front {
+  transform: rotateY(180deg);
+  border: 2px solid var(--person-color, #54a9eb);
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(255,255,255,.1), transparent 50%),
+    linear-gradient(150deg,var(--person-bg1,#1b5685),var(--person-bg2,#10253f));
+  padding: 12px;
+}
+.card-front .crown { font-size: clamp(24px,5.5vw,40px); margin-bottom: 8px; }
+.card-front .portrait {
+  display: grid; place-items: center;
+  width: 64%; aspect-ratio: 1; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.35);
+  background: radial-gradient(circle at 35% 25%, rgba(255,255,255,.25), transparent 45%), rgba(255,255,255,.06);
+  font-size: clamp(42px,9vw,66px);
+}
+.card-front .person-name {
+  margin-top: 12px; font-size: clamp(14px,3vw,18px);
+  font-weight: 800; text-align: center; overflow-wrap: anywhere;
+}
+.card-front .person-label {
+  margin-top: 4px; color: rgba(255,255,255,.75); font-size: 10px; letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.card.chosen .card-inner { filter: drop-shadow(0 0 14px rgba(84,169,235,.5)); }
+
+/* =========================================================
+   РЕЗУЛЬТАТ
+   ========================================================= */
+.result-card { max-width: 280px; margin: 0 auto; }
+.result-summary { text-align: center; margin-top: 16px; }
+.result-summary h2 { font-size: 20px; margin: 0 0 6px; font-weight: 700; }
+.result-summary p { margin: 4px 0; color: var(--muted); line-height: 1.5; overflow-wrap: anywhere; }
+.result-quote {
+  font-style: italic;
+  font-size: 14px;
+  color: var(--text);
+  padding: 12px 16px;
+  margin: 10px 0;
+  border-left: 3px solid var(--accent);
+  background: rgba(0,136,204,.1);
+  border-radius: 8px;
+  text-align: left;
+  line-height: 1.55;
+}
+body.light-theme .result-quote {
+  background: rgba(0,136,204,.08);
+}
+.result-comment {
+  text-align: left; white-space: pre-wrap; overflow-wrap: anywhere;
+  margin-top: 14px; padding: 12px;
+  border-radius: 10px; background: rgba(255,255,255,.04);
+  border: 1px solid var(--border-color);
+  font-size: 13px;
+}
+.rating { display: flex; justify-content: center; gap: 4px; margin: 10px 0 4px; }
+.star {
+  padding: 0 2px;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: #7d8b99;
+  font-size: 28px;
+  line-height: 1.2;
+}
+.star:hover, .star:focus { background: transparent; border: 0; outline: none; }
+.star.active, .star.hovered { color: #ffd166; }
+
+/* =========================================================
+   НОВОЕ: КОММЕНТАРИЙ К РЕЗУЛЬТАТУ
+   ========================================================= */
+.result-note-box {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-color);
+  text-align: left;
+}
+.result-note-box label {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+.result-note-box textarea {
+  min-height: 60px;
+  font-size: 13px;
+}
+.result-note-saved {
+  font-size: 11px;
+  color: #00c853;
+  margin-top: 4px;
+  min-height: 14px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   АРХИВ
+   ========================================================= */
+.archive-list { display: grid; gap: 10px; margin-top: 12px; }
+.archive-item {
+  border: 1px solid var(--border-color); background: rgba(255,255,255,.03);
+  padding: 12px; border-radius: 12px; min-width: 0;
+}
+.archive-head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center; }
+.archive-title { font-weight: 700; overflow-wrap: anywhere; font-size: 14px; }
+.archive-meta { color: var(--muted); font-size: 12px; margin-top: 6px; line-height: 1.5; }
+.archive-comment {
+  white-space: pre-wrap; overflow-wrap: anywhere;
+  margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-color);
+  color: var(--text); font-size: 12px; line-height: 1.5; opacity: .85;
+}
+.archive-stars { color: #ffd166; letter-spacing: 1.5px; }
+
+/* НОВОЕ: заметка и кнопки архива */
+.archive-note-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.archive-note-row textarea {
+  flex: 1 1 100%;
+  min-height: 50px;
+  font-size: 12px;
+}
+.archive-note-row .note-color-picker {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.note-color-btn {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+  padding: 0;
+  cursor: pointer;
+  transition: transform .15s;
+}
+.note-color-btn:hover { transform: scale(1.12); }
+.note-color-btn.selected { border-color: var(--text); transform: scale(1.15); }
+
+.archive-share-btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--btn-bg);
+  border: 1px solid var(--border-color);
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.archive-share-btn:hover { background: var(--btn-bg-hover); }
+
+.archive-note-display {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #1a1a1a;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   НИЖНЯЯ ПАНЕЛЬ
+   ========================================================= */
+.bottom-bar {
+  position: fixed; z-index: 20; bottom: 12px; left: 50%;
+  transform: translateX(-50%);
+  width: min(760px,calc(100% - 24px));
+  min-height: var(--bottom-bar-height); padding: 8px 12px;
+  display: flex; align-items: center; gap: 10px;
+  border-radius: 14px;
+  background: var(--menu-bg);
+  border: 1px solid var(--border-color);
+  transition: transform .4s cubic-bezier(.2,.75,.2,1), opacity .3s ease;
+}
+.bottom-bar.is-hidden {
+  transform: translate(-50%, calc(100% + 20px));
+  opacity: 0;
+  pointer-events: none;
+}
+.back-button {
+  width: 40px; height: 40px; flex: 0 0 40px;
+  border-radius: 50%;
+  font-size: 18px;
+  display: grid; place-items: center;
+  background: var(--btn-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text);
+}
+.back-button:hover { background: var(--btn-bg-hover); }
+.back-button.hidden { display: none !important; }
+.profile-button {
+  width: 40px; height: 40px; flex: 0 0 40px;
+  border-radius: 50%; background: var(--tg-blue); border: 0;
+  display: grid; place-items: center; font-size: 18px;
+  overflow: hidden;
+  color: #fff;
+}
+.bottom-info { min-width: 0; flex: 1; }
+.bottom-name { font-size: 13px; font-weight: 700; }
+.bottom-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.bottom-revealed-names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  margin-left: 6px;
+  padding-left: 8px;
+  border-left: 1px solid var(--border-color);
+  font-size: 11px;
+  color: var(--muted);
+  max-width: 220px;
+}
+.bottom-revealed-names .rev-name {
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(0,136,204,.25);
+  color: var(--text);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.bottom-revealed-names .rev-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  opacity: .7;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+/* =========================================================
+   МЕНЮ ПРОФИЛЯ
+   ========================================================= */
+.profile-menu {
+  position: fixed;
+  z-index: 40;
+  bottom: calc(12px + var(--bottom-bar-height) + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  width: min(320px, calc(100vw - 24px));
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--menu-bg);
+  border: 1px solid var(--border-color);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .35s cubic-bezier(.2,.75,.2,1), opacity .3s ease;
+}
+.profile-menu.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.profile-menu-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 10px;
+}
+.profile-avatar-preview {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--tg-blue);
+  display: grid; place-items: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  border: 2px solid var(--border-color);
+  overflow: hidden;
+}
+.profile-menu-name {
+  font-size: 14px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.profile-menu-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.profile-menu-list { display: grid; gap: 2px; }
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 9px 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 13px;
+  transition: background .15s;
+}
+.profile-menu-item:hover {
+  background: var(--btn-bg-hover);
+}
+.profile-menu-item .icon { width: 20px; text-align: center; font-size: 15px; flex-shrink: 0; }
+.profile-menu-item .label { flex: 1; }
+.profile-menu-divider { height: 1px; background: var(--border-color); margin: 4px 0; }
+
+/* =========================================================
+   ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ
+   ========================================================= */
+.theme-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+}
+.theme-toggle-label { font-size: 13px; font-weight: 600; }
+.theme-switch {
+  position: relative;
+  width: 60px;
+  height: 30px;
+  border-radius: 15px;
+  background: #2b3a4a;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: background .35s;
+  flex-shrink: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.theme-switch .thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffd166;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  transition: transform .35s cubic-bezier(.2,.75,.2,1), background .35s;
+}
+.theme-switch.is-light { background: #cfe3f5; }
+.theme-switch.is-light .thumb { transform: translateX(30px); background: #ffffff; }
+
+/* =========================================================
+   МОДАЛКИ
+   ========================================================= */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 50;
+  display: grid; place-items: center; padding: 16px;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(6px);
+}
+body.light-theme .modal-backdrop { background: rgba(0,0,0,.35); }
+.modal {
+  width: min(520px,100%); max-height: 85vh; overflow-y: auto;
+  background: var(--modal-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 14px; padding: 18px;
+}
+.modal-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; }
+.modal-head h2 { font-size: 17px; margin: 0; font-weight: 700; }
+.close-button { border-radius: 50%; width: 32px; height: 32px; }
+.theme-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+.theme-button {
+  border-radius: 10px; padding: 10px; min-height: 56px;
+  text-align: left; font-size: 12px; overflow: hidden;
+}
+.theme-swatch { height: 20px; border-radius: 6px; margin-bottom: 6px; }
+.color-grid { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 6px; margin: 10px 0; }
+.color-input { padding: 3px; height: 40px; cursor: pointer; }
+hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
+
+.toast {
+  position: fixed; z-index: 80; left: 50%; bottom: 88px;
+  transform: translateX(-50%);
+  padding: 10px 14px; border-radius: 10px;
+  background: var(--menu-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text); font-size: 13px; max-width: calc(100% - 30px);
+  text-align: center;
+}
+
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+.emoji-option {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  background: var(--btn-bg);
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  transition: border-color .15s, transform .12s;
+}
+.emoji-option:hover { transform: translateY(-2px); background: var(--btn-bg-hover); }
+.emoji-option.selected {
+  border-color: var(--accent);
+  background: rgba(0,136,204,.15);
+}
+
+/* =========================================================
+   ВЫПАДАЮЩИЕ ПЛИТКИ: ИМЕНА И КОММЕНТАРИИ
+   ========================================================= */
+.suggest-panel {
+  position: absolute;
+  z-index: 60;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: 12px;
+  background: var(--menu-bg);
+  border: 1px solid var(--border-color);
+  display: grid;
+  gap: 5px;
+}
+.suggest-panel.hidden { display: none; }
+
+.suggest-tile {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 11px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: #ffffff;
+  color: #1a1a1a;
+  font-size: 13px;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: transform .12s, background .12s;
+  white-space: normal;
+}
+.suggest-tile:hover { transform: translateY(-1px); background: #f0f0f0; }
+.suggest-tile:active { transform: scale(.98); }
+
+/* Кнопка "Ещё варианты" (+) */
+.suggest-tile.more {
+  background: var(--accent);
+  color: #fff;
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 2px;
+  padding: 8px;
+}
+.suggest-tile.more:hover { background: var(--accent2); }
+
+/* Радужная плитка */
+.suggest-tile.rainbow {
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.4);
+  background: linear-gradient(135deg, #ff4f83, #ffb347, #00c853, #00b0ff, #c8339a, #ff4f83);
+  background-size: 400% 400%;
+  animation: rainbowFlow 4s ease infinite;
+}
+.suggest-tile.rainbow:hover { animation: rainbowFlow 2s ease infinite; }
+@keyframes rainbowFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Голубая плитка */
+.suggest-tile.blue {
+  background: linear-gradient(135deg, #a8e0ff, #5bc0ff);
+  color: #0a2540;
+}
+.suggest-tile.blue:hover { background: linear-gradient(135deg, #c2ecff, #7dcfff); }
+
+/* Розовая плитка */
+.suggest-tile.pink {
+  background: linear-gradient(135deg, #ffc2d9, #ff8fb8);
+  color: #4a0d28;
+}
+.suggest-tile.pink:hover { background: linear-gradient(135deg, #ffd6e6, #ffa8c9); }
+
+.field-wrap { position: relative; }
+
+/* =========================================================
+   АДАПТИВНОСТЬ
+   ========================================================= */
+@media (max-width: 540px) {
+  .app { padding: 12px 12px 100px; }
+  .hero { padding-top: 8px; }
+  .panel { border-radius: 14px; }
+  .gender-options { gap: 6px; }
+  .gender-option { font-size: 10px; padding: 10px 4px; min-height: 76px; }
+  .gender-option .pair-icons { font-size: 20px; }
+  .name-grid { grid-template-columns: 1fr; gap: 8px; }
+  .bottom-bar { bottom: 7px; width: calc(100% - 14px); border-radius: 12px; }
+  .cards { gap: 8px; }
+  .card-front { padding: 6px; }
+  .card-front .person-name { margin-top: 8px; }
+  .card-front .person-label { font-size: 8px; }
+  .profile-menu {
+    bottom: calc(7px + var(--bottom-bar-height) + 8px);
+    width: calc(100vw - 16px);
+    padding: 10px;
+  }
+  .bottom-revealed-names { max-width: 120px; font-size: 10px; }
+  .result-note-box textarea { min-height: 50px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<div id="splashScreen">
+  <div class="splash-table">
+    <div class="splash-card"></div>
+    <div class="splash-card"></div>
+    <div class="splash-crowd">
+      <span>👤</span><span>👤</span><span>👤</span>
+      <span>👤</span><span>👤</span><span>👤</span>
+    </div>
+  </div>
+  <div class="splash-title">Романтическая игра</div>
+  <div class="splash-sub">Две карты. Один выбор</div>
+  <div class="splash-bar"><div class="splash-fill"></div></div>
+</div>
+
+<div class="app">
+  <div class="topline">
+    <button class="icon-button" id="menuButton" aria-label="Меню">⋯</button>
+    <div class="dropdown hidden" id="topMenu">
+      <button data-modal="about">ⓘ О игре</button>
+      <button data-modal="support">✉ Техподдержка</button>
+      <button data-modal="donate">♡ Поддержать</button>
+      <button data-modal="services">▦ Сервисы</button>
+    </div>
+  </div>
+
+  <main>
+    <header class="hero">
+      <div class="eyebrow">Романтическая игра</div>
+      <h1>Переворот</h1>
+      <p class="subtitle">Две карты. Один выбор.</p>
+    </header>
+
+    <section class="panel" id="setupPanel">
+      <h2 class="section-title">1. Выбери пару</h2>
+      <div class="gender-options" id="genderOptions">
+        <button class="gender-option selected" data-gender="mm">
+          <span class="pair-icons">👨 👨</span>
+          Мужчина / Мужчина
+        </button>
+        <button class="gender-option" data-gender="mf">
+          <span class="pair-icons">👨 👩</span>
+          Мужчина / Женщина
+        </button>
+        <button class="gender-option" data-gender="ff">
+          <span class="pair-icons">👩 👩</span>
+          Женщина / Женщина
+        </button>
+      </div>
+
+      <div class="form-section" id="formSection">
+        <h3 class="form-section-title">Данные (необязательно)</h3>
+        <div class="name-grid">
+          <label class="field-wrap">
+            <span class="field-label">Имя первой карты</span>
+            <input id="nameOne" maxlength="28" placeholder="Начни вводить или выбери" autocomplete="off">
+          </label>
+          <label class="field-wrap">
+            <span class="field-label">Имя второй карты</span>
+            <input id="nameTwo" maxlength="28" placeholder="Начни вводить или выбери" autocomplete="off">
+          </label>
+        </div>
+        <div class="comment-box field-wrap">
+          <label for="battleComment" class="field-label">Комментарий</label>
+          <textarea id="battleComment" maxlength="500" placeholder="Нажми, чтобы выбрать вариант или напиши свой" autocomplete="off"></textarea>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="action-button primary" id="startButton">Начать</button>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="gamePanel">
+      <div class="status" id="gameStatus">Запоминай карты</div>
+      <div class="cards" id="gameCards"></div>
+      <div class="actions" style="justify-content:center" id="gameActions">
+        <button class="action-button primary hidden" id="flipButton">Перевернуть</button>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="resultPanel">
+      <div class="status" id="resultStatus">Результат</div>
+      <div id="resultCard" class="result-card"></div>
+      <div class="result-summary">
+        <h2 id="resultTitle"></h2>
+        <p id="resultGender"></p>
+        <div id="resultQuote" class="result-quote"></div>
+        <div id="resultComment" class="result-comment hidden"></div>
+        <hr>
+        <div style="font-weight:700;font-size:13px;">Оценка</div>
+        <div class="rating" id="resultRating" aria-label="Оценка"></div>
+
+        <!-- НОВОЕ: комментарий к результату -->
+        <div class="result-note-box">
+          <label for="resultNote">Комментарий к результату</label>
+          <textarea id="resultNote" maxlength="500" placeholder="Заметка для себя"></textarea>
+          <div class="result-note-saved" id="resultNoteSaved"></div>
+        </div>
+
+        <div class="actions" style="justify-content:center">
+          <button class="action-button primary" id="exitButton">Выход</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="bottom-bar" id="bottomBar">
+  <button class="back-button hidden" id="backButton" aria-label="Назад">←</button>
+  <button class="profile-button" id="profileButton" aria-label="Профиль">♙</button>
+  <div class="bottom-info">
+    <div class="bottom-name" id="profileName">Игрок</div>
+    <div class="bottom-sub" id="profileStats">Битв: 0</div>
+  </div>
+  <div class="bottom-revealed-names hidden" id="bottomRevealedNames">
+    <span class="rev-label">За картами</span>
+    <div id="revNamesList" style="display:flex; gap:4px; flex-wrap:wrap;"></div>
+  </div>
+</div>
+
+<div class="profile-menu" id="profileMenu">
+  <div class="profile-menu-header">
+    <div class="profile-avatar-preview" id="profileAvatarPreview">♙</div>
+    <div>
+      <div class="profile-menu-name" id="profileMenuName">Игрок</div>
+      <div class="profile-menu-sub">Профиль</div>
+    </div>
+  </div>
+  <div class="profile-menu-list">
+    <button class="profile-menu-item" data-profile-action="avatar">
+      <span class="icon">🖼</span><span class="label">Аватарка</span>
+    </button>
+    <button class="profile-menu-item" data-profile-action="settings">
+      <span class="icon">⚙</span><span class="label">Настройки профиля</span>
+    </button>
+    <button class="profile-menu-item" data-profile-action="archive">
+      <span class="icon">▤</span><span class="label">Архив</span>
+    </button>
+    <button class="profile-menu-item" data-profile-action="wallpaper">
+      <span class="icon">✦</span><span class="label">Настройки фона</span>
+    </button>
+    <div class="profile-menu-divider"></div>
+    <button class="profile-menu-item" data-profile-action="share-costume">
+      <span class="icon">👗</span><span class="label">Поделиться костюмом</span>
+    </button>
+    <button class="profile-menu-item" data-profile-action="create-card">
+      <span class="icon">🎴</span><span class="label">Создать карточку</span>
+    </button>
+    <button class="profile-menu-item" data-profile-action="share-result">
+      <span class="icon">📤</span><span class="label">Поделиться результатом</span>
+    </button>
+    <div class="profile-menu-divider"></div>
+    <button class="profile-menu-item" data-profile-action="ideas">
+      <span class="icon">💡</span><span class="label">Идеи</span>
+    </button>
+  </div>
+</div>
+
+<div class="modal-backdrop hidden" id="modalBackdrop">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h2 id="modalTitle">Окно</h2>
+      <button class="close-button" id="closeModal" aria-label="Закрыть">×</button>
+    </div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<div class="toast hidden" id="toast" role="status"></div>
+
+<script>
+"use strict";
+
+/* =========================================================
+   ЦИТАТЫ О ЛЮБВИ
+   ========================================================= */
+const loveQuotes = [
+  "«Любовь — это не то, что ты находишь. Любовь — это то, что находит тебя.» — Лорен Оливер",
+  "«Ты — моё сегодня и все мои завтра.» — Неизвестный автор",
+  "«В мире, где можно выбрать кого угодно, я снова и снова выбираю тебя.» — Неизвестный автор",
+  "«Любовь состоит из одной души, живущей в двух телах.» — Аристотель",
+  "«Ты — причина, по которой я улыбаюсь без повода.» — Неизвестный автор"
+];
+
+/* =========================================================
+   КОММЕНТАРИИ-ПОДСКАЗКИ (по 5 на тип)
+   type: rainbow — сложное, blue — для мальчиков, pink — для девочек
+   ========================================================= */
+const commentSuggestions = [
+  // rainbow (5)
+  { text: "Пусть судьба решит за нас — я готов к любому повороту", type: "rainbow" },
+  { text: "Сердце подсказывает, что сегодня будет особенный выбор", type: "rainbow" },
+  { text: "Два сердца — одна история. Кто же окажется рядом?", type: "rainbow" },
+  { text: "Иногда самый смелый шаг — просто довериться случаю", type: "rainbow" },
+  { text: "Я верю в знаки судьбы и романтику случайных встреч", type: "rainbow" },
+  // blue (5)
+  { text: "Хочу, чтобы сегодня удача улыбнулась мне", type: "blue" },
+  { text: "Настоящий рыцарь не боится сделать выбор", type: "blue" },
+  { text: "Король должен уметь принимать решения — проверю себя", type: "blue" },
+  { text: "Положусь на интуицию и мужскую логику", type: "blue" },
+  { text: "Сегодня мой день — я это чувствую", type: "blue" },
+  // pink (5)
+  { text: "Красота спасёт мир, а любовь — моё сердце", type: "pink" },
+  { text: "Пусть этот выбор станет началом красивой истории", type: "pink" },
+  { text: "Дамская интуиция никогда не подводит", type: "pink" },
+  { text: "Мечтаю о том, кто поймёт меня без слов", type: "pink" },
+  { text: "Судьба прекрасна, когда в ней есть место чувствам", type: "pink" }
+];
+
+/* =========================================================
+   ДАННЫЕ
+   ========================================================= */
+const STORAGE_KEY = "perevorot_archive_v7";
+const SETTINGS_KEY = "perevorot_settings_v7";
+const LAST_NAMES_KEY = "perevorot_lastnames_v7";
+
+const maleNames = ["Александр","Максим","Артём","Михаил","Иван","Даниил","Дмитрий","Кирилл","Андрей","Егор","Алексей","Роман","Никита","Матвей","Илья","Тимур","Лев","Марк","Денис","Павел","Адам","Ноа","Лиам","Оливер","Джеймс","Лукас","Лео","Этан","Джек","Генри","Луи","Габриэль","Артур","Оскар","Феликс","Хуго","Карлос","Диего","Матео","Лука","Энцо","Марко","Давид","Рафаэль","Тео","Алекс","Эмиль","Юсуф","Амир","Омар","Хасан","Раян","Ибрагим","Зейн","Кай","Рэн","Харуто","Сота","Юто","Такуми","Минхо","Джун","Сону","Хён","Джихун","Вэй","Цзюнь","Чэнь","Бо","Линь","Арджун","Рахул","Викрам","Кабир","Дев","Рохан","Аарон","Самуэль","Бенджамин","Джозеф","Финн","Коннор","Шон","Патрик","Эрик","Антон","Ян","Мартин","Нильс","Свен","Андреас","Филипп","Томас","Милан","Никола","Стефан","Пётр","Якуб","Матеуш","Алексей"];
+const femaleNames = ["Анна","Мария","София","Алиса","Виктория","Полина","Ева","Арина","Дарья","Екатерина","Анастасия","Варвара","Милана","Александра","Кира","Вероника","Диана","Ульяна","Таисия","Мирослава","Эмма","Оливия","Амелия","Шарлотта","Ава","Изабелла","Миа","Луна","Элла","Лили","Софи","Камилла","Жюли","Клэр","Амели","Хлоя","Манон","Элоиза","Лея","Ноэми","Кармен","Лусия","Валерия","Мартина","Лола","Альба","Сара","Инес","Элена","Паула","Джулия","Джорджия","Франческа","Бьянка","Элеттра","Аурора","Ливия","Серена","Виола","Маргарита","Ясмин","Лейла","Нура","Амира","Малика","Сальма","Хана","Марьям","Зара","Алия","Сакура","Юи","Хина","Аой","Мэй","Рин","Ами","Мисаки","Юна","Хару","Соён","Джису","Минджи","Наён","Йеджи","Суён","Хэин","Ара","Сэри","Ерин","Прия","Анья","Иша","Мира","Кавья","Неха","Сита","Лакшми","Тара","Алия"];
+
+const themes = [
+  { name:"Розовый вечер", colors:["#380d2d","#8b174b","#e04472","#5b174c","#bd386a"] },
+  { name:"Закат", colors:["#34102d","#86274e","#f06b65","#f4a261","#6b204f"] },
+  { name:"Вишнёвый сад", colors:["#210c22","#56132f","#a51e48","#e04b72","#40172f"] },
+  { name:"Лавандовая ночь", colors:["#21163f","#49306c","#9b5c96","#e1a0bd","#39264f"] },
+  { name:"Рубиновый блеск", colors:["#210916","#5e102d","#b82050","#fa6688","#4b173a"] },
+  { name:"Золотой час", colors:["#2c1023","#783047","#d47756","#e7b16c","#57294a"] },
+  { name:"Северное сияние", colors:["#101e35","#244c61","#4d8b88","#c66c9b","#32244d"] },
+  { name:"Малиновый лёд", colors:["#281432","#652052","#d83f80","#ff9cbb","#492346"] },
+  { name:"Тёмная роза", colors:["#160b1b","#3c1230","#7e1c48","#c84971","#2a1029"] },
+  { name:"Космическая любовь", colors:["#140d2e","#4d1d58","#a63b7d","#f18ca8","#30204b"] },
+  // Telegram-палитра
+  { name:"Telegram Blue", colors:["#17212b","#2b5278","#0088cc","#4a76a8","#1c2733"] },
+  { name:"Telegram Night", colors:["#0e1621","#17212b","#232e3c","#2b5278","#4a76a8"] }
+];
+
+const avatarEmojis = ["♙","👤","👑","🤴","👸","🧙","🧚","🦊","🐼","🐱","🐶","🦁","🐯","🦄","🐺","🌹","🌸","🌙","⭐","💎","🔥","❄","🍀","🦋","🎭","🎩","🃏","♔","♕","♖"];
+
+/* Палитра для цветных заметок в архиве */
+const noteColors = [
+  { name: "Жёлтый", bg: "#fff3b0" },
+  { name: "Зелёный", bg: "#c8f5c8" },
+  { name: "Голубой", bg: "#c8e6ff" },
+  { name: "Розовый", bg: "#ffc8e0" },
+  { name: "Оранжевый", bg: "#ffe0b0" },
+  { name: "Сирень", bg: "#e0c8ff" }
+];
+
+/* =========================================================
+   СОСТОЯНИЕ
+   ========================================================= */
+let selectedGender = "mm";
+let cards = [];
+let phase = "setup";
+let roundComment = "";
+let selectedCardIndex = -1;
+let currentRecord = null;
+let ratingValue = 0;
+let ratingPreview = 0;
+let archive = loadArchive();
+let settings = loadSettings();
+let roundTimer = null;
+let toastTimer = null;
+let revealedNames = [];
+let currentQuote = "";
+let suggestPanel = null;
+let suggestExpanded = false; // для кнопки "+"
+
+const $ = (id) => document.getElementById(id);
+
+/* =========================================================
+   АВТОЗАПОЛНЕНИЕ ИМЁН (TTL 30 минут)
+   ========================================================= */
+function loadLastNames() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LAST_NAMES_KEY) || "{}");
+    if (!raw.savedAt || (Date.now() - raw.savedAt) > 30 * 60 * 1000) {
+      localStorage.removeItem(LAST_NAMES_KEY);
+      return { one: "", two: "" };
+    }
+    return { one: raw.one || "", two: raw.two || "" };
+  } catch {
+    return { one: "", two: "" };
+  }
+}
+function saveLastNames(one, two) {
+  try {
+    localStorage.setItem(LAST_NAMES_KEY, JSON.stringify({ one, two, savedAt: Date.now() }));
+  } catch {}
+}
+function checkLastNamesExpiry() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LAST_NAMES_KEY) || "{}");
+    if (raw.savedAt && (Date.now() - raw.savedAt) > 30 * 60 * 1000) {
+      localStorage.removeItem(LAST_NAMES_KEY);
+    }
+  } catch {}
+}
+
+/* =========================================================
+   УТИЛИТЫ
+   ========================================================= */
+function loadArchive() {
+  try { const v = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); return Array.isArray(v) ? v : []; }
+  catch { return []; }
+}
+function saveArchive() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(archive)); }
+  catch { showToast("Не удалось сохранить."); }
+}
+function loadSettings() {
+  try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}") || {}; }
+  catch { return {}; }
+}
+function saveSettings() {
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
+  catch {}
+}
+function showToast(msg) {
+  const el = $("toast");
+  el.textContent = msg;
+  el.classList.remove("hidden");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.add("hidden"), 2400);
+}
+function escapeHTML(v) {
+  return String(v).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[ch]);
+}
+function randomItem(list) { return list[Math.floor(Math.random() * list.length)]; }
+function randomName(gender, excluded = []) {
+  const list = gender === "Мужской" ? maleNames : femaleNames;
+  const avail = list.filter(n => !excluded.includes(n));
+  return randomItem(avail.length ? avail : list);
+}
+function genderLabel(t) { return t === "Мужской" ? "Мужской" : "Женский"; }
+
+/* =========================================================
+   ФАЗЫ
+   ========================================================= */
+function setPhase(next) {
+  phase = next;
+  $("setupPanel").classList.toggle("hidden", next !== "setup");
+  $("gamePanel").classList.toggle("hidden", next !== "preview" && next !== "choice");
+  $("resultPanel").classList.toggle("hidden", next !== "result");
+  $("bottomBar").classList.remove("is-hidden");
+  closeProfileMenu();
+  closeSuggest();
+  const showBack = (next !== "setup");
+  $("backButton").classList.toggle("hidden", !showBack);
+  updateRevealedNames();
+  document.body.style.paddingBottom = "104px";
+  document.querySelector(".app").style.paddingBottom = "104px";
+}
+
+function updateRevealedNames() {
+  const wrap = $("bottomRevealedNames");
+  const list = $("revNamesList");
+  if (phase === "choice" && revealedNames.length) {
+    wrap.classList.remove("hidden");
+    list.innerHTML = revealedNames.map(n => `<span class="rev-name">${escapeHTML(n)}</span>`).join("");
+  } else {
+    wrap.classList.add("hidden");
+    list.innerHTML = "";
+  }
+}
+
+function updateStats() {
+  $("profileStats").textContent = "Битв: " + archive.length;
+}
+
+/* =========================================================
+   ПЕРСОНАЖИ
+   ========================================================= */
+function makeCharacter(gender, name, color, bg1, bg2) {
+  return {
+    gender, name, color, bg1, bg2,
+    symbol: gender === "Мужской" ? "♔" : "♕",
+    portrait: gender === "Мужской" ? "🤴" : "👸"
+  };
+}
+
+function prepareCharacters() {
+  const pair = selectedGender === "mm"
+    ? ["Мужской","Мужской"]
+    : selectedGender === "ff"
+      ? ["Женский","Женский"]
+      : ["Мужской","Женский"];
+
+  const manualNames = [$("nameOne").value.trim(), $("nameTwo").value.trim()];
+  const usedNames = [];
+
+  cards = pair.map((gender, index) => {
+    let name = manualNames[index];
+    if (!name) name = randomName(gender, usedNames);
+    usedNames.push(name);
+
+    const color = gender === "Мужской"
+      ? (index === 0 ? "#77c5ff" : "#77f0d0")
+      : (index === 0 ? "#ff8bb8" : "#d6a0ff");
+    const bg1 = gender === "Мужской"
+      ? (index === 0 ? "#1b5685" : "#176c5b")
+      : (index === 0 ? "#8f2452" : "#603783");
+    const bg2 = gender === "Мужской"
+      ? (index === 0 ? "#10253f" : "#102f2d")
+      : (index === 0 ? "#42142f" : "#281b42");
+
+    return makeCharacter(gender, name, color, bg1, bg2);
+  });
+
+  revealedNames = cards.map(c => c.name);
+  saveLastNames(cards[0].name, cards[1].name);
+}
+
+function cardMarkup(character, index, faceUp = false) {
+  const front = `
+    <div class="card-face card-front" style="
+      --person-color:${character.color};
+      --person-bg1:${character.bg1};
+      --person-bg2:${character.bg2}">
+      <div class="crown">${character.symbol}</div>
+      <div class="portrait">${character.portrait}</div>
+      <div class="person-name">${escapeHTML(character.name)}</div>
+      <div class="person-label">${character.gender}</div>
+    </div>`;
+  return `
+    <button type="button" class="card ${faceUp ? "flipped" : ""}" data-index="${index}">
+      <span class="card-inner">
+        <span class="card-face card-back"></span>
+        ${front}
+      </span>
+    </button>`;
+}
+
+function renderGameCards(faceUp) {
+  $("gameCards").innerHTML = cards.map((c,i) => cardMarkup(c,i,faceUp)).join("");
+  $("gameCards").querySelectorAll(".card").forEach(card => {
+    card.disabled = (phase !== "choice");
+    card.addEventListener("click", () => {
+      if (phase === "choice") chooseCard(Number(card.dataset.index));
+    });
+  });
+}
+
+/* =========================================================
+   РАУНД
+   ========================================================= */
+function startRound() {
+  clearTimeout(roundTimer);
+  roundComment = $("battleComment").value.trim();
+  prepareCharacters();
+  selectedCardIndex = -1;
+  ratingValue = 0;
+  ratingPreview = 0;
+  currentRecord = null;
+  $("exitButton").classList.add("hidden");
+  $("resultRating").innerHTML = "";
+  $("resultNote").value = "";
+  $("resultNoteSaved").textContent = "";
+  $("flipButton").classList.add("hidden");
+  setPhase("preview");
+  $("gameStatus").textContent = "Запоминай карты";
+  renderGameCards(true);
+
+  let seconds = 3;
+  roundTimer = setInterval(() => {
+    seconds--;
+    if (seconds > 0) {
+      $("gameStatus").textContent = "Запоминай: " + seconds;
+    } else {
+      clearInterval(roundTimer);
+      $("gameStatus").textContent = "Готов?";
+      $("flipButton").classList.remove("hidden");
+    }
+  }, 1000);
+
+  $("flipButton").onclick = () => {
+    $("flipButton").classList.add("hidden");
+    renderGameCards(false);
+    shuffleCards();
+  };
+}
+
+function shuffleCards() {
+  cards = cards.slice().sort(() => Math.random() - .5);
+  setPhase("choice");
+  $("gameStatus").textContent = "Выбирай";
+  renderGameCards(false);
+}
+
+function chooseCard(index) {
+  if (phase !== "choice" || !cards[index]) return;
+  selectedCardIndex = index;
+  const chosen = cards[index];
+  setPhase("result");
+  currentQuote = randomItem(loveQuotes);
+  currentRecord = {
+    id: (Date.now().toString(36) + Math.random().toString(36).slice(2,7)),
+    gender: chosen.gender,
+    name: chosen.name,
+    symbol: chosen.symbol,
+    portrait: chosen.portrait,
+    color: chosen.color,
+    bg1: chosen.bg1,
+    bg2: chosen.bg2,
+    comment: roundComment,
+    quote: currentQuote,
+    rating: 0,
+    resultNote: "",
+    resultNoteColor: noteColors[0].bg
+  };
+  renderResult();
+  saveRecord();
+  $("exitButton").classList.remove("hidden");
+}
+
+function renderResult() {
+  const chosen = cards[selectedCardIndex];
+  $("resultCard").innerHTML = cardMarkup(chosen, selectedCardIndex, true);
+  const card = $("resultCard").querySelector(".card");
+  card.disabled = true;
+  card.classList.add("chosen");
+  $("resultTitle").textContent = chosen.name;
+  $("resultGender").textContent = genderLabel(chosen.gender);
+  $("resultQuote").textContent = currentQuote;
+  const comment = $("resultComment");
+  if (roundComment) {
+    comment.textContent = roundComment;
+    comment.classList.remove("hidden");
+  } else {
+    comment.textContent = "";
+    comment.classList.add("hidden");
+  }
+  $("resultNote").value = "";
+  $("resultNoteSaved").textContent = "";
+  buildRating();
+}
+
+/* =========================================================
+   КОММЕНТАРИЙ К РЕЗУЛЬТАТУ (сохранение в currentRecord)
+   ========================================================= */
+function saveResultNote() {
+  if (!currentRecord) return;
+  const text = $("resultNote").value.trim();
+  currentRecord.resultNote = text;
+  currentRecord.resultNoteColor = currentRecord.resultNoteColor || noteColors[0].bg;
+  saveRecord();
+  if (text) {
+    $("resultNoteSaved").textContent = "Сохранено";
+    showToast("Заметка сохранена.");
+  } else {
+    $("resultNoteSaved").textContent = "";
+  }
+}
+
+/* =========================================================
+   РЕЙТИНГ
+   ========================================================= */
+function buildRating() {
+  const holder = $("resultRating");
+  holder.innerHTML = "";
+  for (let i = 1; i <= 5; i++) {
+    const star = document.createElement("button");
+    star.type = "button";
+    star.className = "star";
+    star.textContent = "★";
+    star.dataset.value = String(i);
+    star.addEventListener("pointerenter", () => { ratingPreview = i; paintStars(); });
+    star.addEventListener("click", () => setRating(i));
+    holder.appendChild(star);
+  }
+  holder.addEventListener("pointerleave", () => { ratingPreview = 0; paintStars(); });
+  holder.addEventListener("pointerdown", (e) => {
+    const s = e.target.closest(".star");
+    if (s) { ratingPreview = Number(s.dataset.value); paintStars(); try { holder.setPointerCapture(e.pointerId); } catch {} }
+  });
+  holder.addEventListener("pointermove", (e) => {
+    if (e.buttons === 0 && e.pointerType === "mouse") return;
+    const s = document.elementFromPoint(e.clientX, e.clientY)?.closest(".star");
+    if (s && holder.contains(s)) { ratingPreview = Number(s.dataset.value); paintStars(); }
+  });
+  holder.addEventListener("pointerup", (e) => {
+    const s = document.elementFromPoint(e.clientX, e.clientY)?.closest(".star");
+    if (s && holder.contains(s)) setRating(Number(s.dataset.value));
+  });
+  paintStars();
+}
+
+function paintStars() {
+  const active = ratingPreview || ratingValue;
+  $("resultRating").querySelectorAll(".star").forEach((star, i) => {
+    star.classList.toggle("active", i < ratingValue);
+    star.classList.toggle("hovered", ratingPreview > 0 && i < active);
+  });
+}
+
+function setRating(value) {
+  ratingValue = Math.max(1, Math.min(5, Number(value) || 1));
+  ratingPreview = 0;
+  if (currentRecord) currentRecord.rating = ratingValue;
+  paintStars();
+  saveRecord();
+}
+
+/* =========================================================
+   СОХРАНЕНИЕ
+   ========================================================= */
+function saveRecord() {
+  if (!currentRecord) return;
+  const idx = archive.findIndex(i => i.id === currentRecord.id);
+  if (idx >= 0) archive[idx] = {...currentRecord};
+  else archive.unshift({...currentRecord});
+  archive = archive.slice(0, 200);
+  saveArchive();
+  updateStats();
+}
+
+/* =========================================================
+   КНОПКА "НАЗАД"
+   ========================================================= */
+function goBack() {
+  clearTimeout(roundTimer);
+  if (phase === "preview" || phase === "choice") {
+    setPhase("setup");
+    renderGameCards(false);
+    $("flipButton").classList.add("hidden");
+  } else if (phase === "result") {
+    setPhase("setup");
+  }
+}
+
+function newGame() {
+  clearTimeout(roundTimer);
+  $("battleComment").value = "";
+  $("nameOne").value = "";
+  $("nameTwo").value = "";
+  roundComment = "";
+  currentRecord = null;
+  cards = [];
+  revealedNames = [];
+  refreshFormSectionState();
+  setPhase("setup");
+}
+
+/* =========================================================
+   СЕРАЯ ПЛИТКА
+   ========================================================= */
+const formSection = $("formSection");
+const nameOneEl = $("nameOne");
+const nameTwoEl = $("nameTwo");
+const battleCommentEl = $("battleComment");
+
+function formHasData() {
+  return Boolean(nameOneEl.value.trim() || nameTwoEl.value.trim() || battleCommentEl.value.trim());
+}
+function refreshFormSectionState() {
+  formSection.classList.toggle("is-active", formHasData());
+}
+formSection.addEventListener("mouseenter", () => formSection.classList.add("is-active"));
+formSection.addEventListener("mouseleave", () => refreshFormSectionState());
+formSection.addEventListener("focusin", () => formSection.classList.add("is-active"));
+formSection.addEventListener("focusout", () => setTimeout(refreshFormSectionState, 80));
+[nameOneEl, nameTwoEl, battleCommentEl].forEach(el => el.addEventListener("input", refreshFormSectionState));
+
+/* =========================================================
+   ВЫПАДАЮЩИЕ СПИСКИ
+   Ограничение: показываем 5 плиток + кнопка "+"
+   При ручном вводе подсказки пропадают.
+   ========================================================= */
+const SUGGEST_LIMIT = 5;
+
+function closeSuggest() {
+  if (suggestPanel) {
+    suggestPanel.remove();
+    suggestPanel = null;
+  }
+  suggestExpanded = false;
+}
+
+// Показывает панель с плитками
+// allTiles — полный массив, показываем первые SUGGEST_LIMIT или все если expanded
+function showSuggest(anchor, allTiles) {
+  closeSuggest();
+  const wrap = anchor.closest(".field-wrap") || anchor.parentElement;
+  suggestPanel = document.createElement("div");
+  suggestPanel.className = "suggest-panel";
+
+  const visible = suggestExpanded ? allTiles : allTiles.slice(0, SUGGEST_LIMIT);
+
+  visible.forEach(t => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "suggest-tile " + (t.type || "");
+    btn.textContent = t.text;
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      t.onPick();
+      closeSuggest();
+    });
+    suggestPanel.appendChild(btn);
+  });
+
+  // Кнопка "Ещё варианты" (+)
+  if (!suggestExpanded && allTiles.length > SUGGEST_LIMIT) {
+    const moreBtn = document.createElement("button");
+    moreBtn.type = "button";
+    moreBtn.className = "suggest-tile more";
+    moreBtn.textContent = "+";
+    moreBtn.title = "Ещё варианты";
+    moreBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      suggestExpanded = true;
+      showSuggest(anchor, allTiles);
+    });
+    suggestPanel.appendChild(moreBtn);
+  }
+
+  wrap.style.position = "relative";
+  wrap.appendChild(suggestPanel);
+}
+
+// Список имён (белые плитки)
+function showNameSuggest(input, gender) {
+  const list = (gender === "Мужской" ? maleNames : femaleNames).slice();
+  const tiles = list.map(name => ({
+    text: name,
+    type: "",
+    onPick: () => {
+      input.value = name;
+      refreshFormSectionState();
+    }
+  }));
+  showSuggest(input, tiles);
+}
+
+// Список комментариев (цветные плитки)
+function showCommentSuggest(textarea) {
+  const tiles = commentSuggestions.map(item => ({
+    text: item.text,
+    type: item.type,
+    onPick: () => {
+      textarea.value = item.text;
+      refreshFormSectionState();
+    }
+  }));
+  showSuggest(textarea, tiles);
+}
+
+// При фокусе на поле имени — показываем варианты
+nameOneEl.addEventListener("focus", () => {
+  const gender = (selectedGender === "ff") ? "Женский" : "Мужской";
+  showNameSuggest(nameOneEl, gender);
+});
+nameTwoEl.addEventListener("focus", () => {
+  const gender = (selectedGender === "mm") ? "Мужской" : "Женский";
+  showNameSuggest(nameTwoEl, gender);
+});
+battleCommentEl.addEventListener("focus", () => {
+  showCommentSuggest(battleCommentEl);
+});
+
+// ПРИ РУЧНОМ ВВОДЕ — скрываем подсказки
+nameOneEl.addEventListener("input", closeSuggest);
+nameTwoEl.addEventListener("input", closeSuggest);
+battleCommentEl.addEventListener("input", closeSuggest);
+
+// Клик вне выпадающего списка — закрываем
+document.addEventListener("click", (e) => {
+  if (suggestPanel && !suggestPanel.contains(e.target) &&
+      e.target !== nameOneEl && e.target !== nameTwoEl && e.target !== battleCommentEl) {
+    closeSuggest();
+  }
+});
+
+/* Автозаполнение при загрузке */
+function prefillLastNames() {
+  const last = loadLastNames();
+  if (last.one && !nameOneEl.value) nameOneEl.value = last.one;
+  if (last.two && !nameTwoEl.value) nameTwoEl.value = last.two;
+  refreshFormSectionState();
+}
+
+/* =========================================================
+   ТЕМА
+   ========================================================= */
+function applyTheme(theme) {
+  document.body.classList.toggle("light-theme", theme === "light");
+  settings.themeMode = theme;
+  saveSettings();
+  updateThemeSwitch();
+}
+
+function updateThemeSwitch() {
+  const sw = $("themeSwitch");
+  if (!sw) return;
+  const isLight = settings.themeMode === "light";
+  sw.classList.toggle("is-light", isLight);
+  sw.querySelector(".thumb").textContent = isLight ? "☀️" : "🌙";
+  sw.setAttribute("aria-checked", isLight ? "true" : "false");
+}
+
+/* =========================================================
+   МОДАЛКИ
+   ========================================================= */
+function openModal(type) {
+  $("topMenu").classList.add("hidden");
+  closeProfileMenu();
+  closeSuggest();
+
+  const backdrop = $("modalBackdrop");
+  const title = $("modalTitle");
+  const content = $("modalContent");
+
+  if (type === "archive") {
+    title.textContent = "Архив";
+    if (!archive.length) {
+      content.innerHTML = '<p class="muted">Пока нет завершённых игр.</p>';
+    } else {
+      content.innerHTML = `
+        <div class="archive-list">
+        ${archive.map((item, i) => `
+          <article class="archive-item" data-id="${item.id}">
+            <div class="archive-head">
+              <div class="archive-title">${i + 1}. ${escapeHTML(item.name || "Без имени")}</div>
+              <button class="archive-share-btn" data-share-id="${item.id}" title="Поделиться">📤</button>
+            </div>
+            <div class="archive-meta">
+              ${escapeHTML(item.gender || "—")} · 
+              <span class="archive-stars">${item.rating ? "★".repeat(item.rating) + "☆".repeat(5-item.rating) : "—"}</span>
+            </div>
+            ${item.quote ? `<div class="archive-comment" style="font-style:italic;">${escapeHTML(item.quote)}</div>` : ""}
+            ${item.comment ? `<div class="archive-comment"><b>До игры:</b> ${escapeHTML(item.comment)}</div>` : ""}
+            ${item.resultNote ? `<div class="archive-note-display" style="background:${item.resultNoteColor || noteColors[0].bg};">${escapeHTML(item.resultNote)}</div>` : ""}
+            <div class="archive-note-row">
+              <div class="note-color-picker" data-picker-id="${item.id}">
+                ${noteColors.map((c, ci) => `
+                  <button class="note-color-btn ${(item.resultNoteColor === c.bg) ? "selected" : ""}"
+                          style="background:${c.bg};"
+                          data-color="${c.bg}"
+                          data-id="${item.id}"
+                          title="${c.name}"></button>
+                `).join("")}
+              </div>
+              <textarea placeholder="Заметка для тетради" data-note-id="${item.id}">${escapeHTML(item.resultNote || "")}</textarea>
+            </div>
+          </article>
+        `).join("")}
+        </div>
+        <div class="actions">
+          <button class="action-button" id="exportArchive">Экспорт JSON</button>
+          <button class="action-button" id="clearArchive">Очистить</button>
+        </div>`;
+
+      // Экспорт/очистка
+      content.querySelector("#exportArchive").addEventListener("click", exportArchive);
+      content.querySelector("#clearArchive").addEventListener("click", () => {
+        if (confirm("Удалить всю историю?")) {
+          archive = [];
+          saveArchive();
+          updateStats();
+          openModal("archive");
+        }
+      });
+
+      // Сохранение заметок при вводе
+      content.querySelectorAll("textarea[data-note-id]").forEach(ta => {
+        ta.addEventListener("input", () => {
+          const id = ta.dataset.noteId;
+          const rec = archive.find(r => r.id === id);
+          if (rec) {
+            rec.resultNote = ta.value;
+            saveArchive();
+          }
+        });
+      });
+
+      // Выбор цвета заметки
+      content.querySelectorAll(".note-color-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.id;
+          const color = btn.dataset.color;
+          const rec = archive.find(r => r.id === id);
+          if (rec) {
+            rec.resultNoteColor = color;
+            saveArchive();
+            // Обновляем выделение
+            const picker = btn.closest(".note-color-picker");
+            picker.querySelectorAll(".note-color-btn").forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+            // Обновляем отображение
+            const item = btn.closest(".archive-item");
+            let display = item.querySelector(".archive-note-display");
+            if (!display) {
+              display = document.createElement("div");
+              display.className = "archive-note-display";
+              item.insertBefore(display, item.querySelector(".archive-note-row"));
+            }
+            display.style.background = color;
+            display.textContent = rec.resultNote || "";
+          }
+        });
+      });
+
+      // Кнопка "Поделиться результатом"
+      content.querySelectorAll("[data-share-id]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const rec = archive.find(r => r.id === btn.dataset.shareId);
+          if (!rec) return;
+          let text = `Результат в «Переворот»:\n${rec.symbol || "♔"} ${rec.name}\n${rec.gender} · ${rec.rating || "—"}/5`;
+          if (rec.quote) text += `\n\n«${rec.quote}»`;
+          if (rec.comment) text += `\n\nДо игры: ${rec.comment}`;
+          if (rec.resultNote) text += `\n\nЗаметка: ${rec.resultNote}`;
+          shareText(text);
+        });
+      });
+    }
+  } else if (type === "wallpaper") {
+    title.textContent = "Настройки фона";
+    const isLight = settings.themeMode === "light";
+    content.innerHTML = `
+      <div class="theme-toggle-row">
+        <span class="theme-toggle-label">Тема сайта</span>
+        <button class="theme-switch ${isLight ? "is-light" : ""}" id="themeSwitch" role="switch" aria-checked="${isLight}">
+          <span class="thumb">${isLight ? "☀️" : "🌙"}</span>
+        </button>
+      </div>
+      <hr>
+      <p class="muted">Градиент фона</p>
+      <div class="theme-grid">
+        ${themes.map((theme, i) => `
+          <button class="theme-button" data-theme="${i}">
+            <div class="theme-swatch" style="background:linear-gradient(110deg,${theme.colors[0]},${theme.colors[2]},${theme.colors[4]})"></div>
+            ${escapeHTML(theme.name)}
+          </button>`).join("")}
+      </div>
+      <hr>
+      <div class="section-title">Своя палитра</div>
+      <div class="color-grid" id="customColors">
+        ${[0,1,2,3,4].map(i => `<input class="color-input" type="color" value="${(settings.customColors || themes[0].colors)[i]}" data-color="${i}">`).join("")}
+      </div>
+      <button class="action-button primary" id="applyCustom" style="width:100%">Применить</button>`;
+
+    updateThemeSwitch();
+
+    content.querySelector("#themeSwitch").addEventListener("click", () => {
+      applyTheme(settings.themeMode === "light" ? "dark" : "light");
+    });
+
+    content.querySelectorAll("[data-theme]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        applyWallpaper(themes[Number(btn.dataset.theme)].colors);
+        settings.theme = Number(btn.dataset.theme);
+        saveSettings();
+        showToast("Тема применена.");
+      });
+    });
+
+    content.querySelector("#applyCustom").addEventListener("click", () => {
+      const colors = [...content.querySelectorAll("[data-color]")].map(input => input.value);
+      settings.customColors = colors;
+      settings.theme = -1;
+      applyWallpaper(colors);
+      saveSettings();
+      showToast("Фон применён.");
+    });
+  } else if (type === "about") {
+    title.textContent = "О игре";
+    content.innerHTML = `<p>«Переворот» — карточная игра на выбор.</p><p class="muted">Выбери пару, запомни карты, выбери одну — узнай итог.</p>`;
+  } else if (type === "support") {
+    title.textContent = "Техподдержка";
+    content.innerHTML = `
+      <textarea id="supportMessage" placeholder="Опиши проблему" maxlength="1000"></textarea>
+      <div class="actions"><button class="action-button primary" id="copySupport">Скопировать</button></div>`;
+    content.querySelector("#copySupport").addEventListener("click", async () => {
+      const msg = content.querySelector("#supportMessage").value.trim();
+      try { await navigator.clipboard.writeText("Переворот: " + msg); showToast("Скопировано."); }
+      catch { showToast("Не удалось скопировать."); }
+    });
+  } else if (type === "donate") {
+    title.textContent = "Поддержать проект";
+    content.innerHTML = `<p>Спасибо!</p><p class="muted">Платежи не подключены.</p>`;
+  } else {
+    title.textContent = "Сервисы";
+    content.innerHTML = `<p class="muted">Дополнительные сервисы.</p>`;
+  }
+
+  backdrop.classList.remove("hidden");
+}
+
+function closeModal() {
+  $("modalBackdrop").classList.add("hidden");
+}
+
+function applyWallpaper(colors) {
+  if (!Array.isArray(colors) || colors.length < 3) return;
+  const p = [...colors];
+  while (p.length < 5) p.push(p[p.length - 1]);
+  document.body.style.backgroundImage = `linear-gradient(-45deg,${p[0]},${p[1]},${p[2]},${p[3]},${p[4]})`;
+  document.body.style.backgroundSize = "400% 400%";
+  document.documentElement.style.setProperty("--accent", p[3]);
+  document.documentElement.style.setProperty("--accent2", p[4]);
+}
+
+function exportArchive() {
+  const blob = new Blob([JSON.stringify(archive, null, 2)], {type:"application/json;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "perevorot-archive.json";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  showToast("Экспорт готов.");
+}
+
+/* =========================================================
+   МЕНЮ ПРОФИЛЯ
+   ========================================================= */
+const profileMenu = $("profileMenu");
+
+function openProfileMenu() {
+  profileMenu.classList.add("is-open");
+  $("profileMenuName").textContent = settings.profileName || "Игрок";
+  const avatar = settings.avatarType === "photo" && settings.avatarPhoto
+    ? `<img src="${settings.avatarPhoto}" alt="" style="width:100%;height:100%;object-fit:cover;">`
+    : `<span>${settings.avatarEmoji || "♙"}</span>`;
+  $("profileAvatarPreview").innerHTML = avatar;
+}
+function closeProfileMenu() { profileMenu.classList.remove("is-open"); }
+function toggleProfileMenu() {
+  if (profileMenu.classList.contains("is-open")) closeProfileMenu();
+  else openProfileMenu();
+}
+
+$("profileButton").addEventListener("contextmenu", (e) => {
+  e.preventDefault(); e.stopPropagation(); toggleProfileMenu();
+});
+$("profileButton").addEventListener("click", (e) => {
+  e.stopPropagation(); toggleProfileMenu();
+});
+document.addEventListener("click", (e) => {
+  if (!e.target.closest("#profileMenu") && !e.target.closest("#profileButton")) closeProfileMenu();
+});
+
+profileMenu.querySelectorAll("[data-profile-action]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const action = btn.dataset.profileAction;
+    closeProfileMenu();
+    switch (action) {
+      case "avatar": openAvatarModal(); break;
+      case "settings": openProfileSettings(); break;
+      case "archive": openModal("archive"); break;
+      case "wallpaper": openModal("wallpaper"); break;
+      case "share-costume": shareCostume(); break;
+      case "create-card": createCharacterCard(); break;
+      case "share-result": shareGameResult(); break;
+      case "ideas": openIdeasModal(); break;
+    }
+  });
+});
+
+function openAvatarModal() {
+  $("modalTitle").textContent = "Аватарка";
+  const content = $("modalContent");
+  const currentType = settings.avatarType || "emoji";
+  const currentEmoji = settings.avatarEmoji || "♙";
+  const currentPhoto = settings.avatarPhoto || "";
+
+  content.innerHTML = `
+    <div class="section-title">Эмодзи</div>
+    <div class="emoji-grid" id="emojiGrid">
+      ${avatarEmojis.map(e => `<button class="emoji-option ${currentType === "emoji" && e === currentEmoji ? "selected" : ""}" data-emoji="${e}">${e}</button>`).join("")}
+    </div>
+    <hr>
+    <div class="section-title">Своё фото</div>
+    <input type="text" id="photoUrl" placeholder="https://..." value="${escapeHTML(currentPhoto)}">
+    <div style="display:flex; gap:8px; margin-top:10px; align-items:center; flex-wrap:wrap">
+      <input type="file" id="photoFile" accept="image/*" style="display:none">
+      <button class="action-button" id="pickFile" style="flex:1">📁 Файл</button>
+      <button class="action-button primary" id="applyPhoto" style="flex:1">URL</button>
+    </div>
+    <div style="margin-top:14px; text-align:center">
+      <div id="avatarPreview" style="width:72px; height:72px; border-radius:50%; background:var(--tg-blue); display:grid; place-items:center; font-size:34px; margin:0 auto; overflow:hidden;">
+        ${currentType === "photo" && currentPhoto ? `<img src="${escapeHTML(currentPhoto)}" style="width:100%;height:100%;object-fit:cover;">` : `<span>${currentEmoji}</span>`}
+      </div>
+    </div>`;
+
+  content.querySelectorAll("[data-emoji]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      content.querySelectorAll("[data-emoji]").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      settings.avatarType = "emoji";
+      settings.avatarEmoji = btn.dataset.emoji;
+      settings.avatarPhoto = "";
+      saveSettings();
+      updateProfileAvatar();
+      content.querySelector("#avatarPreview").innerHTML = `<span>${btn.dataset.emoji}</span>`;
+    });
+  });
+
+  content.querySelector("#applyPhoto").addEventListener("click", () => {
+    const url = content.querySelector("#photoUrl").value.trim();
+    if (!url) return;
+    settings.avatarType = "photo";
+    settings.avatarPhoto = url;
+    saveSettings();
+    updateProfileAvatar();
+    content.querySelector("#avatarPreview").innerHTML = `<img src="${escapeHTML(url)}" style="width:100%;height:100%;object-fit:cover;">`;
+  });
+
+  content.querySelector("#pickFile").addEventListener("click", () => content.querySelector("#photoFile").click());
+  content.querySelector("#photoFile").addEventListener("change", (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = (ev) => {
+      settings.avatarType = "photo";
+      settings.avatarPhoto = ev.target.result;
+      saveSettings();
+      updateProfileAvatar();
+      content.querySelector("#avatarPreview").innerHTML = `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+    };
+    r.readAsDataURL(f);
+  });
+
+  $("modalBackdrop").classList.remove("hidden");
+}
+
+function openProfileSettings() {
+  $("modalTitle").textContent = "Настройки профиля";
+  const content = $("modalContent");
+  content.innerHTML = `
+    <label class="field-label">Имя</label>
+    <input type="text" id="profileNameInput" maxlength="30" value="${escapeHTML(settings.profileName || "Игрок")}">
+    <div class="actions" style="margin-top:14px">
+      <button class="action-button primary" id="saveProfileName" style="width:100%">Сохранить</button>
+    </div>`;
+  content.querySelector("#saveProfileName").addEventListener("click", () => {
+    const name = content.querySelector("#profileNameInput").value.trim() || "Игрок";
+    settings.profileName = name;
+    saveSettings();
+    $("profileName").textContent = name;
+    $("profileMenuName").textContent = name;
+    showToast("Сохранено.");
+    closeModal();
+  });
+  $("modalBackdrop").classList.remove("hidden");
+}
+
+function shareCostume() {
+  shareText("Посмотри мой костюм в «Переворот»! 🎭");
+}
+
+function createCharacterCard() {
+  $("modalTitle").textContent = "Создать карточку";
+  const content = $("modalContent");
+  content.innerHTML = `
+    <label class="field-label">Имя персонажа</label>
+    <input type="text" id="charName" maxlength="28" placeholder="Например, Король Артур">
+    <label class="field-label" style="margin-top:12px">Тип</label>
+    <div class="gender-options" style="grid-template-columns:1fr 1fr">
+      <button class="gender-option selected" data-char-gender="Мужской">♔ Мужчина</button>
+      <button class="gender-option" data-char-gender="Женский">♕ Женщина</button>
+    </div>
+    <div class="actions" style="margin-top:14px">
+      <button class="action-button primary" id="createChar" style="width:100%">Создать</button>
+    </div>`;
+  let charGender = "Мужской";
+  content.querySelectorAll("[data-char-gender]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      content.querySelectorAll("[data-char-gender]").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      charGender = btn.dataset.charGender;
+    });
+  });
+  content.querySelector("#createChar").addEventListener("click", () => {
+    const name = content.querySelector("#charName").value.trim();
+    if (!name) return;
+    const custom = {
+      id: "char_" + Date.now().toString(36),
+      gender: charGender,
+      name,
+      symbol: charGender === "Мужской" ? "♔" : "♕",
+      portrait: charGender === "Мужской" ? "🤴" : "👸",
+      color: charGender === "Мужской" ? "#77c5ff" : "#ff8bb8",
+      bg1: charGender === "Мужской" ? "#1b5685" : "#8f2452",
+      bg2: charGender === "Мужской" ? "#10253f" : "#42142f",
+      comment: "Созданная карточка",
+      quote: randomItem(loveQuotes),
+      rating: 0,
+      isCustom: true,
+      resultNote: "",
+      resultNoteColor: noteColors[0].bg
+    };
+    archive.unshift(custom);
+    saveArchive();
+    updateStats();
+    showToast("Карточка «" + name + "» создана!");
+    closeModal();
+  });
+  $("modalBackdrop").classList.remove("hidden");
+}
+
+function shareGameResult() {
+  if (!currentRecord) { showToast("Сыграй раунд."); return; }
+  let text = `Результат в «Переворот»:\n${currentRecord.symbol} ${currentRecord.name}\n${currentRecord.gender} · ${currentRecord.rating || "—"}/5`;
+  if (currentQuote) text += `\n\n«${currentQuote}»`;
+  if (currentRecord.comment) text += `\n\nДо игры: ${currentRecord.comment}`;
+  if (currentRecord.resultNote) text += `\n\nЗаметка: ${currentRecord.resultNote}`;
+  shareText(text);
+}
+
+function openIdeasModal() {
+  $("modalTitle").textContent = "Идеи";
+  $("modalContent").innerHTML = `
+    <ul style="line-height:1.8; padding-left:20px">
+      <li>🎴 Больше типов карточек</li>
+      <li>🌈 Расширенные темы</li>
+      <li>🏆 Достижения</li>
+      <li>👥 Мультиплеер</li>
+      <li>📊 Статистика</li>
+    </ul>`;
+  $("modalBackdrop").classList.remove("hidden");
+}
+
+async function shareText(text) {
+  try {
+    if (navigator.share) { await navigator.share({ title: "Переворот", text }); showToast("Отправлено!"); }
+    else { await navigator.clipboard.writeText(text); showToast("Скопировано!"); }
+  } catch (e) { if (e.name !== "AbortError") showToast("Не удалось."); }
+}
+
+function updateProfileAvatar() {
+  const btn = $("profileButton");
+  if (settings.avatarType === "photo" && settings.avatarPhoto) {
+    btn.innerHTML = `<img src="${settings.avatarPhoto}" style="width:100%;height:100%;object-fit:cover;" alt="">`;
+    btn.style.background = "transparent";
+  } else {
+    btn.innerHTML = `<span>${settings.avatarEmoji || "♙"}</span>`;
+    btn.style.background = "var(--tg-blue)";
+  }
+}
+
+/* =========================================================
+   ОБРАБОТЧИКИ
+   ========================================================= */
+$("genderOptions").querySelectorAll("[data-gender]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    selectedGender = btn.dataset.gender;
+    $("genderOptions").querySelectorAll("[data-gender]").forEach(b => b.classList.toggle("selected", b === btn));
+  });
+});
+
+$("startButton").addEventListener("click", startRound);
+$("exitButton").addEventListener("click", newGame);
+$("backButton").addEventListener("click", goBack);
+
+// Сохранение комментария к результату при вводе
+$("resultNote").addEventListener("input", () => {
+  if (!currentRecord) return;
+  currentRecord.resultNote = $("resultNote").value.trim();
+  saveRecord();
+  $("resultNoteSaved").textContent = currentRecord.resultNote ? "Сохранено" : "";
+});
+
+$("menuButton").addEventListener("click", (e) => {
+  e.stopPropagation();
+  closeProfileMenu();
+  closeSuggest();
+  $("topMenu").classList.toggle("hidden");
+});
+$("topMenu").querySelectorAll("[data-modal]").forEach(btn => {
+  btn.addEventListener("click", () => openModal(btn.dataset.modal));
+});
+$("closeModal").addEventListener("click", closeModal);
+$("modalBackdrop").addEventListener("click", (e) => {
+  if (e.target === $("modalBackdrop")) closeModal();
+});
+
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".topline")) $("topMenu").classList.add("hidden");
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") { closeModal(); closeProfileMenu(); $("topMenu").classList.add("hidden"); closeSuggest(); }
+});
+document.addEventListener("contextmenu", (e) => {
+  if (!e.target.closest("#profileButton")) { e.preventDefault(); openModal("wallpaper"); }
+});
+
+/* =========================================================
+   ЗАГРУЗКА
+   ========================================================= */
+function hideSplash() {
+  const splash = $("splashScreen");
+  splash.classList.add("fade-out");
+  setTimeout(() => splash.remove(), 600);
+}
+
+function initApp() {
+  checkLastNamesExpiry();
+  if (settings.profileName) $("profileName").textContent = settings.profileName;
+  if (settings.themeMode === "light") document.body.classList.add("light-theme");
+  if (Array.isArray(settings.customColors)) applyWallpaper(settings.customColors);
+  else if (Number.isInteger(settings.theme) && themes[settings.theme]) applyWallpaper(themes[settings.theme].colors);
+  updateProfileAvatar();
+  refreshFormSectionState();
+  updateStats();
+  prefillLastNames();
+  setTimeout(hideSplash, 3000);
+}
+
+initApp();
+</script>
+</body>
+</html>
