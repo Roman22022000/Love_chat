@@ -70,8 +70,13 @@ body.light-theme .modal {
   box-shadow: 0 4px 20px rgba(0,0,0,.08) !important;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
 html { min-height: 100%; -webkit-text-size-adjust: 100%; }
+*:focus, *:active, *:visited { outline: none !important; }
+::selection { background: transparent; }
 
 body {
   margin: 0;
@@ -86,6 +91,7 @@ body {
   animation: wallpaper 20s ease infinite;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-touch-callout: none;
   transition: color .3s, background .5s;
   -webkit-font-smoothing: antialiased;
   position: relative;
@@ -124,10 +130,14 @@ button {
   transition: transform .15s, background .15s;
   min-height: 44px;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
 }
 button:hover { background: var(--btn-bg-hover); }
 button:active { transform: scale(.98); }
 button:disabled { opacity: .4; cursor: default; }
+button:focus, button:focus-visible { outline: none !important; box-shadow: none !important; }
 
 input, textarea {
   color: var(--text);
@@ -139,6 +149,7 @@ input, textarea {
   width: 100%;
   font-size: clamp(13px, 1.05vw, 14px);
   transition: border-color .2s;
+  -webkit-tap-highlight-color: transparent;
 }
 input:focus, textarea:focus { border-color: var(--accent); }
 textarea { resize: vertical; min-height: 72px; user-select: text; -webkit-user-select: text; }
@@ -148,10 +159,6 @@ button, .card, .star { -webkit-tap-highlight-color: transparent; }
 .card-face, .gender-option, .form-section, .dropdown, .toast,
 .theme-switch, .profile-avatar-preview, .profile-button,
 .back-button, .action-button, .small-button, .icon-button {
-  box-shadow: none !important;
-}
-button:focus, button:focus-visible, input:focus, textarea:focus {
-  outline: none !important;
   box-shadow: none !important;
 }
 
@@ -294,6 +301,8 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
 .photo-preview-btn img {
   width: 100%; height: 100%; object-fit: cover; display: block;
   border-radius: 6px; overflow: hidden;
+  pointer-events: none;
+  -webkit-user-drag: none;
 }
 .photo-remove-btn {
   position: absolute; right: -9px; top: -9px;
@@ -353,6 +362,7 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
 }
 .bar-toggle-btn .ico { font-size: 14px; }
 
+/* NEW п.3: «Начать» / «Перевернуть» — одна и та же кнопка внизу, растянута */
 .start-bar-btn {
   flex: 1 1 auto;
   height: 36px; padding: 0 14px; border-radius: 18px;
@@ -373,6 +383,7 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
   animation: btnGlow 3s ease infinite;
 }
 .start-bar-btn:active { transform: scale(.98); }
+.start-bar-btn.hidden { display: none !important; }
 
 .primary {
   border: 0 !important;
@@ -403,9 +414,7 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
   color: var(--muted); font-size: clamp(12px, 1.1vw, 13px);
 }
 
-/* =========================================================
-   КАРТЫ — проверено: корректный 3D-переворот и отображение фото
-   ========================================================= */
+/* КАРТЫ */
 .cards {
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(10px, 2.4vw, 20px); max-width: 560px; margin: 0 auto;
@@ -469,7 +478,6 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
   display: grid; place-items: center;
   font-size: clamp(32px, 8vw, 66px); flex-shrink: 0;
   position: relative;
-  /* NEW: гарантируем, что фото не «схлопывается» после переворота */
   transform: translateZ(1px);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
@@ -477,11 +485,9 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
 .card-front .card-photo img {
   width: 100%; height: 100%; object-fit: cover; display: block;
   pointer-events: none; user-select: none; -webkit-user-drag: none;
-  /* NEW: img не должен скрываться из-за backface-visibility родителя */
   backface-visibility: visible;
   -webkit-backface-visibility: visible;
   transform: translateZ(2px);
-  /* NEW: плавное появление после переворота */
   animation: photoFadeIn .3s ease;
 }
 @keyframes photoFadeIn {
@@ -500,7 +506,32 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
 }
 .card.chosen .card-inner { filter: drop-shadow(0 0 14px rgba(84,169,235,.5)); }
 
-/* NEW: кнопки редактирования над картой */
+/* Бонусный бокс на карте-призе */
+.card.prize-card-wrap { position: relative; }
+.card.prize-card-wrap .card-inner::after {
+  content: "🎁";
+  position: absolute;
+  top: -10%;
+  right: -10%;
+  width: clamp(44px, 12vw, 66px);
+  height: clamp(44px, 12vw, 66px);
+  display: grid;
+  place-items: center;
+  font-size: clamp(24px, 6vw, 36px);
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ffd166, #ff9100);
+  box-shadow: 0 6px 20px rgba(255,145,0,.55), 0 0 0 3px rgba(255,255,255,.35);
+  transform: rotate(-18deg);
+  z-index: 9;
+  animation: prizeWiggle 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes prizeWiggle {
+  0%, 100% { transform: rotate(-18deg) translateY(0); }
+  50% { transform: rotate(-8deg) translateY(-4px); }
+}
+
+/* Иконки редактирования — только в фазе setup (NEW п.4) */
 .card-edit-overlay {
   position: absolute;
   top: -10px;
@@ -510,6 +541,7 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
   gap: 6px;
   z-index: 6;
 }
+.card-edit-overlay.hidden { display: none !important; }
 .card-edit-btn {
   width: 30px; height: 30px; border-radius: 50%;
   background: var(--menu-bg); border: 1px solid var(--border-color);
@@ -545,26 +577,148 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
   background: rgba(0,136,204,.1); border-radius: 8px; text-align: left; line-height: 1.55;
 }
 body.light-theme .result-quote { background: rgba(0,136,204,.08); }
-.result-comment {
-  text-align: left; white-space: pre-wrap; overflow-wrap: anywhere;
-  margin-top: 14px; padding: 12px; border-radius: 10px;
-  background: rgba(255,255,255,.04); border: 1px solid var(--border-color);
-  font-size: clamp(12px, 1.1vw, 13px);
-}
-body.light-theme .result-comment { background: rgba(0,0,0,.03); }
 
-.result-note-box {
-  margin-top: 14px; padding-top: 14px;
-  border-top: 1px solid var(--border-color); text-align: left;
+/* NEW п.1: комментарий в конце — как сообщение (пузырь) с закорючкой */
+.result-bubble {
+  position: relative;
+  margin: 16px auto 8px;
+  background: linear-gradient(180deg, var(--accent), var(--accent2));
+  color: #fff;
+  border-radius: 18px 18px 18px 6px;
+  padding: 12px 14px;
+  font-size: clamp(12px, 1.05vw, 13px);
+  line-height: 1.5;
+  text-align: left;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  box-shadow: 0 4px 14px rgba(0,136,204,.35);
+  max-width: 92%;
+  width: fit-content;
+  min-width: 160px;
 }
-.result-note-box label {
-  font-size: clamp(11px, 1vw, 12px); color: var(--muted);
-  font-weight: 600; margin-bottom: 6px; display: block;
+.result-bubble::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  bottom: -10px;
+  width: 20px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 0 0 0 14px;
+  clip-path: polygon(0 0, 100% 0, 60% 100%, 0 100%);
+  transform: skewX(-10deg);
 }
-.result-note-box textarea { min-height: 60px; font-size: clamp(12px, 1.05vw, 13px); }
-.result-note-saved {
-  font-size: 11px; color: #00c853; margin-top: 4px;
-  min-height: 14px; font-weight: 600;
+.result-bubble::before {
+  content: "";
+  position: absolute;
+  left: 24px;
+  bottom: -7px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: .7;
+}
+body.light-theme .result-bubble {
+  background: linear-gradient(180deg, #0088cc, #54a9eb);
+}
+body.light-theme .result-bubble::after { background: #0088cc; }
+body.light-theme .result-bubble::before { background: #0088cc; }
+.result-bubble .rb-name {
+  font-weight: 800;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  opacity: .85;
+  margin-bottom: 3px;
+}
+
+/* NEW п.2: блок «Комментарий к результату» удалён — заметки только в Архиве */
+
+/* NEW п.5: цвета кнопок «Выход» и «Повторить» — поменяны местами */
+/* «Выход» — теперь разноцветный градиент */
+.exit-button-gradient {
+  border: 0 !important;
+  background: linear-gradient(135deg, #ff4f83, #ffb347, #00c853, #00b0ff, #c8339a, #ff4f83) !important;
+  background-size: 400% 400% !important;
+  animation: btnGlow 5s ease infinite;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,.35);
+}
+.exit-button-gradient:hover {
+  background: linear-gradient(135deg, #ff6b9d, #ffc461, #00e676, #40c4ff, #d94bb0, #ff6b9d) !important;
+  background-size: 400% 400% !important;
+  animation: btnGlow 3s ease infinite;
+}
+/* «Повторить» — теперь стандартная primary (сине-зелёный) */
+.repeat-button {
+  border: 0 !important;
+  background: linear-gradient(135deg, #00c853, #00b0ff, #ff9100, #00c853, #00b0ff, #ff9100) !important;
+  background-size: 400% 400% !important;
+  animation: btnGlow 6s ease infinite;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,.35);
+}
+.repeat-button:hover {
+  background: linear-gradient(135deg, #00e676, #40c4ff, #ffab40, #00e676, #40c4ff, #ffab40) !important;
+  background-size: 400% 400% !important;
+  animation: btnGlow 3s ease infinite;
+}
+
+/* Сердечки за кнопками */
+.exit-hearts {
+  position: relative;
+  width: 100%;
+  min-height: 110px;
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.exit-hearts .eh-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 0;
+}
+.exit-hearts .eh-bg .eh-heart {
+  position: absolute;
+  font-size: clamp(14px, 3vw, 22px);
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(255,0,60,.35));
+  user-select: none;
+  -webkit-user-select: none;
+  animation: ehFloat 6s ease-in-out infinite;
+}
+.exit-hearts .eh-bg .eh-heart:nth-child(1) { top: 4%; left: 6%; color: #ff2d55; animation-delay: 0s; }
+.exit-hearts .eh-bg .eh-heart:nth-child(2) { top: 0%; right: 8%; color: #ff4f83; animation-delay: .8s; }
+.exit-hearts .eh-bg .eh-heart:nth-child(3) { bottom: 4%; left: 10%; color: #ff2d55; animation-delay: 1.6s; }
+.exit-hearts .eh-bg .eh-heart:nth-child(4) { bottom: 0%; right: 6%; color: #ff6b9d; animation-delay: 2.4s; }
+.exit-hearts .eh-bg .eh-heart:nth-child(5) { top: 40%; left: 0%; color: #ff4f83; animation-delay: 3.2s; font-size: clamp(10px, 2vw, 14px); }
+.exit-hearts .eh-bg .eh-heart:nth-child(6) { top: 46%; right: 0%; color: #ff2d55; animation-delay: 4s; font-size: clamp(10px, 2vw, 14px); }
+.exit-hearts .eh-bg .eh-heart:nth-child(7) { top: 8%; left: 46%; color: #ff6b9d; animation-delay: 4.8s; font-size: clamp(12px, 2.4vw, 16px); }
+.exit-hearts .eh-bg .eh-heart:nth-child(8) { bottom: 8%; right: 40%; color: #ff2d55; animation-delay: 5.6s; font-size: clamp(12px, 2.4vw, 16px); }
+@keyframes ehFloat {
+  0%,100% { transform: translateY(0) scale(1) rotate(-6deg); opacity: .85; }
+  50% { transform: translateY(-10px) scale(1.15) rotate(6deg); opacity: 1; }
+}
+.exit-hearts .eh-center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 420px;
+}
+.exit-hearts .eh-center .action-button {
+  flex: 1 1 140px;
+  min-width: 120px;
 }
 
 /* АРХИВ */
@@ -646,6 +800,7 @@ body.light-theme .archive-item { background: rgba(0,0,0,.02); }
 }
 .archive-card-mini .mini-photo img {
   width: 100%; height: 100%; object-fit: cover; display: block;
+  pointer-events: none; -webkit-user-drag: none;
 }
 .archive-card-mini .mini-crown {
   position: absolute; top: 4px; left: 50%;
@@ -711,6 +866,9 @@ body.light-theme .archive-item { background: rgba(0,0,0,.02); }
   background: var(--tg-blue); border: 0; display: grid; place-items: center;
   font-size: 16px; overflow: hidden; color: #fff; min-height: 0;
 }
+.profile-button img {
+  pointer-events: none; -webkit-user-drag: none;
+}
 .bottom-revealed-names {
   display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
   margin-left: 4px; padding-left: 8px; border-left: 1px solid var(--border-color);
@@ -748,6 +906,7 @@ body.light-theme .archive-item { background: rgba(0,0,0,.02); }
   display: grid; place-items: center; font-size: 24px; flex-shrink: 0;
   border: 2px solid var(--border-color); overflow: hidden;
 }
+.profile-avatar-preview img { pointer-events: none; -webkit-user-drag: none; }
 .profile-menu-name {
   font-size: 14px; font-weight: 700; overflow: hidden;
   text-overflow: ellipsis; white-space: nowrap;
@@ -796,6 +955,32 @@ body.light-theme .archive-item { background: rgba(0,0,0,.02); }
 }
 .theme-switch.is-light { background: #cfe3f5; }
 .theme-switch.is-light .thumb { transform: translateX(30px); background: #ffffff; }
+
+.switch-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 10px 0;
+}
+.switch-row .switch-label {
+  font-size: clamp(12px, 1.1vw, 13px); font-weight: 600; color: var(--text);
+}
+.switch-row .switch-desc {
+  font-size: clamp(10.5px, .95vw, 11.5px); color: var(--muted);
+  margin-top: 2px; line-height: 1.4;
+}
+.switch-toggle {
+  position: relative; width: 52px; height: 28px; border-radius: 14px;
+  background: #3a4a5a; border: 1px solid var(--border-color);
+  cursor: pointer; transition: background .3s; flex-shrink: 0;
+  padding: 0; overflow: hidden; min-height: 0;
+}
+.switch-toggle .switch-thumb {
+  position: absolute; top: 3px; left: 3px; width: 20px; height: 20px;
+  border-radius: 50%; background: #ffffff;
+  transition: transform .3s cubic-bezier(.2,.75,.2,1), background .3s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+.switch-toggle.is-on { background: #00c853; border-color: #00c853; }
+.switch-toggle.is-on .switch-thumb { transform: translateX(24px); }
 
 /* MODAL */
 .modal-backdrop {
@@ -888,7 +1073,6 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
 .suggest-tile.pink { background: linear-gradient(135deg, #ffc2d9, #ff8fb8); color: #4a0d28; }
 .suggest-tile.pink:hover { background: linear-gradient(135deg, #ffd6e6, #ffa8c9); }
 
-/* NEW: кнопка обновления списка подсказок (🔄) */
 .suggest-tile.refresh {
   display: flex;
   align-items: center;
@@ -1211,6 +1395,7 @@ body.light-theme .support-photo-slot { background: rgba(0,0,0,.02); }
 .support-photo-slot img {
   width: 100%; height: 100%; object-fit: cover;
   border-radius: 8px; display: block;
+  pointer-events: none; -webkit-user-drag: none;
 }
 .support-photo-slot .slot-add {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -1231,9 +1416,7 @@ body.light-theme .support-photo-slot { background: rgba(0,0,0,.02); }
 .support-photo-slot .slot-remove:hover { background: #ff2d68; }
 .support-photo-info { font-size: 10.5px; color: var(--muted); text-align: center; margin-top: 6px; line-height: 1.4; }
 
-/* =========================================================
-   NEW: Промокоды — только официальный шрифт, пустое состояние
-   ========================================================= */
+/* Промокоды */
 .promo-section-title {
   font-size: clamp(11px, 1vw, 12px); text-transform: uppercase;
   letter-spacing: .08em; color: var(--muted); font-weight: 700;
@@ -1241,7 +1424,7 @@ body.light-theme .support-photo-slot { background: rgba(0,0,0,.02); }
 }
 .promo-grid { display: grid; gap: 10px; }
 
-/* NEW: пустое состояние промокодов */
+/* NEW п.5: пустое состояние промокодов — стикер печали */
 .promo-empty {
   display: flex;
   flex-direction: column;
@@ -1329,11 +1512,350 @@ body.light-theme .promo-item { background: rgba(0,0,0,.02); }
   text-transform: uppercase; letter-spacing: .04em;
 }
 
-/* =========================================================
-   NEW: Новости — только официальный шрифт, адаптивные
-   ========================================================= */
-.news-list { display: grid; gap: 14px; }
+.promo-settings-box {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: rgba(0,136,204,.05);
+}
+.promo-settings-title {
+  font-size: clamp(11px, 1vw, 12px);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  font-weight: 700;
+  margin: 0 0 6px;
+}
 
+/* Карточка приза */
+.prize-card {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--card-radius);
+  border: 2px solid var(--prize-color, #ffd166);
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(255,255,255,.18), transparent 55%),
+    linear-gradient(150deg, var(--prize-bg1, #b56a10), var(--prize-bg2, #3a1f00));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(8px, 2vw, 16px);
+  gap: 8px;
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,.45);
+  overflow: hidden;
+  position: relative;
+}
+.prize-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(255,255,255,.25), transparent 45%),
+    radial-gradient(circle at 15% 85%, rgba(255,255,255,.15), transparent 50%);
+  pointer-events: none;
+}
+.prize-card .prize-emoji {
+  font-size: clamp(48px, 14vw, 96px);
+  line-height: 1;
+  z-index: 1;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,.35));
+}
+.prize-card .prize-title {
+  font-size: clamp(14px, 3vw, 20px);
+  font-weight: 800;
+  z-index: 1;
+  overflow-wrap: anywhere;
+  padding: 0 4px;
+}
+.prize-card .prize-sub {
+  font-size: clamp(11px, 2vw, 13px);
+  color: rgba(255,255,255,.85);
+  z-index: 1;
+  line-height: 1.4;
+  padding: 0 4px;
+}
+.prize-card .prize-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: clamp(12px, 2.4vw, 15px);
+  font-weight: 800;
+  letter-spacing: .06em;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(0,0,0,.35);
+  border: 1px dashed rgba(255,255,255,.5);
+  z-index: 1;
+  user-select: all;
+  -webkit-user-select: all;
+}
+.prize-card .prize-qr {
+  width: clamp(70px, 22vw, 120px);
+  aspect-ratio: 1;
+  border-radius: 8px;
+  background: #ffffff;
+  display: grid;
+  place-items: center;
+  z-index: 1;
+  padding: 4px;
+}
+.prize-card .prize-qr svg { width: 100%; height: 100%; display: block; }
+
+.promo-item .promo-tagline {
+  display: inline-block;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  background: rgba(0,200,83,.18);
+  color: #00c853;
+}
+.promo-item .promo-tagline.type-coupon { background: rgba(255,179,71,.18); color: #ffb347; }
+.promo-item .promo-tagline.type-games { background: rgba(0,200,83,.18); color: #00c853; }
+.promo-item .promo-tagline.type-qr { background: rgba(84,169,235,.18); color: #54a9eb; }
+.promo-item .promo-tagline.type-promo { background: rgba(255,79,131,.18); color: #ff4f83; }
+
+.promo-action-btn {
+  padding: 6px 9px; border-radius: 8px;
+  background: var(--btn-bg); border: 1px solid var(--border-color);
+  font-size: clamp(10px, .9vw, 11px); font-weight: 700;
+  color: var(--text); cursor: pointer; min-height: 32px;
+  display: inline-flex; align-items: center; gap: 3px;
+  transition: background .15s, border-color .15s;
+}
+.promo-action-btn:hover { background: var(--btn-bg-hover); border-color: var(--accent); }
+.promo-action-btn.use   { border-color: #00c853; color: #00c853; }
+.promo-action-btn.sell  { border-color: #ffb347; color: #ffb347; }
+.promo-action-btn.trade { border-color: #54a9eb; color: #54a9eb; }
+.promo-action-btn.market{ border-color: #c8339a; color: #c8339a; }
+.promo-action-btn.gift  { border-color: #ff4f83; color: #ff4f83; }
+
+.ton-connect-card {
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 14px;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(0,136,204,.12), transparent 45%),
+    rgba(0,136,204,.05);
+  margin-bottom: 14px;
+}
+.ton-connect-card h4 {
+  margin: 0 0 8px;
+  font-size: clamp(13px, 1.2vw, 14px);
+  font-weight: 800;
+  display: flex; align-items: center; gap: 8px;
+}
+.ton-connect-card .ton-ico {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, #0088cc, #54a9eb);
+  color: #fff; font-size: 14px; font-weight: 800;
+  flex-shrink: 0;
+}
+.ton-connect-card p {
+  margin: 0 0 10px;
+  font-size: clamp(11px, 1vw, 12px);
+  color: var(--muted);
+  line-height: 1.5;
+}
+.ton-connect-row {
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+}
+.ton-address-box {
+  flex: 1 1 200px;
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--input-bg);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: clamp(10.5px, .95vw, 11.5px);
+  color: var(--text);
+  user-select: all; -webkit-user-select: all;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ton-connect-btn {
+  padding: 10px 14px; border-radius: 10px; border: 0;
+  background: linear-gradient(135deg, #0088cc, #54a9eb);
+  color: #fff; font-weight: 800;
+  font-size: clamp(12px, 1.05vw, 13px);
+  min-height: 40px; cursor: pointer;
+  transition: transform .12s, background .2s;
+  white-space: nowrap;
+}
+.ton-connect-btn:hover { filter: brightness(1.1); }
+.ton-connect-btn:active { transform: scale(.97); }
+.ton-connect-btn.disconnect {
+  background: linear-gradient(135deg, #c8339a, #ff4f83);
+}
+.ton-status {
+  margin-top: 8px;
+  font-size: clamp(10.5px, .95vw, 11.5px);
+  color: var(--muted);
+}
+.ton-status.connected { color: #00c853; font-weight: 700; }
+
+.tg-connect-card {
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 14px;
+  background:
+    radial-gradient(circle at 80% 20%, rgba(0,136,204,.12), transparent 45%),
+    rgba(0,136,204,.05);
+  margin-top: 14px;
+}
+.tg-connect-card h4 {
+  margin: 0 0 8px;
+  font-size: clamp(13px, 1.2vw, 14px);
+  font-weight: 800;
+  display: flex; align-items: center; gap: 8px;
+}
+.tg-connect-card .tg-ico {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, #0088cc, #54a9eb);
+  color: #fff; font-size: 14px; font-weight: 800;
+  flex-shrink: 0;
+}
+.tg-connect-card p {
+  margin: 0 0 10px;
+  font-size: clamp(11px, 1vw, 12px);
+  color: var(--muted);
+  line-height: 1.5;
+}
+.tg-connect-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.tg-connect-btn {
+  padding: 10px 14px; border-radius: 10px; border: 0;
+  background: linear-gradient(135deg, #0088cc, #54a9eb);
+  color: #fff; font-weight: 800;
+  font-size: clamp(12px, 1.05vw, 13px);
+  min-height: 40px; cursor: pointer;
+  transition: transform .12s, background .2s;
+  white-space: nowrap;
+}
+.tg-connect-btn:hover { filter: brightness(1.1); }
+.tg-connect-btn:active { transform: scale(.97); }
+.tg-connect-btn.disconnect {
+  background: linear-gradient(135deg, #c8339a, #ff4f83);
+}
+.tg-status {
+  margin-top: 8px;
+  font-size: clamp(10.5px, .95vw, 11.5px);
+  color: var(--muted);
+}
+.tg-status.connected { color: #00c853; font-weight: 700; }
+
+/* ADAPTIVE */
+@media (max-width: 900px) {
+  :root { --app-padding: 14px; }
+  main { max-width: 100%; }
+}
+@media (max-width: 700px) {
+  :root { --app-padding: 12px; --bottom-bar-height: 52px; }
+  .theme-grid { grid-template-columns: repeat(2, 1fr); }
+  .color-grid { grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .color-input { height: 36px; }
+  .result-card { max-width: min(260px, 68vw); }
+  .gift-grid { grid-template-columns: 1fr 1fr; }
+  .rules-grid { grid-template-columns: 1fr 1fr; }
+  .donate-bars { height: 100px; }
+  .bar-panel { width: min(380px, calc(100vw - 16px)); }
+  .news-tile { aspect-ratio: auto; min-height: 200px; }
+}
+@media (max-width: 540px) {
+  :root { --app-padding: 10px; --app-bottom-padding: 96px; --bottom-bar-height: 50px; }
+  h1 { font-size: clamp(26px, 8vw, 34px); }
+  .panel { border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+  .gender-options { gap: 5px; }
+  .gender-option { font-size: 9px; padding: 8px 3px; min-height: 66px; gap: 4px; }
+  .gender-option .pair-icons { font-size: 18px; gap: 2px; }
+  .name-grid { grid-template-columns: 1fr; gap: 8px; }
+  .actions { gap: 6px; margin-top: 12px; }
+  .action-button { min-height: 40px; padding: 9px 12px; font-size: 13px; }
+  .cards { gap: 8px; max-width: 100%; }
+  .card-front { padding: 6px; }
+  .card-front .person-name { margin-top: 6px; font-size: 12px; }
+  .card-front .person-label { font-size: 8px; letter-spacing: .08em; }
+  .card-back::before { width: 40px; height: 40px; font-size: 20px; }
+  .bottom-bar {
+    bottom: max(6px, env(safe-area-inset-bottom, 6px));
+    width: calc(100% - 12px); padding: 5px 8px; border-radius: 23px; gap: 5px;
+  }
+  .back-button, .profile-button { width: 32px; height: 32px; flex-basis: 32px; font-size: 15px; }
+  .bar-toggle-btn { height: 32px; padding: 0 8px; font-size: 11px; gap: 4px; }
+  .bar-toggle-btn .ico { font-size: 12px; }
+  .start-bar-btn { height: 32px; font-size: 12px; padding: 0 10px; }
+  .profile-menu { width: calc(100vw - 12px); max-height: 75vh; padding: 10px; border-radius: 12px; }
+  .profile-menu-item { padding: 8px 9px; font-size: 12.5px; }
+  .modal { border-radius: 12px; }
+  .theme-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-button { padding: 8px; font-size: 11px; }
+  .emoji-grid { grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 6px; }
+  .emoji-option { font-size: 20px; }
+  .bar-panel { width: calc(100vw - 12px); padding: 12px; max-height: 76vh; }
+  .news-tile { flex-direction: column; aspect-ratio: auto; min-height: 0; }
+  .news-photo { position: relative; width: 100%; aspect-ratio: 16 / 9; }
+  .news-fade { display: none; }
+  .news-body { margin-left: 0; padding: 10px 12px 12px; }
+  .ton-connect-row, .tg-connect-row { flex-direction: column; align-items: stretch; }
+  .ton-connect-btn, .tg-connect-btn { width: 100%; }
+  .exit-hearts .eh-center { flex-direction: column; }
+  .exit-hearts .eh-center .action-button { width: 100%; }
+}
+@media (max-width: 380px) {
+  :root { --app-padding: 8px; }
+  h1 { font-size: 26px; }
+  .panel { padding: 10px; }
+  .gender-option { min-height: 60px; font-size: 8.5px; }
+  .gender-option .pair-icons { font-size: 16px; }
+  .card-front .person-name { font-size: 11px; }
+  .bottom-revealed-names { display: none; }
+  .actions { flex-direction: column; }
+  .actions .primary { width: 100%; }
+  .bar-toggle-btn { padding: 0 6px; font-size: 10px; }
+  .start-bar-btn { font-size: 11px; padding: 0 8px; }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  :root { --bottom-bar-height: 44px; --app-bottom-padding: 60px; }
+  h1 { font-size: 26px; margin: 4px 0; }
+  .splash-table { display: none; }
+  .bottom-bar { height: 44px; }
+  .back-button, .profile-button { width: 30px; height: 30px; flex-basis: 30px; }
+  .bar-toggle-btn { height: 30px; font-size: 10px; padding: 0 8px; }
+  .start-bar-btn { height: 30px; font-size: 11px; }
+}
+@media (max-height: 600px) {
+  .modal { max-height: 92vh; }
+  .profile-menu { max-height: 80vh; }
+  .bar-panel { max-height: 82vh; }
+}
+@media (min-width: 1400px) {
+  :root { --app-padding: 22px; }
+  .app { max-width: 1200px; }
+  main { max-width: 900px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+@media print {
+  .bottom-bar, .profile-menu, .toast, #splashScreen, .modal-backdrop, .bar-panel { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+  body::before { display: none; }
+}
+
+/* Новости */
+.news-list { display: grid; gap: 14px; }
 .news-tile {
   display: flex;
   flex-direction: column;
@@ -1436,8 +1958,6 @@ body.light-theme .promo-item { background: rgba(0,0,0,.02); }
 .news-action-btn:active { transform: scale(.96); }
 .news-action-btn.liked { color: #ff4f83; border-color: #ff4f83; background: #ffe8ef; }
 .news-action-btn .news-ico { font-size: 13px; }
-
-/* NEW: детальный просмотр новости + комментарии */
 .news-detail-photo {
   width: 100%; aspect-ratio: 16 / 9;
   border-radius: 12px; overflow: hidden; margin-bottom: 12px;
@@ -1445,7 +1965,6 @@ body.light-theme .promo-item { background: rgba(0,0,0,.02); }
   display: grid; place-items: center;
   font-size: 64px;
 }
-.news-detail-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .news-detail-title {
   font-size: clamp(15px, 1.6vw, 18px); font-weight: 800;
   margin: 0 0 6px; overflow-wrap: anywhere;
@@ -1481,118 +2000,6 @@ body.light-theme .news-comment { background: rgba(0,0,0,.02); }
 }
 .news-comment-row input { flex: 1; }
 .news-comment-row button { flex: 0 0 auto; padding: 0 14px; border-radius: 10px; }
-
-/* ADAPTIVE */
-@media (max-width: 900px) {
-  :root { --app-padding: 14px; }
-  main { max-width: 100%; }
-}
-@media (max-width: 700px) {
-  :root { --app-padding: 12px; --bottom-bar-height: 52px; }
-  .theme-grid { grid-template-columns: repeat(2, 1fr); }
-  .color-grid { grid-template-columns: repeat(5, 1fr); gap: 4px; }
-  .color-input { height: 36px; }
-  .result-card { max-width: min(260px, 68vw); }
-  .gift-grid { grid-template-columns: 1fr 1fr; }
-  .rules-grid { grid-template-columns: 1fr 1fr; }
-  .donate-bars { height: 100px; }
-  .bar-panel { width: min(380px, calc(100vw - 16px)); }
-  .news-tile { aspect-ratio: auto; min-height: 200px; }
-}
-@media (max-width: 540px) {
-  :root { --app-padding: 10px; --app-bottom-padding: 96px; --bottom-bar-height: 50px; }
-  h1 { font-size: clamp(26px, 8vw, 34px); }
-  .panel { border-radius: 12px; padding: 12px; margin-bottom: 10px; }
-  .gender-options { gap: 5px; }
-  .gender-option { font-size: 9px; padding: 8px 3px; min-height: 66px; gap: 4px; }
-  .gender-option .pair-icons { font-size: 18px; gap: 2px; }
-  .name-grid { grid-template-columns: 1fr; gap: 8px; }
-  .actions { gap: 6px; margin-top: 12px; }
-  .action-button { min-height: 40px; padding: 9px 12px; font-size: 13px; }
-  .cards { gap: 8px; max-width: 100%; }
-  .card-front { padding: 6px; }
-  .card-front .person-name { margin-top: 6px; font-size: 12px; }
-  .card-front .person-label { font-size: 8px; letter-spacing: .08em; }
-  .card-back::before { width: 40px; height: 40px; font-size: 20px; }
-  .bottom-bar {
-    bottom: max(6px, env(safe-area-inset-bottom, 6px));
-    width: calc(100% - 12px); padding: 5px 8px; border-radius: 23px; gap: 5px;
-  }
-  .back-button, .profile-button { width: 32px; height: 32px; flex-basis: 32px; font-size: 15px; }
-  .bar-toggle-btn { height: 32px; padding: 0 8px; font-size: 11px; gap: 4px; }
-  .bar-toggle-btn .ico { font-size: 12px; }
-  .start-bar-btn { height: 32px; font-size: 12px; padding: 0 10px; }
-  .profile-menu { width: calc(100vw - 12px); max-height: 75vh; padding: 10px; border-radius: 12px; }
-  .profile-menu-item { padding: 8px 9px; font-size: 12.5px; }
-  .modal { border-radius: 12px; }
-  .theme-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
-  .theme-button { padding: 8px; font-size: 11px; }
-  .emoji-grid { grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 6px; }
-  .emoji-option { font-size: 20px; }
-  .bar-panel { width: calc(100vw - 12px); padding: 12px; max-height: 76vh; }
-  /* NEW: новости на мобильном — вертикально, во всю ширину */
-  .news-tile {
-    flex-direction: column;
-    aspect-ratio: auto;
-    min-height: 0;
-  }
-  .news-photo {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-  }
-  .news-fade {
-    display: none;
-  }
-  .news-body {
-    margin-left: 0;
-    padding: 10px 12px 12px;
-  }
-}
-@media (max-width: 380px) {
-  :root { --app-padding: 8px; }
-  h1 { font-size: 26px; }
-  .panel { padding: 10px; }
-  .gender-option { min-height: 60px; font-size: 8.5px; }
-  .gender-option .pair-icons { font-size: 16px; }
-  .card-front .person-name { font-size: 11px; }
-  .bottom-revealed-names { display: none; }
-  .actions { flex-direction: column; }
-  .actions .primary { width: 100%; }
-  .bar-toggle-btn { padding: 0 6px; font-size: 10px; }
-  .start-bar-btn { font-size: 11px; padding: 0 8px; }
-}
-@media (max-height: 500px) and (orientation: landscape) {
-  :root { --bottom-bar-height: 44px; --app-bottom-padding: 60px; }
-  h1 { font-size: 26px; margin: 4px 0; }
-  .splash-table { display: none; }
-  .bottom-bar { height: 44px; }
-  .back-button, .profile-button { width: 30px; height: 30px; flex-basis: 30px; }
-  .bar-toggle-btn { height: 30px; font-size: 10px; padding: 0 8px; }
-  .start-bar-btn { height: 30px; font-size: 11px; }
-}
-@media (max-height: 600px) {
-  .modal { max-height: 92vh; }
-  .profile-menu { max-height: 80vh; }
-  .bar-panel { max-height: 82vh; }
-}
-@media (min-width: 1400px) {
-  :root { --app-padding: 22px; }
-  .app { max-width: 1200px; }
-  main { max-width: 900px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-@media print {
-  .bottom-bar, .profile-menu, .toast, #splashScreen, .modal-backdrop, .bar-panel { display: none !important; }
-  body { background: #fff !important; color: #000 !important; }
-  body::before { display: none; }
-}
 </style>
 </head>
 <body>
@@ -1627,9 +2034,6 @@ body.light-theme .news-comment { background: rgba(0,0,0,.02); }
     <section class="panel" id="gamePanel">
       <div class="status" id="gameStatus">Две карты. Один выбор.</div>
       <div class="cards" id="gameCards"></div>
-      <div class="actions" style="justify-content:center" id="gameActions">
-        <button class="action-button primary hidden" id="flipButton">Перевернуть</button>
-      </div>
     </section>
 
     <section class="panel hidden" id="resultPanel">
@@ -1639,16 +2043,30 @@ body.light-theme .news-comment { background: rgba(0,0,0,.02); }
         <h2 id="resultTitle"></h2>
         <p id="resultGender"></p>
         <div id="resultQuote" class="result-quote"></div>
-        <div id="resultComment" class="result-comment hidden"></div>
-
-        <div class="result-note-box">
-          <label for="resultNote">Комментарий к результату</label>
-          <textarea id="resultNote" maxlength="500" placeholder="Заметка для себя"></textarea>
-          <div class="result-note-saved" id="resultNoteSaved"></div>
+        <!-- п.1: комментарий в конце — как сообщение-пузырь -->
+        <div id="resultBubble" class="result-bubble hidden">
+          <div class="rb-name" id="resultBubbleName">Комментарий</div>
+          <div id="resultBubbleText"></div>
         </div>
 
-        <div class="actions" style="justify-content:center">
-          <button class="action-button primary" id="exitButton">Выход</button>
+        <!-- п.2: поле «Комментарий к результату» удалено. Заметки — в Архиве. -->
+
+        <!-- п.5: две кнопки. «Выход» — разноцветная, «Повторить» — стандартная -->
+        <div class="exit-hearts">
+          <div class="eh-bg" aria-hidden="true">
+            <span class="eh-heart">❤️</span>
+            <span class="eh-heart">💖</span>
+            <span class="eh-heart">💕</span>
+            <span class="eh-heart">❤️</span>
+            <span class="eh-heart">💗</span>
+            <span class="eh-heart">💖</span>
+            <span class="eh-heart">❤️</span>
+            <span class="eh-heart">💕</span>
+          </div>
+          <div class="eh-center">
+            <button class="action-button exit-button-gradient" id="exitButton">Выход</button>
+            <button class="action-button repeat-button" id="repeatButton">Повторить</button>
+          </div>
         </div>
       </div>
     </section>
@@ -1712,6 +2130,7 @@ body.light-theme .news-comment { background: rgba(0,0,0,.02); }
     <span class="ico">✏️</span><span class="lbl">Данные</span>
   </button>
 
+  <!-- п.3: одна кнопка. В setup — «Начать», в preview — «Перевернуть». Во всю ширину. -->
   <button class="start-bar-btn" id="startBarBtn">Начать</button>
 
   <div class="bottom-revealed-names hidden" id="bottomRevealedNames">
@@ -1729,11 +2148,10 @@ body.light-theme .news-comment { background: rgba(0,0,0,.02); }
     </div>
   </div>
   <div class="profile-menu-list">
-    <!-- NEW: «Аватарка» перенесена в настройки профиля -->
     <button class="profile-menu-item" data-profile-action="settings"><span class="icon">⚙</span><span class="label">Настройки профиля</span></button>
     <button class="profile-menu-item" data-profile-action="promo"><span class="icon">🎟️</span><span class="label">Промокоды</span></button>
     <button class="profile-menu-item" data-profile-action="archive"><span class="icon">▤</span><span class="label">Архив</span></button>
-    <button class="profile-menu-item" data-profile-action="wallpaper"><span class="icon">✦</span><span class="label">Настройки фона</span></button>
+    <button class="profile-menu-item" data-profile-action="wallpaper"><span class="icon">✦</span><span class="label">Настройки</span></button>
     <div class="profile-menu-divider"></div>
     <button class="profile-menu-item" data-profile-action="wallet"><span class="icon">👛</span><span class="label">Кошелёк</span></button>
     <button class="profile-menu-item subscribe-btn" data-profile-action="subscribe"><span class="icon">✨</span><span class="label">Подписка</span></button>
@@ -1832,8 +2250,11 @@ const SETTINGS_KEY = "perevorot_settings_v14";
 const LAST_NAMES_KEY = "perevorot_lastnames_v14";
 const PROMO_STORAGE_KEY = "perevorot_promos_v14";
 const NEWS_STORAGE_KEY = "perevorot_news_v14";
+const WALLET_STORAGE_KEY = "perevorot_wallet_v14";
 
 const DONATE_WALLET = "UQCpQQ5DdYWyv7qwQANvd_aGRYwKq7OpSZdoRuP2ekKF3i9T";
+const TG_BOT_URL = "https://t.me/perevorot_bot?start=connect";
+const TG_BOT_NAME = "@perevorot_bot";
 
 const donateStats = [
   { day: "Пн", value: 42 }, { day: "Вт", value: 68 }, { day: "Ср", value: 55 },
@@ -1856,78 +2277,50 @@ const supportTags = [
   { id: "other", label: "#Другое", cls: "tag-other" }
 ];
 
-/* NEW: промокоды по умолчанию (можно очистить, чтобы увидеть пустое состояние) */
 const DEFAULT_PROMOS = [
+  { id: "promo-1", icon: "🎁", name: "Стартовый бонус", desc: "Первая игра в подарок. Активируется один раз.", code: "START2026" },
+  { id: "promo-2", icon: "💎", name: "TON-купон", desc: "Скидка 15% на подписку в TON.", code: "TON15" },
+  { id: "promo-3", icon: "🎟️", name: "Подарочная карта", desc: "Токен активирует подарочную карту «10 игр».", code: "GIFT10NFT" }
+];
+
+const BASE_NEWS = [
   {
-    id: "promo-1",
-    icon: "🎁",
-    name: "Стартовый бонус",
-    desc: "Первая игра в подарок. Активируется один раз.",
-    code: "START2026"
+    id: "news-1", icon: "🎴", title: "Новый режим «Блиц»",
+    preview: "Ускоренный выбор карт: 1.5 секунды на запоминание и никаких комментариев — только интуиция.",
+    body: "Мы добавили режим «Блиц». Теперь карты показываются всего 1.5 секунды, а комментарий отключён — выбор становится молниеносным. Режим доступен всем пользователям без подписки.",
+    tag: "Обновление", date: "2026-10-20"
   },
   {
-    id: "promo-2",
-    icon: "💎",
-    name: "TON-купон",
-    desc: "Скидка 15% на подписку в TON.",
-    code: "TON15"
+    id: "news-2", icon: "🎨", title: "15 тем оформления",
+    preview: "Добавили 3 новые темы: Неон-вечеринка, Изумрудный лес и Пылающий закат.",
+    body: "Теперь в настройках фона 15 тем. Каждая тема — это анимированный градиент с плавным переходом. Попробуйте «Неон-вечеринку» — она особенно хороша в тёмном режиме.",
+    tag: "Тематика", date: "2026-10-18"
   },
   {
-    id: "promo-3",
-    icon: "🎟️",
-    name: "Подарочная карта",
-    desc: "Токен активирует подарочную карту «10 игр».",
-    code: "GIFT10NFT"
+    id: "news-3", icon: "🎟️", title: "Промокоды в профиле",
+    preview: "В разделе «Профиль» появилась панель «Промокоды»: купоны, подарочные карты и токены.",
+    body: "Откройте профиль → «Промокоды». Там вы найдёте купоны, подарочные карты и токены. Введите код в поле внизу — активация сохраняется в вашем профиле.",
+    tag: "Новость", date: "2026-10-15"
+  },
+  {
+    id: "news-4", icon: "📰", title: "Новости теперь внутри игры",
+    preview: "Кнопка «Новости» в меню (три точки). Лайки, просмотры, комментарии и шеринг.",
+    body: "Мы добавили раздел «Новости». Каждую плитку можно лайкнуть, открыть полностью, оставить комментарий или поделиться с друзьями.",
+    tag: "Обновление", date: "2026-10-12"
+  },
+  {
+    id: "news-5", icon: "💞", title: "Фото на карте после переворота",
+    preview: "Исправили отображение фото: теперь оно не пропадает при перевороте карты.",
+    body: "Ранее после переворота фото могло «схлопываться». Мы исправили CSS-стек: изображение плавно проявляется и корректно отображается на лицевой стороне карты.",
+    tag: "Исправление", date: "2026-10-10"
   }
 ];
 
-/* NEW: базовые новости (5 плиток) */
-const BASE_NEWS = [
-  {
-    id: "news-1",
-    icon: "🎴",
-    title: "Новый режим «Блиц»",
-    preview: "Ускоренный выбор карт: 1.5 секунды на запоминание и никаких комментариев — только интуиция.",
-    body: "Мы добавили режим «Блиц». Теперь карты показываются всего 1.5 секунды, а комментарий отключён — выбор становится молниеносным. Режим доступен всем пользователям без подписки.",
-    tag: "Обновление",
-    date: "2026-10-20"
-  },
-  {
-    id: "news-2",
-    icon: "🎨",
-    title: "15 тем оформления",
-    preview: "Добавили 3 новые темы: Неон-вечеринка, Изумрудный лес и Пылающий закат.",
-    body: "Теперь в настройках фона 15 тем. Каждая тема — это анимированный градиент с плавным переходом. Попробуйте «Неон-вечеринку» — она особенно хороша в тёмном режиме.",
-    tag: "Тематика",
-    date: "2026-10-18"
-  },
-  {
-    id: "news-3",
-    icon: "🎟️",
-    title: "Промокоды в профиле",
-    preview: "В разделе «Профиль» появилась панель «Промокоды»: купоны, подарочные карты и токены.",
-    body: "Откройте профиль → «Промокоды». Там вы найдёте купоны, подарочные карты и токены. Введите код в поле внизу — активация сохраняется в вашем профиле.",
-    tag: "Новость",
-    date: "2026-10-15"
-  },
-  {
-    id: "news-4",
-    icon: "📰",
-    title: "Новости теперь внутри игры",
-    preview: "Кнопка «Новости» в меню (три точки). Лайки, просмотры, комментарии и шеринг.",
-    body: "Мы добавили раздел «Новости». Каждую плитку можно лайкнуть, открыть полностью, оставить комментарий или поделиться с друзьями.",
-    tag: "Обновление",
-    date: "2026-10-12"
-  },
-  {
-    id: "news-5",
-    icon: "💞",
-    title: "Фото на карте после переворота",
-    preview: "Исправили отображение фото: теперь оно не пропадает при перевороте карты.",
-    body: "Ранее после переворота фото могло «схлопываться». Мы исправили CSS-стек: изображение плавно проявляется и корректно отображается на лицевой стороне карты.",
-    tag: "Исправление",
-    date: "2026-10-10"
-  }
+const PRIZE_POOL = [
+  { type: "coupon",   emoji: "🎟️", title: "Купон",             sub: "Скидка 10% на подписку",        code: "COUPON10", color: "#ffb347", bg1: "#b56a10", bg2: "#3a1f00", priceTon: "0.5 TON" },
+  { type: "promo",    emoji: "🎁", title: "Промокод",          sub: "Бонус к следующей игре",        code: "BONUS2026", color: "#ff4f83", bg1: "#8f2452", bg2: "#42142f", priceTon: "0.3 TON" },
+  { type: "games",    emoji: "🎮", title: "+3 игры бесплатно", sub: "Три партии в подарок",          code: "FREE3GAMES", color: "#00c853", bg1: "#176c5b", bg2: "#102f2d", priceTon: "1.0 TON" },
+  { type: "qr",       emoji: "📱", title: "QR-код",            sub: "Отсканируйте для активации",    code: "QR-ACTIVATE", color: "#54a9eb", bg1: "#1b5685", bg2: "#10253f", priceTon: "0.0 TON" }
 ];
 
 const maleNames = ["Александр","Максим","Артём","Михаил","Иван","Даниил","Дмитрий","Кирилл","Андрей","Егор","Алексей","Роман","Никита","Матвей","Илья","Тимур","Лев","Марк","Денис","Павел","Адам","Ноа","Лиам","Оливер","Джеймс","Лукас","Лео","Этан","Джек","Генри","Луи","Габриэль","Артур","Оскар","Феликс","Хуго","Карлос","Диего","Матео","Лука","Энцо","Марко","Давид","Рафаэль","Тео","Алекс","Эмиль","Юсуф","Амир","Омар","Хасан","Раян","Ибрагим","Зейн","Кай","Рэн","Харуто","Сота","Юто","Такуми","Минхо","Джун","Сону","Хён","Джихун","Вэй","Цзюнь","Чэнь","Бо","Линь","Арджун","Рахул","Викрам","Кабир","Дев","Рохан","Аарон","Самуэль","Бенджамин","Джозеф","Финн","Коннор","Шон","Патрик","Эрик","Антон","Ян","Мартин","Нильс","Свен","Андреас","Филипп","Томас","Милан","Никола","Стефан","Пётр","Якуб","Матеуш","Алексей"];
@@ -2017,12 +2410,16 @@ let archive = loadArchive();
 let settings = loadSettings();
 let promos = loadPromos();
 let news = loadNews();
+let wallet = loadWallet();
 let roundTimer = null;
 let toastTimer = null;
 let revealedNames = [];
 let currentQuote = "";
 let suggestPanel = null;
 let suggestExpanded = false;
+
+let prizeSystemEnabled = (typeof settings.prizeSystemEnabled === "boolean") ? settings.prizeSystemEnabled : true;
+let exitHeartsEnabled = (typeof settings.exitHeartsEnabled === "boolean") ? settings.exitHeartsEnabled : false;
 
 let photoOne = "";
 let photoTwo = "";
@@ -2079,15 +2476,20 @@ function saveSettings() {
   try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch {}
 }
 
-/* NEW: промокоды — если localStorage пуст, возвращаем []
- * чтобы можно было проверить пустое состояние (эмодзи печали). */
+/* =========================================================
+   п.5: ИСПРАВЛЕНО ЗАГРУЗКА ПРОМОКОДОВ
+   Раньше: если промоkod'ов нет — они показывались пустыми.
+   Теперь: если localStorage содержит [], это валидное пустое
+   состояние → в панели «Промокоды» показывается стикер 😔.
+   ========================================================= */
 function loadPromos() {
   try {
     const raw = localStorage.getItem(PROMO_STORAGE_KEY);
     if (raw === null) {
-      // первый запуск — инициализируем стартовыми промокодами
-      localStorage.setItem(PROMO_STORAGE_KEY, JSON.stringify(DEFAULT_PROMOS.map(p => ({ ...p, used: false }))));
-      return DEFAULT_PROMOS.map(p => ({ ...p, used: false }));
+      // первый запуск — инициализируем дефолтными
+      const init = DEFAULT_PROMOS.map(p => ({ ...p, used: false }));
+      localStorage.setItem(PROMO_STORAGE_KEY, JSON.stringify(init));
+      return init;
     }
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
@@ -2097,7 +2499,6 @@ function savePromos() {
   try { localStorage.setItem(PROMO_STORAGE_KEY, JSON.stringify(promos)); } catch {}
 }
 
-/* NEW: новости */
 function loadNews() {
   try {
     const raw = JSON.parse(localStorage.getItem(NEWS_STORAGE_KEY) || "null");
@@ -2113,6 +2514,13 @@ function loadNews() {
 }
 function saveNews() {
   try { localStorage.setItem(NEWS_STORAGE_KEY, JSON.stringify(news)); } catch {}
+}
+function loadWallet() {
+  try { return JSON.parse(localStorage.getItem(WALLET_STORAGE_KEY) || "{}") || {}; }
+  catch { return {}; }
+}
+function saveWallet() {
+  try { localStorage.setItem(WALLET_STORAGE_KEY, JSON.stringify(wallet)); } catch {}
 }
 
 function showToast(msg) {
@@ -2132,6 +2540,45 @@ function randomName(gender, excluded = []) {
   return sanitizeName(randomItem(avail.length ? avail : list));
 }
 function genderLabel(t) { return t === "Мужской" ? "Мужской" : "Женский"; }
+
+function generateQrSvg(seed) {
+  const size = 21;
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
+  const rand = () => {
+    hash ^= hash << 13; hash >>>= 0;
+    hash ^= hash >> 17;
+    hash ^= hash << 5; hash >>>= 0;
+    return hash;
+  };
+  let cells = "";
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const inMarker = (cx, cy) => {
+        const dx = x - cx, dy = y - cy;
+        return dx >= 0 && dx < 7 && dy >= 0 && dy < 7;
+      };
+      let fill = false;
+      if (inMarker(0,0) || inMarker(size-7,0) || inMarker(0,size-7)) {
+        const cx = inMarker(0,0) ? 0 : inMarker(size-7,0) ? size-7 : 0;
+        const cy = inMarker(0,0) ? 0 : inMarker(size-7,0) ? 0 : size-7;
+        const dx = x - cx, dy = y - cy;
+        fill = dx === 0 || dx === 6 || dy === 0 || dy === 6 || (dx >= 2 && dx <= 4 && dy >= 2 && dy <= 4);
+      } else {
+        fill = (rand() & 1) === 1;
+      }
+      if (fill) cells += `<rect x="${x}" y="${y}" width="1" height="1" fill="#0a0a0a"/>`;
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 21" shape-rendering="crispEdges">${cells}</svg>`;
+}
+
+function generateTonAddress() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+  let out = "UQ";
+  for (let i = 0; i < 46; i++) out += chars[Math.floor(Math.random() * chars.length)];
+  return out;
+}
 
 /* =========================================================
    ФОТО
@@ -2216,7 +2663,20 @@ function setPhase(next) {
   const isSetup = next === "setup";
   $("barGenderBtn").classList.toggle("hidden", !isSetup);
   $("barDataBtn").classList.toggle("hidden", !isSetup);
-  $("startBarBtn").classList.toggle("hidden", !isSetup);
+
+  // п.3: одна кнопка «Начать» / «Перевернуть» — в фазе setup/preview/choice
+  const showMainBtn = (next === "setup" || next === "preview" || next === "choice");
+  $("startBarBtn").classList.toggle("hidden", !showMainBtn);
+  if (next === "setup") {
+    $("startBarBtn").textContent = "Начать";
+    $("startBarBtn").disabled = false;
+  } else if (next === "preview") {
+    $("startBarBtn").textContent = "Перевернуть";
+    $("startBarBtn").disabled = false;
+  } else if (next === "choice") {
+    $("startBarBtn").textContent = "Перевернуть";
+    $("startBarBtn").disabled = true;
+  }
 
   updateRevealedNames();
 }
@@ -2272,7 +2732,7 @@ function buildCharacters() {
   const manualNames = [sanitizeName(readNameValue(1)), sanitizeName(readNameValue(2))];
   const usedNames = [];
 
-  return pair.map((gender, index) => {
+  const chars = pair.map((gender, index) => {
     let name = manualNames[index];
     if (!name) name = randomName(gender, usedNames);
     usedNames.push(name);
@@ -2290,16 +2750,62 @@ function buildCharacters() {
     const photo = index === 0 ? photoOne : photoTwo;
     return makeCharacter(gender, name, color, bg1, bg2, photo);
   });
+
+  if (prizeSystemEnabled && Math.random() < 0.5) {
+    const prize = randomItem(PRIZE_POOL);
+    const idx = Math.floor(Math.random() * chars.length);
+    chars[idx] = {
+      isPrize: true,
+      prize,
+      gender: "Приз",
+      name: prize.title,
+      symbol: "🎁",
+      portrait: prize.emoji,
+      photo: "",
+      color: prize.color,
+      bg1: prize.bg1,
+      bg2: prize.bg2
+    };
+  }
+
+  return chars;
 }
 
-/*
- * cardMarkup — рендер карты.
- * Фото/портрет внутри .card-photo. При перевороте (.card.flipped)
- * весь .card-front поворачивается, а img имеет backface-visibility: visible
- * и плавную анимацию появления — фото не «схлопывается».
- */
+function prizeCardMarkup(prize, index, faceUp = false) {
+  const isQr = prize.type === "qr";
+  const qrSvg = isQr ? generateQrSvg(prize.code + index) : "";
+  const prizeClass = faceUp ? "prize-card-wrap" : "";
+  return `
+    <button type="button" class="card ${faceUp ? "flipped" : ""} ${prizeClass}" data-index="${index}">
+      <span class="card-inner">
+        <span class="card-face card-back"></span>
+        <div class="card-face card-front" style="
+          --person-color:${prize.color};
+          --person-bg1:${prize.bg1};
+          --person-bg2:${prize.bg2};">
+          <div class="prize-card" style="
+            --prize-color:${prize.color};
+            --prize-bg1:${prize.bg1};
+            --prize-bg2:${prize.bg2};">
+            <div class="prize-emoji">${prize.emoji}</div>
+            <div class="prize-title">${escapeHTML(prize.title)}</div>
+            <div class="prize-sub">${escapeHTML(prize.sub)}</div>
+            ${isQr
+              ? `<div class="prize-qr">${qrSvg}</div>`
+              : `<div class="prize-code">${escapeHTML(prize.code)}</div>`}
+          </div>
+        </div>
+      </span>
+    </button>`;
+}
+
 function cardMarkup(character, index, faceUp = false) {
   if (!character) return "";
+
+  if (character.isPrize) {
+    return prizeCardMarkup(character.prize, index, faceUp);
+  }
+
   const isMale = character.gender === "Мужской";
   const symbol = character.symbol || (isMale ? "♔" : "♕");
   const portrait = character.portrait || (isMale ? "🤴" : "👸");
@@ -2333,11 +2839,12 @@ function cardMarkup(character, index, faceUp = false) {
     </button>`;
 }
 
-function cardWrapMarkup(character, index, faceUp = false) {
+/* п.4: иконки редактирования показываются ТОЛЬКО в фазе setup */
+function cardWrapMarkup(character, index, faceUp = false, showEdit = false) {
   return `
     <div class="card-wrap" data-wrap-index="${index}">
       ${cardMarkup(character, index, faceUp)}
-      <div class="card-edit-overlay">
+      <div class="card-edit-overlay ${showEdit ? "" : "hidden"}">
         <button type="button" class="card-edit-btn" data-edit-name="${index}" title="Изменить имя">✏️</button>
         <button type="button" class="card-edit-btn" data-edit-photo="${index}" title="Загрузить фото">📷</button>
         <button type="button" class="card-edit-btn" data-edit-gender="${index}" title="Изменить пол">👥</button>
@@ -2348,7 +2855,8 @@ function cardWrapMarkup(character, index, faceUp = false) {
 
 function renderGameCards(faceUp) {
   const container = $("gameCards");
-  container.innerHTML = cards.map((c,i) => cardWrapMarkup(c,i,faceUp)).join("");
+  const showEdit = (phase === "setup"); // п.4: только на старте
+  container.innerHTML = cards.map((c,i) => cardWrapMarkup(c,i,faceUp,showEdit)).join("");
 
   container.querySelectorAll(".card").forEach(card => {
     card.disabled = (phase !== "choice");
@@ -2357,24 +2865,26 @@ function renderGameCards(faceUp) {
     });
   });
 
-  container.querySelectorAll("[data-edit-name]").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      openEditNameDialog(Number(btn.dataset.editName));
+  if (showEdit) {
+    container.querySelectorAll("[data-edit-name]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openEditNameDialog(Number(btn.dataset.editName));
+      });
     });
-  });
-  container.querySelectorAll("[data-edit-photo]").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      triggerPhotoUpload(Number(btn.dataset.editPhoto));
+    container.querySelectorAll("[data-edit-photo]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        triggerPhotoUpload(Number(btn.dataset.editPhoto));
+      });
     });
-  });
-  container.querySelectorAll("[data-edit-gender]").forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      openEditGenderDialog(Number(btn.dataset.editGender));
+    container.querySelectorAll("[data-edit-gender]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openEditGenderDialog(Number(btn.dataset.editGender));
+      });
     });
-  });
+  }
 }
 
 function refreshGameCards() {
@@ -2386,8 +2896,9 @@ function refreshGameCards() {
 }
 
 function openEditNameDialog(idx) {
+  if (phase !== "setup") return;
   const ch = cards[idx];
-  if (!ch) return;
+  if (!ch || ch.isPrize) { showToast("Это приз — имя не редактируется."); return; }
   $("modalTitle").textContent = "Изменить имя";
   $("modalContent").innerHTML = `
     <label class="field-label">Имя карты ${idx + 1}</label>
@@ -2413,12 +2924,18 @@ function openEditNameDialog(idx) {
 }
 
 function triggerPhotoUpload(idx) {
+  if (phase !== "setup") return;
+  const ch = cards[idx];
+  if (ch && ch.isPrize) { showToast("Это приз — фото не нужно."); return; }
   const inputId = idx === 0 ? "photoFileOneBar" : "photoFileTwoBar";
   const fileInput = $(inputId);
   if (fileInput) fileInput.click();
 }
 
 function openEditGenderDialog(idx) {
+  if (phase !== "setup") return;
+  const ch = cards[idx];
+  if (ch && ch.isPrize) { showToast("Это приз — пол не редактируется."); return; }
   $("modalTitle").textContent = "Изменить пол";
   $("modalContent").innerHTML = `
     <p class="muted">Смена пола карты переключает тип пары. Выберите вариант:</p>
@@ -2474,10 +2991,9 @@ function startRound() {
   currentRecord = null;
 
   $("exitButton").classList.add("hidden");
-  $("resultNote").value = "";
-  $("resultNoteSaved").textContent = "";
+  $("repeatButton").classList.add("hidden");
   $("resultCard").innerHTML = "";
-  $("flipButton").classList.add("hidden");
+  $("resultBubble").classList.add("hidden");
 
   closeBarPanels();
 
@@ -2494,15 +3010,11 @@ function startRound() {
       clearInterval(roundTimer);
       roundTimer = null;
       $("gameStatus").textContent = "Готов?";
-      $("flipButton").classList.remove("hidden");
+      // п.3: та же кнопка внизу теперь «Перевернуть»
+      $("startBarBtn").textContent = "Перевернуть";
+      $("startBarBtn").disabled = false;
     }
   }, 1000);
-
-  $("flipButton").onclick = () => {
-    $("flipButton").classList.add("hidden");
-    renderGameCards(false);
-    shuffleCards();
-  };
 }
 
 function shuffleCards() {
@@ -2527,6 +3039,37 @@ function chooseCard(index) {
   setPhase("result");
   currentQuote = randomItem(loveQuotes);
 
+  if (chosen.isPrize) {
+    const prize = chosen.prize;
+    currentRecord = {
+      id: (Date.now().toString(36) + Math.random().toString(36).slice(2,7)),
+      isPrize: true,
+      prize,
+      name: prize.title,
+      gender: "Приз",
+      symbol: prize.emoji,
+      portrait: prize.emoji,
+      photo: "",
+      color: prize.color,
+      bg1: prize.bg1,
+      bg2: prize.bg2,
+      comment: roundComment,
+      quote: currentQuote,
+      resultNote: "",
+      resultNoteColor: noteColors[0].bg,
+      pairType: selectedGender,
+      bookmarkColor: bookmarkColors[0]
+    };
+
+    addPrizeToPromos(prize);
+
+    renderPrizeResult(prize);
+    saveRecord();
+    $("exitButton").classList.remove("hidden");
+    $("repeatButton").classList.remove("hidden");
+    return;
+  }
+
   currentRecord = {
     id: (Date.now().toString(36) + Math.random().toString(36).slice(2,7)),
     gender: chosen.gender,
@@ -2548,12 +3091,71 @@ function chooseCard(index) {
   renderResult();
   saveRecord();
   $("exitButton").classList.remove("hidden");
+  $("repeatButton").classList.remove("hidden");
+}
+
+function addPrizeToPromos(prize) {
+  const newPromo = {
+    id: "prize_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,6),
+    icon: prize.emoji,
+    name: prize.title,
+    desc: prize.sub,
+    code: prize.code,
+    used: false,
+    type: prize.type,
+    priceTon: prize.priceTon || "0.0 TON",
+    source: "prize",
+    receivedAt: Date.now(),
+    isMarket: false,
+    isGifted: false,
+    isSold: false,
+    isTraded: false
+  };
+  promos.unshift(newPromo);
+  savePromos();
+}
+
+function renderPrizeResult(prize) {
+  const holder = $("resultCard");
+  holder.innerHTML = "";
+  const qrSvg = prize.type === "qr" ? generateQrSvg(prize.code + Date.now()) : "";
+  holder.innerHTML = `
+    <div class="prize-card" style="
+      --prize-color:${prize.color};
+      --prize-bg1:${prize.bg1};
+      --prize-bg2:${prize.bg2};">
+      <div class="prize-emoji">${prize.emoji}</div>
+      <div class="prize-title">${escapeHTML(prize.title)}</div>
+      <div class="prize-sub">${escapeHTML(prize.sub)}</div>
+      ${prize.type === "qr"
+        ? `<div class="prize-qr">${qrSvg}</div>`
+        : `<div class="prize-code">${escapeHTML(prize.code)}</div>`}
+    </div>
+  `;
+
+  $("resultTitle").textContent = prize.title;
+  $("resultGender").textContent = "Розыгрыш";
+  $("resultQuote").textContent = "🎉 Вам выпал приз! Он добавлен в раздел «Промокоды» профиля. Там его можно активировать, подарить, продать, обменять или выставить на рынок.";
+
+  const bubble = $("resultBubble");
+  if (roundComment) {
+    $("resultBubbleName").textContent = "Комментарий";
+    $("resultBubbleText").textContent = roundComment;
+    bubble.classList.remove("hidden");
+  } else {
+    bubble.classList.add("hidden");
+  }
 }
 
 function renderResult() {
   if (!currentRecord) return;
   const holder = $("resultCard");
   holder.innerHTML = "";
+
+  if (currentRecord.isPrize) {
+    renderPrizeResult(currentRecord.prize);
+    return;
+  }
 
   const characterForResult = {
     gender: currentRecord.gender,
@@ -2585,17 +3187,14 @@ function renderResult() {
   $("resultGender").textContent = genderLabel(currentRecord.gender);
   $("resultQuote").textContent = currentQuote;
 
-  const comment = $("resultComment");
+  const bubble = $("resultBubble");
   if (roundComment) {
-    comment.textContent = roundComment;
-    comment.classList.remove("hidden");
+    $("resultBubbleName").textContent = "Комментарий";
+    $("resultBubbleText").textContent = roundComment;
+    bubble.classList.remove("hidden");
   } else {
-    comment.textContent = "";
-    comment.classList.add("hidden");
+    bubble.classList.add("hidden");
   }
-
-  $("resultNote").value = "";
-  $("resultNoteSaved").textContent = "";
 }
 
 function saveRecord() {
@@ -2610,7 +3209,6 @@ function saveRecord() {
 function goBack() {
   if (roundTimer) { clearInterval(roundTimer); roundTimer = null; }
   setPhase("setup");
-  $("flipButton").classList.add("hidden");
   refreshGameCards();
 }
 
@@ -2620,13 +3218,67 @@ function newGame() {
   currentRecord = null;
   selectedCardIndex = -1;
   $("resultCard").innerHTML = "";
+  $("resultBubble").classList.add("hidden");
+  $("exitButton").classList.add("hidden");
+  $("repeatButton").classList.add("hidden");
   if ($("battleCommentBar")) $("battleCommentBar").value = "";
+  if ($("nameOneBar")) $("nameOneBar").value = "";
+  if ($("nameTwoBar")) $("nameTwoBar").value = "";
+  photoOne = "";
+  photoTwo = "";
+  if ($("photoPreviewOneBar")) {
+    $("photoPreviewOneBar").classList.remove("visible");
+    $("photoPreviewOneBarImg").src = "";
+    $("photoUploadOneBar").classList.remove("hidden");
+  }
+  if ($("photoPreviewTwoBar")) {
+    $("photoPreviewTwoBar").classList.remove("visible");
+    $("photoPreviewTwoBarImg").src = "";
+    $("photoUploadTwoBar").classList.remove("hidden");
+  }
   setPhase("setup");
-  refreshGameCards();
+  cards = buildCharacters();
+  revealedNames = cards.map(c => c.name);
+  renderGameCards(true);
+  $("gameStatus").textContent = "Две карты. Один выбор.";
+}
+
+function repeatRound() {
+  if (roundTimer) { clearInterval(roundTimer); roundTimer = null; }
+  roundComment = sanitizeComment(readCommentValue());
+  cards = buildCharacters();
+  revealedNames = cards.map(c => c.name);
+  selectedCardIndex = -1;
+  currentRecord = null;
+
+  $("resultCard").innerHTML = "";
+  $("resultBubble").classList.add("hidden");
+  $("exitButton").classList.add("hidden");
+  $("repeatButton").classList.add("hidden");
+
+  closeBarPanels();
+
+  setPhase("preview");
+  $("gameStatus").textContent = "Запоминай карты";
+  renderGameCards(true);
+
+  let seconds = 3;
+  roundTimer = setInterval(() => {
+    seconds--;
+    if (seconds > 0) {
+      $("gameStatus").textContent = "Запоминай: " + seconds;
+    } else {
+      clearInterval(roundTimer);
+      roundTimer = null;
+      $("gameStatus").textContent = "Готов?";
+      $("startBarBtn").textContent = "Перевернуть";
+      $("startBarBtn").disabled = false;
+    }
+  }, 1000);
 }
 
 /* =========================================================
-   ПОДСКАЗКИ — с кнопкой обновления (🔄)
+   ПОДСКАЗКИ
    ========================================================= */
 function closeSuggest() {
   if (suggestPanel) { suggestPanel.remove(); suggestPanel = null; }
@@ -2721,7 +3373,7 @@ document.addEventListener("click", (e) => {
 });
 
 /* =========================================================
-   САНИТАЙЗИНГ ПОЛЕЙ
+   САНИТАЙЗИНГ
    ========================================================= */
 function bindNameInput(el) {
   if (!el) return;
@@ -2739,15 +3391,6 @@ function bindCommentInput(el) {
 }
 bindNameInput($("nameOneBar")); bindNameInput($("nameTwoBar"));
 bindCommentInput($("battleCommentBar"));
-
-$("resultNote").addEventListener("input", () => {
-  const clean = sanitizeComment($("resultNote").value);
-  if (clean !== $("resultNote").value) $("resultNote").value = clean;
-  if (!currentRecord) return;
-  currentRecord.resultNote = clean;
-  saveRecord();
-  $("resultNoteSaved").textContent = clean ? "Сохранено" : "";
-});
 
 /* =========================================================
    ТЕМА / ФОН
@@ -2856,9 +3499,15 @@ function syncGenderSelection() {
 }
 bindGenderOptions($("genderOptionsBar"));
 
+/* п.3: единая кнопка «Начать» / «Перевернуть» в bottom bar */
 $("startBarBtn").addEventListener("click", () => {
   closeBarPanels();
-  startRound();
+  if (phase === "setup") {
+    startRound();
+  } else if (phase === "preview") {
+    renderGameCards(false);
+    shuffleCards();
+  }
 });
 
 /* =========================================================
@@ -2916,7 +3565,7 @@ function openModal(type) {
                           title="${c.name}"></button>
                 `).join("")}
               </div>
-              <textarea placeholder="Заметка для тетради" data-note-id="${item.id}" maxlength="500">${escapeHTML(item.resultNote || "")}</textarea>
+              <textarea placeholder="Заметка к игре" data-note-id="${item.id}" maxlength="500">${escapeHTML(item.resultNote || "")}</textarea>
             </div>
             <div class="bookmark-picker">
               <span class="bk-label">Закладка:</span>
@@ -2997,7 +3646,7 @@ function openModal(type) {
       });
     }
   } else if (type === "wallpaper") {
-    title.textContent = "Настройки фона";
+    title.textContent = "Настройки";
     const isLight = settings.themeMode === "light";
     content.innerHTML = `
       <div class="theme-toggle-row">
@@ -3006,6 +3655,17 @@ function openModal(type) {
           <span class="thumb">${isLight ? "☀️" : "🌙"}</span>
         </button>
       </div>
+
+      <div class="switch-row" style="border-top:1px solid var(--border-color); margin-top:8px; padding-top:10px;">
+        <div>
+          <div class="switch-label">Сердечки за «Выход»</div>
+          <div class="switch-desc">Показывать эмодзи-сердечки за кнопками в результате.</div>
+        </div>
+        <button class="switch-toggle ${exitHeartsEnabled ? "is-on" : ""}" id="heartsToggle" type="button" role="switch" aria-checked="${exitHeartsEnabled ? "true" : "false"}">
+          <span class="switch-thumb"></span>
+        </button>
+      </div>
+
       <hr>
       <p class="muted">Градиент фона</p>
       <div class="theme-grid">
@@ -3035,6 +3695,15 @@ function openModal(type) {
     updateThemeSwitch();
     content.querySelector("#themeSwitch").addEventListener("click", () => {
       applyTheme(settings.themeMode === "light" ? "dark" : "light");
+    });
+    content.querySelector("#heartsToggle").addEventListener("click", () => {
+      exitHeartsEnabled = !exitHeartsEnabled;
+      settings.exitHeartsEnabled = exitHeartsEnabled;
+      saveSettings();
+      content.querySelector("#heartsToggle").classList.toggle("is-on", exitHeartsEnabled);
+      content.querySelector("#heartsToggle").setAttribute("aria-checked", exitHeartsEnabled ? "true" : "false");
+      updateExitHeartsVisibility();
+      showToast(exitHeartsEnabled ? "Сердечки включены" : "Сердечки выключены");
     });
     content.querySelectorAll("[data-theme]").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -3076,7 +3745,6 @@ function openModal(type) {
       </div>
     `;
   } else if (type === "news") {
-    /* NEW: Новости — только официальный шрифт, адаптивные */
     title.textContent = "Новости";
     content.innerHTML = `<div class="news-list" id="newsList"></div>`;
     renderNewsList(content);
@@ -3267,7 +3935,6 @@ function openModal(type) {
   backdrop.classList.remove("hidden");
 }
 
-/* NEW: рендер списка новостей (только официальный шрифт) */
 function renderNewsList(content) {
   const list = content.querySelector("#newsList");
   if (!list) return;
@@ -3343,7 +4010,6 @@ function renderNewsList(content) {
   });
 }
 
-/* NEW: детальный просмотр новости + комментарии */
 function openNewsDetail(id) {
   const rec = news.find(n => n.id === id);
   if (!rec) return;
@@ -3464,6 +4130,12 @@ function exportArchive() {
   showToast("Экспорт готов.");
 }
 
+function updateExitHeartsVisibility() {
+  const hearts = document.querySelector(".exit-hearts .eh-bg");
+  if (!hearts) return;
+  hearts.style.display = exitHeartsEnabled ? "" : "none";
+}
+
 /* =========================================================
    ПРОФИЛЬ
    ========================================================= */
@@ -3511,46 +4183,37 @@ profileMenu.querySelectorAll("[data-profile-action]").forEach(btn => {
   });
 });
 
-/* NEW: панель промокодов — с пустым состоянием */
+/* =========================================================
+   п.5: ПАНЕЛЬ ПРОМОКОДОВ — с корректным пустым состоянием
+   Если localStorage содержит [] (пусто) — показывается стикер 😔
+   и поле активации кода. Если есть промокоды — список + поле.
+   ========================================================= */
 function openPromosModal() {
   $("modalTitle").textContent = "Промокоды";
   const content = $("modalContent");
 
-  if (!promos.length) {
-    /* NEW: пустое состояние — эмодзи печали */
-    content.innerHTML = `
-      <div class="promo-empty">
-        <div class="pe-emoji" aria-hidden="true">😔</div>
-        <div class="pe-text">Пока нет промокодов, купонов и подарочных карт. Как только появятся — они тут.</div>
+  const settingsHtml = `
+    <div class="promo-settings-box">
+      <div class="promo-settings-title">Настройки розыгрышей</div>
+      <div class="switch-row">
+        <div>
+          <div class="switch-label">Подключить систему розыгрышей</div>
+          <div class="switch-desc">Вместо персонажа может выпасть купон, промокод, +3 игры или QR-код.</div>
+        </div>
+        <button class="switch-toggle ${prizeSystemEnabled ? "is-on" : ""}" id="prizeToggle" type="button" role="switch" aria-checked="${prizeSystemEnabled}">
+          <span class="switch-thumb"></span>
+        </button>
       </div>
-      <div class="promo-section-title">Активировать код</div>
-      <div class="promo-input-row">
-        <input type="text" id="promoInput" maxlength="24" placeholder="Введите промокод" autocomplete="off">
-        <button class="promo-btn primary" id="promoActivate" type="button">Активировать</button>
+      <div class="switch-row" style="padding-top:0;">
+        <div>
+          <div class="switch-label">Статус</div>
+          <div class="switch-desc">${prizeSystemEnabled ? "Розыгрыши включены" : "Розыгрыши выключены"}</div>
+        </div>
       </div>
-    `;
-    const input = content.querySelector("#promoInput");
-    input.addEventListener("input", () => {
-      input.value = input.value.toUpperCase().replace(/[^A-Z0-9\-]/g, "").slice(0, 24);
-    });
-    content.querySelector("#promoActivate").addEventListener("click", () => {
-      const code = (content.querySelector("#promoInput").value || "").trim().toUpperCase();
-      if (!code) { showToast("Введите промокод."); return; }
-      const found = DEFAULT_PROMOS.find(p => p.code === code);
-      if (!found) { showToast("Промокод не найден."); return; }
-      promos.push({ ...found, used: false });
-      savePromos();
-      content.querySelector("#promoInput").value = "";
-      renderPromoList(content);
-      showToast(`Промокод «${found.name}» добавлен!`);
-    });
-    return;
-  }
+    </div>
+  `;
 
-  content.innerHTML = `
-    <p class="muted" style="margin-top:0;">Здесь собраны ваши купоны, промокоды и подарочные карты. Введите код, чтобы активировать новый.</p>
-    <div class="promo-section-title">Активные</div>
-    <div class="promo-grid" id="promoList"></div>
+  const activateHtml = `
     <div class="promo-section-title">Активировать код</div>
     <div class="promo-input-row">
       <input type="text" id="promoInput" maxlength="24" placeholder="Введите промокод" autocomplete="off">
@@ -3558,13 +4221,40 @@ function openPromosModal() {
     </div>
     <div class="muted" style="margin-top:8px;font-size:11px;">Доступные коды: START2026 · TON15 · GIFT10NFT</div>
   `;
-  renderPromoList(content);
 
+  // п.5: явная проверка на пустоту — показываем стикер печали
+  if (!Array.isArray(promos) || promos.length === 0) {
+    content.innerHTML = `
+      <div class="promo-empty">
+        <div class="pe-emoji" aria-hidden="true">😔</div>
+        <div class="pe-text">Пока нет промокодов, купонов и подарочных карт. Грустненько... Как только появятся — они тут.</div>
+      </div>
+      ${settingsHtml}
+      ${activateHtml}
+    `;
+    bindPrizeToggle(content);
+    bindPromoActivate(content);
+    return;
+  }
+
+  content.innerHTML = `
+    <p class="muted" style="margin-top:0;">Здесь собраны ваши купоны, промокоды и подарочные карты. Введите код, чтобы активировать новый.</p>
+    ${settingsHtml}
+    <div class="promo-section-title">Активные</div>
+    <div class="promo-grid" id="promoList"></div>
+    ${activateHtml}
+  `;
+  bindPrizeToggle(content);
+  renderPromoList(content);
+  bindPromoActivate(content);
+}
+
+function bindPromoActivate(content) {
   const input = content.querySelector("#promoInput");
+  if (!input) return;
   input.addEventListener("input", () => {
     input.value = input.value.toUpperCase().replace(/[^A-Z0-9\-]/g, "").slice(0, 24);
   });
-
   content.querySelector("#promoActivate").addEventListener("click", () => {
     const code = (content.querySelector("#promoInput").value || "").trim().toUpperCase();
     if (!code) { showToast("Введите промокод."); return; }
@@ -3573,11 +4263,36 @@ function openPromosModal() {
     const existing = promos.find(p => p.code === code);
     if (existing && existing.used) { showToast("Этот промокод уже активирован."); return; }
     if (existing) { existing.used = true; }
-    else { promos.push({ ...found, used: true }); }
+    else {
+      promos.push({
+        ...found,
+        used: true,
+        type: found.type || "promo",
+        priceTon: found.priceTon || "0.3 TON",
+        isMarket: false, isGifted: false, isSold: false, isTraded: false
+      });
+    }
     savePromos();
-    content.querySelector("#promoInput").value = "";
-    renderPromoList(content);
+    openPromosModal();
     showToast(`Промокод «${found.name}» активирован!`);
+  });
+}
+
+function bindPrizeToggle(content) {
+  const toggle = content.querySelector("#prizeToggle");
+  if (!toggle) return;
+  toggle.addEventListener("click", () => {
+    prizeSystemEnabled = !prizeSystemEnabled;
+    settings.prizeSystemEnabled = prizeSystemEnabled;
+    saveSettings();
+    toggle.classList.toggle("is-on", prizeSystemEnabled);
+    toggle.setAttribute("aria-checked", prizeSystemEnabled ? "true" : "false");
+    const descs = content.querySelectorAll(".promo-settings-box .switch-desc");
+    if (descs.length >= 2) {
+      descs[1].textContent = prizeSystemEnabled ? "Розыгрыши включены" : "Розыгрыши выключены";
+    }
+    refreshGameCards();
+    showToast(prizeSystemEnabled ? "Система розыгрышей включена" : "Система розыгрышей выключена");
   });
 }
 
@@ -3588,21 +4303,37 @@ function renderPromoList(content) {
     holder.innerHTML = `<p class="muted" style="font-size:12px;">Пока нет промокодов.</p>`;
     return;
   }
-  holder.innerHTML = promos.map(p => `
-    <div class="promo-item ${p.used ? "used" : ""}" data-promo-id="${p.id}">
-      <div class="promo-ico">${p.icon || "🎟️"}</div>
-      <div class="promo-body">
-        <div class="promo-name">${escapeHTML(p.name)}</div>
-        <div class="promo-desc">${escapeHTML(p.desc)}</div>
-        <span class="promo-code">${escapeHTML(p.code)}</span>
-        <div class="promo-actions">
-          <button class="promo-btn primary" data-promo-copy="${p.id}" ${p.used ? "disabled" : ""}>
-            ${p.used ? "Активирован" : "Скопировать код"}
-          </button>
+
+  const typeLabel = { coupon: "Купон", promo: "Промокод", games: "+3 игры", qr: "QR-код" };
+  const typeCls = { coupon: "type-coupon", promo: "type-promo", games: "type-games", qr: "type-qr" };
+
+  holder.innerHTML = promos.map(p => {
+    const isUsed = p.used;
+    const type = p.type || "promo";
+    const priceTon = p.priceTon || "0.3 TON";
+    return `
+      <div class="promo-item ${isUsed ? "used" : ""}" data-promo-id="${p.id}">
+        <div class="promo-ico">${p.icon || "🎟️"}</div>
+        <div class="promo-body">
+          <div class="promo-tagline ${typeCls[type] || "type-promo"}">${typeLabel[type] || "Промокод"}${p.isMarket ? " · на рынке" : ""}${p.isSold ? " · продан" : ""}${p.isGifted ? " · подарен" : ""}</div>
+          <div class="promo-name">${escapeHTML(p.name)}</div>
+          <div class="promo-desc">${escapeHTML(p.desc)}</div>
+          <span class="promo-code">${escapeHTML(p.code)}</span>
+          <div class="promo-desc" style="margin-top:6px;">Цена (TON): <b>${escapeHTML(priceTon)}</b></div>
+          <div class="promo-actions">
+            <button class="promo-action-btn" data-promo-copy="${p.id}" title="Скопировать код">📋</button>
+            ${!isUsed && !p.isMarket && !p.isSold && !p.isGifted ? `
+              <button class="promo-action-btn use" data-promo-use="${p.id}" title="Использовать">✅ Использовать</button>
+              <button class="promo-action-btn sell" data-promo-sell="${p.id}" title="Продать за TON">💰 Продать</button>
+              <button class="promo-action-btn trade" data-promo-trade="${p.id}" title="Обменять на другой промокод">🔁 Обменять</button>
+              <button class="promo-action-btn market" data-promo-market="${p.id}" title="Выставить на рынок">🏪 На рынок</button>
+              <button class="promo-action-btn gift" data-promo-gift="${p.id}" title="Подарить другу">🎁 Подарить</button>
+            ` : ""}
+          </div>
         </div>
       </div>
-    </div>
-  `).join("");
+    `;
+  }).join("");
 
   holder.querySelectorAll("[data-promo-copy]").forEach(btn => {
     btn.addEventListener("click", async () => {
@@ -3615,21 +4346,154 @@ function renderPromoList(content) {
       } catch { showToast("Не удалось скопировать."); }
     });
   });
+
+  holder.querySelectorAll("[data-promo-use]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-promo-use");
+      const rec = promos.find(p => p.id === id);
+      if (!rec) return;
+      rec.used = true;
+      savePromos();
+      renderPromoList(content);
+      showToast(`Промокод «${rec.name}» активирован!`);
+    });
+  });
+
+  holder.querySelectorAll("[data-promo-sell]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-promo-sell");
+      const rec = promos.find(p => p.id === id);
+      if (!rec) return;
+      if (!wallet.tonAddress) {
+        showToast("Сначала подключите TON-кошелёк в разделе «Кошелёк».");
+        return;
+      }
+      const priceTon = parseFloat((rec.priceTon || "0.3").toString().replace(" TON","")) || 0.3;
+      wallet.tonBalance = (wallet.tonBalance || 0) + priceTon;
+      saveWallet();
+      rec.isSold = true;
+      savePromos();
+      renderPromoList(content);
+      showToast(`Продано за ${priceTon} TON. Баланс пополнен.`);
+    });
+  });
+
+  holder.querySelectorAll("[data-promo-trade]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-promo-trade");
+      const rec = promos.find(p => p.id === id);
+      if (!rec) return;
+      const other = promos.find(p => p.id !== id && !p.isTraded && !p.isSold && !p.isGifted);
+      if (!other) {
+        showToast("Нет другого промокода для обмена.");
+        return;
+      }
+      rec.isTraded = true;
+      other.isTraded = true;
+      savePromos();
+      renderPromoList(content);
+      showToast(`Обмен: «${rec.name}» ↔ «${other.name}».`);
+    });
+  });
+
+  holder.querySelectorAll("[data-promo-market]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-promo-market");
+      const rec = promos.find(p => p.id === id);
+      if (!rec) return;
+      rec.isMarket = true;
+      savePromos();
+      renderPromoList(content);
+      showToast(`«${rec.name}» выставлен на рынок (${rec.priceTon || "0.3 TON"}).`);
+    });
+  });
+
+  holder.querySelectorAll("[data-promo-gift]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-promo-gift");
+      const rec = promos.find(p => p.id === id);
+      if (!rec) return;
+      rec.isGifted = true;
+      savePromos();
+      renderPromoList(content);
+      shareText(`🎁 Дарю промокод «${rec.name}» (${rec.code}). Активируй в «Переворот»!`);
+    });
+  });
 }
 
 function openWallet() {
   $("modalTitle").textContent = "Кошелёк";
   const content = $("modalContent");
-  const balance = settings.walletBalance || { ton: 0, rub: 0, nft: 0 };
+  const balance = wallet.tonBalance || 0;
+  const address = wallet.tonAddress || "";
+  const connected = Boolean(wallet.tonConnected && address);
+
   content.innerHTML = `
-    <p class="muted">Баланс кошелька</p>
+    <p class="muted">Баланс и подключение</p>
     <div class="sub-cards">
-      <div class="sub-card"><div class="sub-ico">💎</div><div class="sub-info"><div class="sub-name">TON</div><div class="sub-sub">Криптовалюта</div></div><div class="sub-price">${balance.ton}</div></div>
-      <div class="sub-card"><div class="sub-ico">₽</div><div class="sub-info"><div class="sub-name">Рубли</div><div class="sub-sub">Российский рубль</div></div><div class="sub-price">${balance.rub}</div></div>
-      <div class="sub-card"><div class="sub-ico">🎫</div><div class="sub-info"><div class="sub-name">NFT</div><div class="sub-sub">Билеты</div></div><div class="sub-price">${balance.nft}</div></div>
+      <div class="sub-card">
+        <div class="sub-ico">💎</div>
+        <div class="sub-info">
+          <div class="sub-name">TON</div>
+          <div class="sub-sub">Криптовалюта</div>
+        </div>
+        <div class="sub-price">${balance.toFixed(2)}</div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-ico">₽</div>
+        <div class="sub-info">
+          <div class="sub-name">Рубли</div>
+          <div class="sub-sub">Российский рубль</div>
+        </div>
+        <div class="sub-price">${wallet.rubBalance || 0}</div>
+      </div>
+      <div class="sub-card">
+        <div class="sub-ico">🎫</div>
+        <div class="sub-info">
+          <div class="sub-name">NFT</div>
+          <div class="sub-sub">Билеты</div>
+        </div>
+        <div class="sub-price">${wallet.nftBalance || 0}</div>
+      </div>
     </div>
-    <p class="muted" style="margin-top:14px;">Пополнение и вывод в разработке.</p>
+
+    <div class="ton-connect-card">
+      <h4><span class="ton-ico">💎</span> TON Кошелёк</h4>
+      <p>Подключите TON-кошелёк, чтобы продавать и покупать промокоды, получать TON за подарки и участвовать в рынке.</p>
+      <div class="ton-connect-row">
+        ${connected
+          ? `<div class="ton-address-box">${escapeHTML(address)}</div>
+             <button class="ton-connect-btn disconnect" id="tonDisconnect" type="button">Отключить</button>`
+          : `<button class="ton-connect-btn" id="tonConnect" type="button">Подключить TON</button>`
+        }
+      </div>
+      <div class="ton-status ${connected ? "connected" : ""}">
+        ${connected ? "Кошелёк подключён" : "Кошелёк не подключён"}
+      </div>
+    </div>
+
+    <p class="muted" style="margin-top:14px;">Пополнение и вывод в разработке (демо-режим).</p>
   `;
+
+  if (!connected) {
+    content.querySelector("#tonConnect").addEventListener("click", () => {
+      wallet.tonAddress = generateTonAddress();
+      wallet.tonConnected = true;
+      wallet.tonBalance = wallet.tonBalance || 0;
+      saveWallet();
+      openWallet();
+      showToast("TON-кошелёк подключён.");
+    });
+  } else {
+    content.querySelector("#tonDisconnect").addEventListener("click", () => {
+      wallet.tonAddress = "";
+      wallet.tonConnected = false;
+      saveWallet();
+      openWallet();
+      showToast("TON-кошелёк отключён.");
+    });
+  }
+
   $("modalBackdrop").classList.remove("hidden");
 }
 
@@ -3712,13 +4576,13 @@ function openSubscribe() {
   $("modalBackdrop").classList.remove("hidden");
 }
 
-/* NEW: Настройки профиля — с аватаркой (перенесена сюда) */
 function openProfileSettings() {
   $("modalTitle").textContent = "Настройки профиля";
   const content = $("modalContent");
   const currentType = settings.avatarType || "emoji";
   const currentEmoji = settings.avatarEmoji || "♙";
   const currentPhoto = settings.avatarPhoto || "";
+  const tgConnected = Boolean(settings.tgConnected && settings.tgUsername);
 
   content.innerHTML = `
     <label class="field-label">Имя</label>
@@ -3744,6 +4608,23 @@ function openProfileSettings() {
       </div>
     </div>
 
+    <hr>
+    <div class="tg-connect-card">
+      <h4><span class="tg-ico">✈️</span> Telegram аккаунт</h4>
+      <p>Подключите Telegram через бота ${TG_BOT_NAME}, чтобы синхронизировать профиль, получать уведомления и восстанавливать прогресс.</p>
+      <div class="tg-connect-row">
+        ${tgConnected
+          ? `<div class="ton-address-box">@${escapeHTML(settings.tgUsername)}</div>
+             <button class="tg-connect-btn disconnect" id="tgDisconnect" type="button">Отключить</button>`
+          : `<a href="${TG_BOT_URL}" target="_blank" rel="noopener noreferrer" class="tg-connect-btn" id="tgConnect" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">Подключить через бота</a>
+             <button class="tg-connect-btn" id="tgFakeConnect" type="button" style="background:linear-gradient(135deg,#7b00ff,#ff00a0);">У меня есть код</button>`
+        }
+      </div>
+      <div class="tg-status ${tgConnected ? "connected" : ""}">
+        ${tgConnected ? "Telegram подключён" : "Telegram не подключён"}
+      </div>
+    </div>
+
     <div class="actions" style="margin-top:14px">
       <button class="action-button primary" id="saveProfileName" style="width:100%">Сохранить</button>
     </div>`;
@@ -3754,7 +4635,6 @@ function openProfileSettings() {
     if (clean !== input.value) input.value = clean;
   });
 
-  // NEW: аватарка — файл
   content.querySelector("#pickFile").addEventListener("click", () => content.querySelector("#photoFile").click());
   content.querySelector("#photoFile").addEventListener("change", (e) => {
     const f = e.target.files[0];
@@ -3769,13 +4649,12 @@ function openProfileSettings() {
       settings.avatarPhoto = ev.target.result;
       saveSettings();
       updateProfileAvatar();
-      content.querySelector("#avatarPreview").innerHTML = `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+      content.querySelector("#avatarPreview").innerHTML = `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;pointer-events:none;">`;
       showToast("Аватарка обновлена.");
     };
     r.readAsDataURL(f);
   });
 
-  // NEW: аватарка — эмодзи
   content.querySelector("#pickEmoji").addEventListener("click", () => {
     content.querySelector("#emojiSection").classList.toggle("hidden");
   });
@@ -3791,6 +4670,31 @@ function openProfileSettings() {
       content.querySelector("#avatarPreview").innerHTML = `<span>${btn.dataset.emoji}</span>`;
     });
   });
+
+  if (!tgConnected) {
+    const fakeBtn = content.querySelector("#tgFakeConnect");
+    if (fakeBtn) {
+      fakeBtn.addEventListener("click", () => {
+        const code = prompt("Введите код из бота " + TG_BOT_NAME + ":");
+        if (!code) return;
+        const clean = String(code).trim();
+        if (clean.length < 4) { showToast("Некорректный код."); return; }
+        settings.tgConnected = true;
+        settings.tgUsername = "player_" + Math.random().toString(36).slice(2, 8);
+        saveSettings();
+        openProfileSettings();
+        showToast("Telegram подключён.");
+      });
+    }
+  } else {
+    content.querySelector("#tgDisconnect").addEventListener("click", () => {
+      settings.tgConnected = false;
+      settings.tgUsername = "";
+      saveSettings();
+      openProfileSettings();
+      showToast("Telegram отключён.");
+    });
+  }
 
   content.querySelector("#saveProfileName").addEventListener("click", () => {
     const name = sanitizeName(content.querySelector("#profileNameInput").value) || "Игрок";
@@ -3899,6 +4803,7 @@ function updateProfileAvatar() {
    ОБРАБОТЧИКИ
    ========================================================= */
 $("exitButton").addEventListener("click", newGame);
+$("repeatButton").addEventListener("click", repeatRound);
 $("backButton").addEventListener("click", goBack);
 
 $("menuButton").addEventListener("click", (e) => {
@@ -3929,7 +4834,16 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-document.addEventListener("contextmenu", (e) => { e.preventDefault(); });
+document.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
+  return false;
+});
+
+document.addEventListener("dragstart", (e) => {
+  if (e.target.tagName === "IMG" || e.target.tagName === "A") {
+    e.preventDefault();
+  }
+});
 
 window.addEventListener("resize", () => {
   if (window.innerWidth < 540) { closeProfileMenu(); closeBarPanels(); }
@@ -3968,6 +4882,7 @@ function initApp() {
   renderGameCards(true);
   closeBarPanels();
   syncGenderSelection();
+  updateExitHeartsVisibility();
 
   setTimeout(hideSplash, 3000);
 }
