@@ -42,7 +42,6 @@
   --app-bottom-padding: clamp(96px, 14vh, 120px);
 }
 
-/* NEW: улучшенный дневной режим — мягкие тени, читаемый текст */
 body.light-theme {
   --panel: var(--panel-light);
   --text: var(--text-light);
@@ -53,9 +52,7 @@ body.light-theme {
   --input-bg: #f4f4f5;
   --btn-bg: rgba(0,0,0,.04);
   --btn-bg-hover: rgba(0,0,0,.08);
-  --border-dark: #d6dce1;
 }
-/* NEW: в светлой теме контрастные плитки и мягкие фоновые градиенты */
 body.light-theme .panel {
   box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.04) !important;
 }
@@ -65,20 +62,13 @@ body.light-theme .card-back {
     linear-gradient(145deg,#e8eef4,#c5d8ea 52%,#a9c3dd);
   border-color: #b9cddf;
 }
-body.light-theme .card-back::before {
-  color: #2b5278;
-  border-color: rgba(43,82,120,.35);
-}
+body.light-theme .card-back::before { color: #2b5278; border-color: rgba(43,82,120,.35); }
 body.light-theme .bottom-bar,
 body.light-theme .profile-menu,
-body.light-theme .settings-panel,
 body.light-theme .bar-panel,
 body.light-theme .modal {
   box-shadow: 0 4px 20px rgba(0,0,0,.08) !important;
 }
-body.light-theme .star { color: #b8c2cc; }
-body.light-theme .star.active,
-body.light-theme .star.hovered { color: #f0a500; }
 
 * { box-sizing: border-box; }
 html { min-height: 100%; -webkit-text-size-adjust: 100%; }
@@ -101,13 +91,10 @@ body {
   position: relative;
   overflow-x: hidden;
 }
-
-/* NEW: светлая тема — свой фон, чтобы дневной режим не был «грязным» */
 body.light-theme {
   background: linear-gradient(-45deg,#eef3f7,#dbe7f1,#f4f7fa,#cfe0ee,#e6eef5);
   background-size: 400% 400%;
 }
-
 body::before {
   content: "";
   position: fixed;
@@ -254,21 +241,6 @@ button:focus, button:focus-visible, input:focus, textarea:focus {
 .dropdown button:hover { background: var(--btn-bg-hover); }
 
 main { width: 100%; max-width: 800px; margin: 14px auto 0; }
-.hero { text-align: center; padding: 10px 8px clamp(12px, 2.4vw, 16px); }
-.eyebrow {
-  color: var(--accent2); text-transform: uppercase; letter-spacing: .2em;
-  font-size: clamp(10px, 1vw, 11px); font-weight: 600;
-}
-h1 {
-  font-family: 'Pacifico', cursive; font-size: clamp(28px, 7vw, 52px);
-  margin: 8px 0; letter-spacing: .01em; font-weight: 700; color: var(--text);
-  text-shadow: 0 2px 10px rgba(0,0,0,.25); line-height: 1.1; overflow-wrap: anywhere;
-}
-body.light-theme h1 { text-shadow: 0 1px 4px rgba(0,0,0,.08); }
-.subtitle {
-  color: var(--muted); line-height: 1.5; margin: 0 auto; max-width: 520px;
-  font-size: clamp(13px, 1.2vw, 15px); padding: 0 4px;
-}
 
 .panel {
   border: 1px solid var(--border-color); border-radius: clamp(12px, 2vw, 16px);
@@ -290,15 +262,6 @@ body.light-theme h1 { text-shadow: 0 1px 4px rgba(0,0,0,.08); }
 .gender-option.selected { border-color: var(--accent); background: rgba(0,136,204,.15); color: var(--accent2); }
 body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
 
-.form-section {
-  margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-color);
-  transition: opacity .3s ease, filter .3s ease; opacity: .55; filter: grayscale(85%);
-}
-.form-section.is-active { opacity: 1; filter: grayscale(0%); }
-.form-section-title {
-  font-size: clamp(11px, 1vw, 12px); font-weight: 700; letter-spacing: .04em;
-  text-transform: uppercase; color: var(--muted); margin: 0 0 10px;
-}
 .name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(8px, 1.4vw, 10px); }
 .field-wrap { position: relative; }
 .field-label {
@@ -308,7 +271,6 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
 .comment-box { margin-top: 14px; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 
-/* ФОТО В ПОЛЕ ИМЕНИ */
 .name-input-row { position: relative; display: flex; align-items: center; }
 .name-input-row input { padding-right: 52px; flex: 1; min-width: 0; }
 .photo-upload-btn {
@@ -344,10 +306,7 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
 .photo-remove-btn:hover { background: #ff2d68; }
 .photo-file-input { display: none; }
 
-/* =========================================================
-   NEW: панели настроек (settings + bar) — выравнены по месту и размеру
-   ========================================================= */
-.settings-panel,
+/* BAR PANELS */
 .bar-panel {
   position: fixed; z-index: 45;
   bottom: calc(max(10px, env(safe-area-inset-bottom, 10px)) + var(--bottom-bar-height) + 10px);
@@ -359,36 +318,24 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
   transition: transform .35s cubic-bezier(.2,.75,.2,1), opacity .3s ease;
   max-height: min(78vh, 620px); overflow-y: auto; overscroll-behavior: contain;
 }
-.settings-panel.is-open,
 .bar-panel.is-open {
   opacity: 1; pointer-events: auto;
   transform: translateX(-50%) translateY(0);
 }
-.settings-panel-head,
 .bar-panel-head {
   display: flex; align-items: center; justify-content: space-between;
   gap: 10px; padding-bottom: 10px; margin-bottom: 10px;
   border-bottom: 1px solid var(--border-color);
 }
-.settings-panel-head h3,
 .bar-panel-head h3 { margin: 0; font-size: clamp(13px, 1.3vw, 14px); font-weight: 700; }
-.settings-panel-close,
 .bar-panel-close {
   width: 28px; height: 28px; border-radius: 50%;
   display: grid; place-items: center; min-height: 0; font-size: 16px;
   background: var(--btn-bg); border: 1px solid var(--border-color);
 }
-.settings-section-title {
-  font-size: clamp(10px, 1vw, 11px); text-transform: uppercase;
-  letter-spacing: .08em; color: var(--muted); font-weight: 700;
-  margin: 8px 0 8px;
-}
-.settings-panel .gender-options,
 .bar-panel .gender-options { grid-template-columns: repeat(3, 1fr); }
-.settings-panel .name-grid,
 .bar-panel .name-grid { grid-template-columns: 1fr; gap: 10px; }
 
-/* NEW: кнопки в bottom bar — «Пол» и «Данные» */
 .bar-toggle-btn {
   height: 36px; padding: 0 12px; border-radius: 18px;
   background: var(--btn-bg); border: 1px solid var(--border-color);
@@ -406,7 +353,6 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
 }
 .bar-toggle-btn .ico { font-size: 14px; }
 
-/* NEW: кнопка «Начать» в bottom bar — растянута на свободное пространство */
 .start-bar-btn {
   flex: 1 1 auto;
   height: 36px; padding: 0 14px; border-radius: 18px;
@@ -457,7 +403,9 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
   color: var(--muted); font-size: clamp(12px, 1.1vw, 13px);
 }
 
-/* КАРТЫ */
+/* =========================================================
+   КАРТЫ — проверено: корректный 3D-переворот и отображение фото
+   ========================================================= */
 .cards {
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(10px, 2.4vw, 20px); max-width: 560px; margin: 0 auto;
@@ -488,6 +436,7 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
   justify-content: center; overflow: hidden; border-radius: var(--card-radius);
   backface-visibility: hidden; -webkit-backface-visibility: hidden;
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
 }
 
 .card-back {
@@ -519,11 +468,25 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
   background: radial-gradient(circle at 35% 25%, rgba(255,255,255,.25), transparent 45%), rgba(255,255,255,.06);
   display: grid; place-items: center;
   font-size: clamp(32px, 8vw, 66px); flex-shrink: 0;
+  position: relative;
+  /* NEW: гарантируем, что фото не «схлопывается» после переворота */
+  transform: translateZ(1px);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 .card-front .card-photo img {
   width: 100%; height: 100%; object-fit: cover; display: block;
   pointer-events: none; user-select: none; -webkit-user-drag: none;
+  /* NEW: img не должен скрываться из-за backface-visibility родителя */
   backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+  transform: translateZ(2px);
+  /* NEW: плавное появление после переворота */
+  animation: photoFadeIn .3s ease;
+}
+@keyframes photoFadeIn {
+  from { opacity: 0; transform: translateZ(2px) scale(.96); }
+  to { opacity: 1; transform: translateZ(2px) scale(1); }
 }
 .card-front .crown { font-size: clamp(20px, 5vw, 40px); margin-bottom: 6px; }
 .card-front .person-name {
@@ -536,6 +499,33 @@ body.light-theme .gender-option.selected { background: rgba(0,136,204,.12); }
   font-size: clamp(8px, 1vw, 10px); letter-spacing: .12em; text-transform: uppercase;
 }
 .card.chosen .card-inner { filter: drop-shadow(0 0 14px rgba(84,169,235,.5)); }
+
+/* NEW: кнопки редактирования над картой */
+.card-edit-overlay {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 6;
+}
+.card-edit-btn {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--menu-bg); border: 1px solid var(--border-color);
+  color: var(--text); font-size: 14px; display: grid; place-items: center;
+  cursor: pointer; min-height: 0; padding: 0;
+  transition: background .15s, border-color .15s, transform .12s;
+  box-shadow: 0 2px 6px rgba(0,0,0,.25);
+}
+.card-edit-btn:hover { background: var(--btn-bg-hover); border-color: var(--accent); }
+.card-edit-btn:active { transform: scale(.94); }
+
+.card-wrap {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
 
 /* РЕЗУЛЬТАТ */
 .result-card { max-width: min(280px, 70vw); margin: 0 auto; }
@@ -721,14 +711,6 @@ body.light-theme .archive-item { background: rgba(0,0,0,.02); }
   background: var(--tg-blue); border: 0; display: grid; place-items: center;
   font-size: 16px; overflow: hidden; color: #fff; min-height: 0;
 }
-.settings-button {
-  width: 36px; height: 36px; flex: 0 0 36px; border-radius: 50%;
-  background: var(--btn-bg); border: 1px solid var(--border-color);
-  display: grid; place-items: center; font-size: 16px;
-  color: var(--text); min-height: 0;
-}
-.settings-button:hover { background: var(--btn-bg-hover); }
-.settings-button.hidden { display: none !important; }
 .bottom-revealed-names {
   display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
   margin-left: 4px; padding-left: 8px; border-left: 1px solid var(--border-color);
@@ -833,7 +815,6 @@ body.light-theme .modal-backdrop { background: rgba(0,0,0,.35); }
 .modal-head h2 { font-size: clamp(15px, 1.5vw, 17px); margin: 0; font-weight: 700; overflow-wrap: anywhere; }
 .close-button { border-radius: 50%; width: 32px; height: 32px; min-height: 0; flex-shrink: 0; }
 
-/* NEW: улучшенные темы (12 готовых + кастомная) */
 .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
 .theme-button {
   border-radius: 10px; padding: 10px; min-height: 56px; text-align: left;
@@ -847,7 +828,6 @@ body.light-theme .modal-backdrop { background: rgba(0,0,0,.35); }
   height: 24px; border-radius: 6px; margin-bottom: 6px;
   position: relative; overflow: hidden;
 }
-/* NEW: анимированный градиент в свотче — визуальный превью темы */
 .theme-swatch::after {
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%);
@@ -884,7 +864,7 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
 /* SUGGEST */
 .suggest-panel {
   position: absolute; z-index: 60; top: calc(100% + 4px); left: 0; right: 0;
-  max-height: min(240px, 40vh); overflow-y: auto; overscroll-behavior: contain;
+  max-height: min(260px, 44vh); overflow-y: auto; overscroll-behavior: contain;
   padding: 6px; border-radius: 12px; background: var(--menu-bg);
   border: 1px solid var(--border-color); display: grid; gap: 5px;
 }
@@ -897,11 +877,6 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
 }
 .suggest-tile:hover { transform: translateY(-1px); background: #f0f0f0; }
 .suggest-tile:active { transform: scale(.98); }
-.suggest-tile.more {
-  background: var(--accent); color: #fff; text-align: center;
-  font-weight: 700; font-size: 16px; letter-spacing: 2px; padding: 8px;
-}
-.suggest-tile.more:hover { background: var(--accent2); }
 .suggest-tile.rainbow {
   color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.4);
   background: linear-gradient(135deg, #ff4f83, #ffb347, #00c853, #00b0ff, #c8339a, #ff4f83);
@@ -912,6 +887,38 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
 .suggest-tile.blue:hover { background: linear-gradient(135deg, #c2ecff, #7dcfff); }
 .suggest-tile.pink { background: linear-gradient(135deg, #ffc2d9, #ff8fb8); color: #4a0d28; }
 .suggest-tile.pink:hover { background: linear-gradient(135deg, #ffd6e6, #ffa8c9); }
+
+/* NEW: кнопка обновления списка подсказок (🔄) */
+.suggest-tile.refresh {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #fff;
+  text-align: center;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: .02em;
+  padding: 8px 12px;
+  border-radius: 8px;
+  min-height: 36px;
+  transition: background .15s, transform .12s;
+}
+.suggest-tile.refresh:hover { background: var(--accent2); transform: translateY(-1px); }
+.suggest-tile.refresh:active { transform: scale(.97); }
+.suggest-tile.refresh .refresh-ico {
+  font-size: 15px;
+  display: inline-block;
+  transition: transform .4s ease;
+}
+.suggest-tile.refresh.spinning .refresh-ico {
+  animation: refreshSpin .6s linear;
+}
+@keyframes refreshSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 
 /* TICKET */
 .ticket {
@@ -1224,6 +1231,257 @@ body.light-theme .support-photo-slot { background: rgba(0,0,0,.02); }
 .support-photo-slot .slot-remove:hover { background: #ff2d68; }
 .support-photo-info { font-size: 10.5px; color: var(--muted); text-align: center; margin-top: 6px; line-height: 1.4; }
 
+/* =========================================================
+   NEW: Промокоды — только официальный шрифт, пустое состояние
+   ========================================================= */
+.promo-section-title {
+  font-size: clamp(11px, 1vw, 12px); text-transform: uppercase;
+  letter-spacing: .08em; color: var(--muted); font-weight: 700;
+  margin: 14px 0 8px; display: flex; align-items: center; gap: 6px;
+}
+.promo-grid { display: grid; gap: 10px; }
+
+/* NEW: пустое состояние промокодов */
+.promo-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 32px 16px;
+  border: 1px dashed var(--border-color);
+  border-radius: 12px;
+  background: rgba(255,255,255,.02);
+  text-align: center;
+}
+body.light-theme .promo-empty { background: rgba(0,0,0,.02); }
+.promo-empty .pe-emoji {
+  font-size: 56px;
+  line-height: 1;
+  filter: grayscale(0.15);
+  animation: sadBounce 2.4s ease-in-out infinite;
+}
+@keyframes sadBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.promo-empty .pe-text {
+  font-size: clamp(12px, 1.1vw, 13px);
+  color: var(--muted);
+  max-width: 260px;
+  line-height: 1.5;
+}
+
+.promo-item {
+  display: flex; gap: 12px; align-items: stretch;
+  border: 1px solid var(--border-color); border-radius: 12px;
+  background: rgba(255,255,255,.03); overflow: hidden;
+  position: relative;
+}
+body.light-theme .promo-item { background: rgba(0,0,0,.02); }
+.promo-item .promo-ico {
+  flex: 0 0 64px; display: grid; place-items: center;
+  font-size: 30px; background: linear-gradient(135deg, rgba(84,169,235,.22), rgba(255,79,131,.22));
+}
+.promo-item .promo-body { flex: 1; padding: 10px 12px 10px 0; min-width: 0; }
+.promo-item .promo-name {
+  font-weight: 700; font-size: clamp(12px, 1.1vw, 13px);
+  overflow-wrap: anywhere; margin-bottom: 4px;
+}
+.promo-item .promo-desc {
+  font-size: clamp(10px, .95vw, 11px); color: var(--muted);
+  line-height: 1.4; margin-bottom: 6px;
+}
+.promo-item .promo-code {
+  display: inline-block; padding: 4px 8px; border-radius: 6px;
+  background: var(--input-bg); border: 1px dashed var(--border-color);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: clamp(11px, 1vw, 12px); font-weight: 700;
+  letter-spacing: .04em; user-select: all; -webkit-user-select: all;
+  color: var(--text);
+}
+.promo-item .promo-actions {
+  display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap;
+}
+.promo-btn {
+  padding: 6px 10px; border-radius: 8px;
+  background: var(--btn-bg); border: 1px solid var(--border-color);
+  font-size: clamp(10.5px, .95vw, 11.5px); font-weight: 700;
+  color: var(--text); cursor: pointer; min-height: 32px;
+  transition: background .15s, border-color .15s;
+}
+.promo-btn:hover { background: var(--btn-bg-hover); border-color: var(--accent); }
+.promo-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.promo-btn.primary:hover { background: var(--accent2); }
+.promo-btn:disabled { opacity: .45; cursor: default; }
+.promo-item.used { opacity: .6; }
+.promo-item.used::after {
+  content: "активирован";
+  position: absolute; top: 8px; right: 10px;
+  font-size: 9px; text-transform: uppercase; letter-spacing: .08em;
+  color: #00c853; font-weight: 800;
+}
+.promo-input-row {
+  display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap;
+}
+.promo-input-row input {
+  flex: 1 1 180px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-transform: uppercase; letter-spacing: .04em;
+}
+
+/* =========================================================
+   NEW: Новости — только официальный шрифт, адаптивные
+   ========================================================= */
+.news-list { display: grid; gap: 14px; }
+
+.news-tile {
+  display: flex;
+  flex-direction: column;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: #ffffff;
+  color: #1a1a1a;
+  position: relative;
+  cursor: pointer;
+  transition: transform .18s, box-shadow .18s;
+  font-family: 'Inter', sans-serif;
+  aspect-ratio: 9 / 3;
+  min-height: 180px;
+}
+.news-tile:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.15); }
+
+.news-photo {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 33.333%;
+  overflow: hidden;
+  background: #e8eef4;
+}
+.news-photo img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.news-photo .news-photo-emoji {
+  width: 100%; height: 100%;
+  display: grid; place-items: center;
+  font-size: clamp(36px, 8vw, 64px);
+  background: linear-gradient(135deg, rgba(84,169,235,.25), rgba(255,79,131,.25));
+}
+.news-fade {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 33.333%;
+  width: 5.555%;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, #ffffff 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+.news-body {
+  margin-left: calc(33.333% + 5.555%);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+  height: 100%;
+  min-width: 0;
+  background: #ffffff;
+  color: #1a1a1a;
+}
+.news-headline {
+  font-weight: 800;
+  font-size: clamp(12px, 1.2vw, 14px);
+  line-height: 1.25;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow-wrap: anywhere;
+}
+.news-meta {
+  font-size: clamp(9.5px, .9vw, 11px);
+  color: #707579;
+  display: flex; gap: 8px; flex-wrap: wrap;
+  align-items: center;
+}
+.news-meta .news-tag {
+  padding: 2px 6px; border-radius: 6px;
+  background: rgba(0,136,204,.12); color: #0088cc;
+  font-weight: 700; font-size: 9.5px;
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.news-preview {
+  font-size: clamp(10.5px, 1vw, 12px);
+  color: #444;
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow-wrap: anywhere;
+}
+.news-actions {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  align-items: center;
+}
+.news-action-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 5px 9px; border-radius: 8px;
+  border: 1px solid #d6dce1; background: #f4f6f8;
+  font-size: 11px; font-weight: 700; color: #1a1a1a;
+  cursor: pointer; min-height: 30px;
+  transition: background .15s, border-color .15s, transform .12s;
+}
+.news-action-btn:hover { background: #e9eef3; border-color: #b9cddf; }
+.news-action-btn:active { transform: scale(.96); }
+.news-action-btn.liked { color: #ff4f83; border-color: #ff4f83; background: #ffe8ef; }
+.news-action-btn .news-ico { font-size: 13px; }
+
+/* NEW: детальный просмотр новости + комментарии */
+.news-detail-photo {
+  width: 100%; aspect-ratio: 16 / 9;
+  border-radius: 12px; overflow: hidden; margin-bottom: 12px;
+  background: linear-gradient(135deg, rgba(84,169,235,.25), rgba(255,79,131,.25));
+  display: grid; place-items: center;
+  font-size: 64px;
+}
+.news-detail-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.news-detail-title {
+  font-size: clamp(15px, 1.6vw, 18px); font-weight: 800;
+  margin: 0 0 6px; overflow-wrap: anywhere;
+}
+.news-detail-meta {
+  font-size: 11px; color: var(--muted); margin-bottom: 10px;
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.news-detail-body {
+  font-size: clamp(12px, 1.1vw, 13px); line-height: 1.6;
+  white-space: pre-wrap; overflow-wrap: anywhere;
+  margin-bottom: 14px;
+}
+.news-comments {
+  border-top: 1px solid var(--border-color);
+  padding-top: 10px; margin-top: 6px;
+}
+.news-comments-title {
+  font-size: 12px; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--muted); font-weight: 700; margin-bottom: 8px;
+}
+.news-comment {
+  border: 1px solid var(--border-color); border-radius: 10px;
+  padding: 8px 10px; margin-bottom: 6px;
+  font-size: 12px; line-height: 1.4; overflow-wrap: anywhere;
+  background: rgba(255,255,255,.03);
+}
+body.light-theme .news-comment { background: rgba(0,0,0,.02); }
+.news-comment .nc-name { font-weight: 700; font-size: 11px; color: var(--accent2); }
+.news-comment .nc-text { margin-top: 2px; }
+.news-comment-row {
+  display: flex; gap: 6px; margin-top: 8px;
+}
+.news-comment-row input { flex: 1; }
+.news-comment-row button { flex: 0 0 auto; padding: 0 14px; border-radius: 10px; }
+
 /* ADAPTIVE */
 @media (max-width: 900px) {
   :root { --app-padding: 14px; }
@@ -1238,19 +1496,17 @@ body.light-theme .support-photo-slot { background: rgba(0,0,0,.02); }
   .gift-grid { grid-template-columns: 1fr 1fr; }
   .rules-grid { grid-template-columns: 1fr 1fr; }
   .donate-bars { height: 100px; }
-  .settings-panel, .bar-panel { width: min(380px, calc(100vw - 16px)); }
+  .bar-panel { width: min(380px, calc(100vw - 16px)); }
+  .news-tile { aspect-ratio: auto; min-height: 200px; }
 }
 @media (max-width: 540px) {
   :root { --app-padding: 10px; --app-bottom-padding: 96px; --bottom-bar-height: 50px; }
-  .hero { padding: 6px 4px 12px; }
   h1 { font-size: clamp(26px, 8vw, 34px); }
-  .subtitle { font-size: 12.5px; }
   .panel { border-radius: 12px; padding: 12px; margin-bottom: 10px; }
   .gender-options { gap: 5px; }
   .gender-option { font-size: 9px; padding: 8px 3px; min-height: 66px; gap: 4px; }
   .gender-option .pair-icons { font-size: 18px; gap: 2px; }
   .name-grid { grid-template-columns: 1fr; gap: 8px; }
-  .form-section { margin-top: 12px; padding-top: 10px; }
   .actions { gap: 6px; margin-top: 12px; }
   .action-button { min-height: 40px; padding: 9px 12px; font-size: 13px; }
   .cards { gap: 8px; max-width: 100%; }
@@ -1262,12 +1518,10 @@ body.light-theme .support-photo-slot { background: rgba(0,0,0,.02); }
     bottom: max(6px, env(safe-area-inset-bottom, 6px));
     width: calc(100% - 12px); padding: 5px 8px; border-radius: 23px; gap: 5px;
   }
-  .back-button, .profile-button, .settings-button { width: 32px; height: 32px; flex-basis: 32px; font-size: 15px; }
+  .back-button, .profile-button { width: 32px; height: 32px; flex-basis: 32px; font-size: 15px; }
   .bar-toggle-btn { height: 32px; padding: 0 8px; font-size: 11px; gap: 4px; }
   .bar-toggle-btn .ico { font-size: 12px; }
   .start-bar-btn { height: 32px; font-size: 12px; padding: 0 10px; }
-  .bottom-revealed-names { max-width: 55vw; padding-left: 6px; margin-left: 2px; }
-  .bottom-revealed-names .rev-name { padding: 2px 6px; font-size: 10px; }
   .profile-menu { width: calc(100vw - 12px); max-height: 75vh; padding: 10px; border-radius: 12px; }
   .profile-menu-item { padding: 8px 9px; font-size: 12.5px; }
   .modal { border-radius: 12px; }
@@ -1275,25 +1529,25 @@ body.light-theme .support-photo-slot { background: rgba(0,0,0,.02); }
   .theme-button { padding: 8px; font-size: 11px; }
   .emoji-grid { grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 6px; }
   .emoji-option { font-size: 20px; }
-  .result-note-box textarea { min-height: 50px; font-size: 12px; }
-  .sub-card { padding: 9px 10px; gap: 8px; }
-  .sub-card .sub-ico { width: 30px; height: 30px; font-size: 15px; }
-  .ticket-row { flex-direction: column; align-items: flex-start; gap: 2px; }
-  .ticket-row .v { text-align: left; }
-  .gift-grid { grid-template-columns: 1fr; }
-  .gift-card { min-height: 110px; padding: 14px 12px; }
-  .rules-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .rule-card { min-height: 140px; padding: 10px 8px; }
-  .rule-card .rule-img { width: 52px; height: 52px; font-size: 26px; }
-  .donate-bars { height: 90px; gap: 4px; }
-  .donate-bar-label { font-size: 9px; }
-  .donate-wallet input { flex: 1 1 100%; }
-  .donate-copy-btn { width: 100%; }
-  .support-hero .support-img { width: 80px; height: 80px; font-size: 44px; }
-  .settings-panel, .bar-panel { width: calc(100vw - 12px); padding: 12px; max-height: 76vh; }
-  .archive-card-mini { width: 54px; height: 72px; }
-  .archive-bookmark-top { width: 46px; height: 20px; }
-  .archive-bookmark-top .bm-tail { width: 34px; height: 14px; top: 16px; }
+  .bar-panel { width: calc(100vw - 12px); padding: 12px; max-height: 76vh; }
+  /* NEW: новости на мобильном — вертикально, во всю ширину */
+  .news-tile {
+    flex-direction: column;
+    aspect-ratio: auto;
+    min-height: 0;
+  }
+  .news-photo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+  .news-fade {
+    display: none;
+  }
+  .news-body {
+    margin-left: 0;
+    padding: 10px 12px 12px;
+  }
 }
 @media (max-width: 380px) {
   :root { --app-padding: 8px; }
@@ -1305,30 +1559,22 @@ body.light-theme .support-photo-slot { background: rgba(0,0,0,.02); }
   .bottom-revealed-names { display: none; }
   .actions { flex-direction: column; }
   .actions .primary { width: 100%; }
-  .sub-card .sub-price { font-size: 12px; }
-  .result-summary h2 { font-size: 16px; }
-  .rules-grid { grid-template-columns: 1fr; }
   .bar-toggle-btn { padding: 0 6px; font-size: 10px; }
   .start-bar-btn { font-size: 11px; padding: 0 8px; }
 }
 @media (max-height: 500px) and (orientation: landscape) {
   :root { --bottom-bar-height: 44px; --app-bottom-padding: 60px; }
-  .hero { padding: 4px 4px 8px; }
   h1 { font-size: 26px; margin: 4px 0; }
   .splash-table { display: none; }
-  .splash-title { margin-bottom: 4px; }
-  .splash-sub { margin-bottom: 12px; }
-  .profile-menu { max-height: 70vh; }
-  .modal { max-height: 92vh; }
   .bottom-bar { height: 44px; }
-  .back-button, .profile-button, .settings-button { width: 30px; height: 30px; flex-basis: 30px; }
+  .back-button, .profile-button { width: 30px; height: 30px; flex-basis: 30px; }
   .bar-toggle-btn { height: 30px; font-size: 10px; padding: 0 8px; }
   .start-bar-btn { height: 30px; font-size: 11px; }
 }
 @media (max-height: 600px) {
   .modal { max-height: 92vh; }
   .profile-menu { max-height: 80vh; }
-  .settings-panel, .bar-panel { max-height: 82vh; }
+  .bar-panel { max-height: 82vh; }
 }
 @media (min-width: 1400px) {
   :root { --app-padding: 22px; }
@@ -1343,7 +1589,7 @@ body.light-theme .support-photo-slot { background: rgba(0,0,0,.02); }
   }
 }
 @media print {
-  .bottom-bar, .profile-menu, .toast, #splashScreen, .modal-backdrop, .settings-panel, .bar-panel { display: none !important; }
+  .bottom-bar, .profile-menu, .toast, #splashScreen, .modal-backdrop, .bar-panel { display: none !important; }
   body { background: #fff !important; color: #000 !important; }
   body::before { display: none; }
 }
@@ -1370,6 +1616,7 @@ body.light-theme .support-photo-slot { background: rgba(0,0,0,.02); }
     <button class="icon-button" id="menuButton" aria-label="Меню">⋯</button>
     <div class="dropdown hidden" id="topMenu">
       <button data-modal="about">ⓘ О игре</button>
+      <button data-modal="news">📰 Новости</button>
       <button data-modal="support">✉ Техподдержка</button>
       <button data-modal="donate">♡ Поддержать</button>
       <button data-modal="services">▦ Сервисы</button>
@@ -1377,59 +1624,14 @@ body.light-theme .support-photo-slot { background: rgba(0,0,0,.02); }
   </div>
 
   <main>
-    <header class="hero">
-      <div class="eyebrow">Романтическая игра</div>
-      <h1>Переворот</h1>
-      <p class="subtitle">Две карты. Один выбор.</p>
-    </header>
-
-    <!-- setupPanel скрыт: данные вводятся в bar-панелях -->
-    <section class="panel hidden" id="setupPanel">
-      <div class="gender-options" id="genderOptions">
-        <button class="gender-option" data-gender="mm"><span class="pair-icons">👨 👨</span>М / М</button>
-        <button class="gender-option selected" data-gender="mf"><span class="pair-icons">👨 👩</span>М / Ж</button>
-        <button class="gender-option" data-gender="ff"><span class="pair-icons">👩 👩</span>Ж / Ж</button>
-      </div>
-      <div class="form-section" id="formSection">
-        <div class="name-grid">
-          <div class="name-field-block">
-            <div class="name-input-row">
-              <input id="nameOne" maxlength="15" placeholder="Имя 1" autocomplete="off">
-              <button type="button" class="photo-upload-btn" id="photoUploadOne" title="Загрузить фото">📷</button>
-              <button type="button" class="photo-preview-btn" id="photoPreviewOne">
-                <img alt="" id="photoPreviewOneImg">
-                <span class="photo-remove-btn" id="photoRemoveOne">×</span>
-              </button>
-              <input type="file" class="photo-file-input" id="photoFileOne" accept="image/png,image/jpeg,image/jpg">
-            </div>
-          </div>
-          <div class="name-field-block">
-            <div class="name-input-row">
-              <input id="nameTwo" maxlength="15" placeholder="Имя 2" autocomplete="off">
-              <button type="button" class="photo-upload-btn" id="photoUploadTwo" title="Загрузить фото">📷</button>
-              <button type="button" class="photo-preview-btn" id="photoPreviewTwo">
-                <img alt="" id="photoPreviewTwoImg">
-                <span class="photo-remove-btn" id="photoRemoveTwo">×</span>
-              </button>
-              <input type="file" class="photo-file-input" id="photoFileTwo" accept="image/png,image/jpeg,image/jpg">
-            </div>
-          </div>
-        </div>
-        <div class="comment-box field-wrap">
-          <textarea id="battleComment" maxlength="500" placeholder="Комментарий" autocomplete="off"></textarea>
-        </div>
-      </div>
-    </section>
-
-    <section class="panel hidden" id="gamePanel">
-      <div class="status" id="gameStatus">Запомни карты</div>
+    <section class="panel" id="gamePanel">
+      <div class="status" id="gameStatus">Две карты. Один выбор.</div>
       <div class="cards" id="gameCards"></div>
       <div class="actions" style="justify-content:center" id="gameActions">
         <button class="action-button primary hidden" id="flipButton">Перевернуть</button>
       </div>
     </section>
 
-    <!-- NEW: оценка убрана из результата; оставлены заголовок, цитата, комментарий, заметка -->
     <section class="panel hidden" id="resultPanel">
       <div class="status" id="resultStatus">Результат</div>
       <div id="resultCard" class="result-card"></div>
@@ -1453,49 +1655,6 @@ body.light-theme .support-photo-slot { background: rgba(0,0,0,.02); }
   </main>
 </div>
 
-<!-- Панель «Настройка карт» (шестерёнка) -->
-<div class="settings-panel" id="settingsPanel">
-  <div class="settings-panel-head">
-    <h3>Настройка карт</h3>
-    <button class="settings-panel-close" id="settingsPanelClose" aria-label="Закрыть">×</button>
-  </div>
-  <div class="settings-section-title">Пара</div>
-  <div class="gender-options" id="genderOptionsPanel">
-    <button class="gender-option" data-gender="mm"><span class="pair-icons">👨 👨</span>М / М</button>
-    <button class="gender-option selected" data-gender="mf"><span class="pair-icons">👨 👩</span>М / Ж</button>
-    <button class="gender-option" data-gender="ff"><span class="pair-icons">👩 👩</span>Ж / Ж</button>
-  </div>
-  <div class="settings-section-title">Имена и фото</div>
-  <div class="name-grid">
-    <div class="name-field-block">
-      <div class="name-input-row">
-        <input id="nameOnePanel" maxlength="15" placeholder="Имя 1" autocomplete="off">
-        <button type="button" class="photo-upload-btn" id="photoUploadOnePanel" title="Загрузить фото">📷</button>
-        <button type="button" class="photo-preview-btn" id="photoPreviewOnePanel">
-          <img alt="" id="photoPreviewOnePanelImg">
-          <span class="photo-remove-btn" id="photoRemoveOnePanel">×</span>
-        </button>
-        <input type="file" class="photo-file-input" id="photoFileOnePanel" accept="image/png,image/jpeg,image/jpg">
-      </div>
-    </div>
-    <div class="name-field-block">
-      <div class="name-input-row">
-        <input id="nameTwoPanel" maxlength="15" placeholder="Имя 2" autocomplete="off">
-        <button type="button" class="photo-upload-btn" id="photoUploadTwoPanel" title="Загрузить фото">📷</button>
-        <button type="button" class="photo-preview-btn" id="photoPreviewTwoPanel">
-          <img alt="" id="photoPreviewTwoPanelImg">
-          <span class="photo-remove-btn" id="photoRemoveTwoPanel">×</span>
-        </button>
-        <input type="file" class="photo-file-input" id="photoFileTwoPanel" accept="image/png,image/jpeg,image/jpg">
-      </div>
-    </div>
-  </div>
-  <div class="comment-box field-wrap">
-    <textarea id="battleCommentPanel" maxlength="500" placeholder="Комментарий" autocomplete="off"></textarea>
-  </div>
-</div>
-
-<!-- Панель «Пол» -->
 <div class="bar-panel" id="genderBarPanel">
   <div class="bar-panel-head">
     <h3>Выбор пары</h3>
@@ -1508,7 +1667,6 @@ body.light-theme .support-photo-slot { background: rgba(0,0,0,.02); }
   </div>
 </div>
 
-<!-- Панель «Данные» -->
 <div class="bar-panel" id="dataBarPanel">
   <div class="bar-panel-head">
     <h3>Данные и комментарий</h3>
@@ -1547,7 +1705,6 @@ body.light-theme .support-photo-slot { background: rgba(0,0,0,.02); }
   <button class="back-button hidden" id="backButton" aria-label="Назад">←</button>
   <button class="profile-button" id="profileButton" aria-label="Профиль">♙</button>
 
-  <!-- NEW: кнопки «Пол» и «Данные» -->
   <button class="bar-toggle-btn" id="barGenderBtn" aria-pressed="false">
     <span class="ico">👥</span><span class="lbl">Пол</span>
   </button>
@@ -1555,15 +1712,12 @@ body.light-theme .support-photo-slot { background: rgba(0,0,0,.02); }
     <span class="ico">✏️</span><span class="lbl">Данные</span>
   </button>
 
-  <!-- NEW: кнопка «Начать» растянута в свободное пространство bottom bar -->
   <button class="start-bar-btn" id="startBarBtn">Начать</button>
 
   <div class="bottom-revealed-names hidden" id="bottomRevealedNames">
     <span class="rev-label">За картами</span>
     <div id="revNamesList" style="display:flex; gap:4px; flex-wrap:wrap;"></div>
   </div>
-
-  <button class="settings-button" id="settingsButton" aria-label="Настройка карт">⚙</button>
 </div>
 
 <div class="profile-menu" id="profileMenu">
@@ -1575,8 +1729,9 @@ body.light-theme .support-photo-slot { background: rgba(0,0,0,.02); }
     </div>
   </div>
   <div class="profile-menu-list">
-    <button class="profile-menu-item" data-profile-action="avatar"><span class="icon">🖼</span><span class="label">Аватарка</span></button>
+    <!-- NEW: «Аватарка» перенесена в настройки профиля -->
     <button class="profile-menu-item" data-profile-action="settings"><span class="icon">⚙</span><span class="label">Настройки профиля</span></button>
+    <button class="profile-menu-item" data-profile-action="promo"><span class="icon">🎟️</span><span class="label">Промокоды</span></button>
     <button class="profile-menu-item" data-profile-action="archive"><span class="icon">▤</span><span class="label">Архив</span></button>
     <button class="profile-menu-item" data-profile-action="wallpaper"><span class="icon">✦</span><span class="label">Настройки фона</span></button>
     <div class="profile-menu-divider"></div>
@@ -1675,6 +1830,8 @@ const commentSuggestions = [
 const STORAGE_KEY = "perevorot_archive_v14";
 const SETTINGS_KEY = "perevorot_settings_v14";
 const LAST_NAMES_KEY = "perevorot_lastnames_v14";
+const PROMO_STORAGE_KEY = "perevorot_promos_v14";
+const NEWS_STORAGE_KEY = "perevorot_news_v14";
 
 const DONATE_WALLET = "UQCpQQ5DdYWyv7qwQANvd_aGRYwKq7OpSZdoRuP2ekKF3i9T";
 
@@ -1699,10 +1856,83 @@ const supportTags = [
   { id: "other", label: "#Другое", cls: "tag-other" }
 ];
 
+/* NEW: промокоды по умолчанию (можно очистить, чтобы увидеть пустое состояние) */
+const DEFAULT_PROMOS = [
+  {
+    id: "promo-1",
+    icon: "🎁",
+    name: "Стартовый бонус",
+    desc: "Первая игра в подарок. Активируется один раз.",
+    code: "START2026"
+  },
+  {
+    id: "promo-2",
+    icon: "💎",
+    name: "TON-купон",
+    desc: "Скидка 15% на подписку в TON.",
+    code: "TON15"
+  },
+  {
+    id: "promo-3",
+    icon: "🎟️",
+    name: "Подарочная карта",
+    desc: "Токен активирует подарочную карту «10 игр».",
+    code: "GIFT10NFT"
+  }
+];
+
+/* NEW: базовые новости (5 плиток) */
+const BASE_NEWS = [
+  {
+    id: "news-1",
+    icon: "🎴",
+    title: "Новый режим «Блиц»",
+    preview: "Ускоренный выбор карт: 1.5 секунды на запоминание и никаких комментариев — только интуиция.",
+    body: "Мы добавили режим «Блиц». Теперь карты показываются всего 1.5 секунды, а комментарий отключён — выбор становится молниеносным. Режим доступен всем пользователям без подписки.",
+    tag: "Обновление",
+    date: "2026-10-20"
+  },
+  {
+    id: "news-2",
+    icon: "🎨",
+    title: "15 тем оформления",
+    preview: "Добавили 3 новые темы: Неон-вечеринка, Изумрудный лес и Пылающий закат.",
+    body: "Теперь в настройках фона 15 тем. Каждая тема — это анимированный градиент с плавным переходом. Попробуйте «Неон-вечеринку» — она особенно хороша в тёмном режиме.",
+    tag: "Тематика",
+    date: "2026-10-18"
+  },
+  {
+    id: "news-3",
+    icon: "🎟️",
+    title: "Промокоды в профиле",
+    preview: "В разделе «Профиль» появилась панель «Промокоды»: купоны, подарочные карты и токены.",
+    body: "Откройте профиль → «Промокоды». Там вы найдёте купоны, подарочные карты и токены. Введите код в поле внизу — активация сохраняется в вашем профиле.",
+    tag: "Новость",
+    date: "2026-10-15"
+  },
+  {
+    id: "news-4",
+    icon: "📰",
+    title: "Новости теперь внутри игры",
+    preview: "Кнопка «Новости» в меню (три точки). Лайки, просмотры, комментарии и шеринг.",
+    body: "Мы добавили раздел «Новости». Каждую плитку можно лайкнуть, открыть полностью, оставить комментарий или поделиться с друзьями.",
+    tag: "Обновление",
+    date: "2026-10-12"
+  },
+  {
+    id: "news-5",
+    icon: "💞",
+    title: "Фото на карте после переворота",
+    preview: "Исправили отображение фото: теперь оно не пропадает при перевороте карты.",
+    body: "Ранее после переворота фото могло «схлопываться». Мы исправили CSS-стек: изображение плавно проявляется и корректно отображается на лицевой стороне карты.",
+    tag: "Исправление",
+    date: "2026-10-10"
+  }
+];
+
 const maleNames = ["Александр","Максим","Артём","Михаил","Иван","Даниил","Дмитрий","Кирилл","Андрей","Егор","Алексей","Роман","Никита","Матвей","Илья","Тимур","Лев","Марк","Денис","Павел","Адам","Ноа","Лиам","Оливер","Джеймс","Лукас","Лео","Этан","Джек","Генри","Луи","Габриэль","Артур","Оскар","Феликс","Хуго","Карлос","Диего","Матео","Лука","Энцо","Марко","Давид","Рафаэль","Тео","Алекс","Эмиль","Юсуф","Амир","Омар","Хасан","Раян","Ибрагим","Зейн","Кай","Рэн","Харуто","Сота","Юто","Такуми","Минхо","Джун","Сону","Хён","Джихун","Вэй","Цзюнь","Чэнь","Бо","Линь","Арджун","Рахул","Викрам","Кабир","Дев","Рохан","Аарон","Самуэль","Бенджамин","Джозеф","Финн","Коннор","Шон","Патрик","Эрик","Антон","Ян","Мартин","Нильс","Свен","Андреас","Филипп","Томас","Милан","Никола","Стефан","Пётр","Якуб","Матеуш","Алексей"];
 const femaleNames = ["Анна","Мария","София","Алиса","Виктория","Полина","Ева","Арина","Дарья","Екатерина","Анастасия","Варвара","Милана","Александра","Кира","Вероника","Диана","Ульяна","Таисия","Мирослава","Эмма","Оливия","Амелия","Шарлотта","Ава","Изабелла","Миа","Луна","Элла","Лили","Софи","Камилла","Жюли","Клэр","Амели","Хлоя","Манон","Элоиза","Лея","Ноэми","Кармен","Лусия","Валерия","Мартина","Лола","Альба","Сара","Инес","Элена","Паула","Джулия","Джорджия","Франческа","Бьянка","Элеттра","Аурора","Ливия","Серена","Виола","Маргарита","Ясмин","Лейла","Нура","Амира","Малика","Сальма","Хана","Марьям","Зара","Алия","Сакура","Юи","Хина","Аой","Мэй","Рин","Ами","Мисаки","Юна","Хару","Соён","Джису","Минджи","Наён","Йеджи","Суён","Хэин","Ара","Сэри","Ерин","Прия","Анья","Иша","Мира","Кавья","Неха","Сита","Лакшми","Тара","Алия"];
 
-/* NEW: добавлены 3 новых темы (итого 15) — с яркими градиентами */
 const themes = [
   { name:"Розовый вечер", colors:["#380d2d","#8b174b","#e04472","#5b174c","#bd386a"] },
   { name:"Закат", colors:["#34102d","#86274e","#f06b65","#f4a261","#6b204f"] },
@@ -1716,7 +1946,6 @@ const themes = [
   { name:"Космическая любовь", colors:["#140d2e","#4d1d58","#a63b7d","#f18ca8","#30204b"] },
   { name:"Синий вечер", colors:["#17212b","#2b5278","#0088cc","#4a76a8","#1c2733"] },
   { name:"Ночная синева", colors:["#0e1621","#17212b","#232e3c","#2b5278","#4a76a8"] },
-  /* NEW: 3 новые темы — яркие анимированные градиенты */
   { name:"Неон-вечеринка", colors:["#1a0033","#7b00ff","#ff00a0","#00e5ff","#3b0099"] },
   { name:"Изумрудный лес", colors:["#021c14","#0a4d2b","#18a558","#5be7a9","#063b22"] },
   { name:"Пылающий закат", colors:["#1a0000","#7a1500","#d43600","#ff8c00","#4a0c00"] }
@@ -1786,6 +2015,8 @@ let selectedCardIndex = -1;
 let currentRecord = null;
 let archive = loadArchive();
 let settings = loadSettings();
+let promos = loadPromos();
+let news = loadNews();
 let roundTimer = null;
 let toastTimer = null;
 let revealedNames = [];
@@ -1847,6 +2078,43 @@ function loadSettings() {
 function saveSettings() {
   try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch {}
 }
+
+/* NEW: промокоды — если localStorage пуст, возвращаем []
+ * чтобы можно было проверить пустое состояние (эмодзи печали). */
+function loadPromos() {
+  try {
+    const raw = localStorage.getItem(PROMO_STORAGE_KEY);
+    if (raw === null) {
+      // первый запуск — инициализируем стартовыми промокодами
+      localStorage.setItem(PROMO_STORAGE_KEY, JSON.stringify(DEFAULT_PROMOS.map(p => ({ ...p, used: false }))));
+      return DEFAULT_PROMOS.map(p => ({ ...p, used: false }));
+    }
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch { return []; }
+}
+function savePromos() {
+  try { localStorage.setItem(PROMO_STORAGE_KEY, JSON.stringify(promos)); } catch {}
+}
+
+/* NEW: новости */
+function loadNews() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(NEWS_STORAGE_KEY) || "null");
+    if (Array.isArray(raw) && raw.length) return raw;
+  } catch {}
+  return BASE_NEWS.map(n => ({
+    ...n,
+    likes: Math.floor(Math.random() * 40) + 5,
+    views: Math.floor(Math.random() * 200) + 30,
+    liked: false,
+    comments: []
+  }));
+}
+function saveNews() {
+  try { localStorage.setItem(NEWS_STORAGE_KEY, JSON.stringify(news)); } catch {}
+}
+
 function showToast(msg) {
   const el = $("toast");
   el.textContent = msg;
@@ -1898,7 +2166,7 @@ function bindPhotoLoader(opts) {
       preview.classList.add("visible");
       uploadBtn.classList.add("hidden");
       fileInput.value = "";
-      refreshFormSectionState();
+      refreshGameCards();
     };
     reader.readAsDataURL(f);
   });
@@ -1910,7 +2178,7 @@ function bindPhotoLoader(opts) {
     preview.classList.remove("visible");
     uploadBtn.classList.remove("hidden");
     fileInput.value = "";
-    refreshFormSectionState();
+    refreshGameCards();
   });
 
   const existing = getPhoto();
@@ -1921,22 +2189,6 @@ function bindPhotoLoader(opts) {
   }
 }
 
-function setupPhotoLoader(idx) {
-  const suffix = idx === 1 ? "One" : "Two";
-  bindPhotoLoader({
-    suffix,
-    onSet: (val) => { if (idx === 1) photoOne = val; else photoTwo = val; },
-    getPhoto: () => (idx === 1 ? photoOne : photoTwo)
-  });
-}
-function setupPanelPhotoLoader(idx) {
-  const suffix = idx === 1 ? "OnePanel" : "TwoPanel";
-  bindPhotoLoader({
-    suffix,
-    onSet: (val) => { if (idx === 1) photoOne = val; else photoTwo = val; },
-    getPhoto: () => (idx === 1 ? photoOne : photoTwo)
-  });
-}
 function setupBarPhotoLoader(idx) {
   const suffix = idx === 1 ? "OneBar" : "TwoBar";
   bindPhotoLoader({
@@ -1951,23 +2203,19 @@ function setupBarPhotoLoader(idx) {
    ========================================================= */
 function setPhase(next) {
   phase = next;
-  $("setupPanel").classList.toggle("hidden", next !== "setup");
   $("gamePanel").classList.toggle("hidden", next !== "preview" && next !== "choice");
   $("resultPanel").classList.toggle("hidden", next !== "result");
   $("bottomBar").classList.remove("is-hidden");
   closeProfileMenu();
-  closeSettingsPanel();
   closeBarPanels();
   closeSuggest();
+
   const showBack = (next !== "setup");
   $("backButton").classList.toggle("hidden", !showBack);
 
-  // NEW: кнопки доступны только в фазе setup
   const isSetup = next === "setup";
   $("barGenderBtn").classList.toggle("hidden", !isSetup);
   $("barDataBtn").classList.toggle("hidden", !isSetup);
-  $("settingsButton").classList.toggle("hidden", !isSetup);
-  // NEW: кнопка «Начать» видна только в setup
   $("startBarBtn").classList.toggle("hidden", !isSetup);
 
   updateRevealedNames();
@@ -2002,9 +2250,7 @@ function makeCharacter(gender, name, color, bg1, bg2, photo) {
 }
 
 function readNameValue(idx) {
-  const candidates = idx === 1
-    ? ["nameOneBar", "nameOnePanel", "nameOne"]
-    : ["nameTwoBar", "nameTwoPanel", "nameTwo"];
+  const candidates = idx === 1 ? ["nameOneBar"] : ["nameTwoBar"];
   for (const id of candidates) {
     const el = $(id);
     if (el && el.value && el.value.trim()) return el.value;
@@ -2012,15 +2258,11 @@ function readNameValue(idx) {
   return "";
 }
 function readCommentValue() {
-  const candidates = ["battleCommentBar", "battleCommentPanel", "battleComment"];
-  for (const id of candidates) {
-    const el = $(id);
-    if (el && el.value && el.value.trim()) return el.value;
-  }
-  return "";
+  const el = $("battleCommentBar");
+  return el && el.value ? el.value : "";
 }
 
-function prepareCharacters() {
+function buildCharacters() {
   const pair = selectedGender === "mm"
     ? ["Мужской","Мужской"]
     : selectedGender === "ff"
@@ -2030,7 +2272,7 @@ function prepareCharacters() {
   const manualNames = [sanitizeName(readNameValue(1)), sanitizeName(readNameValue(2))];
   const usedNames = [];
 
-  cards = pair.map((gender, index) => {
+  return pair.map((gender, index) => {
     let name = manualNames[index];
     if (!name) name = randomName(gender, usedNames);
     usedNames.push(name);
@@ -2048,12 +2290,14 @@ function prepareCharacters() {
     const photo = index === 0 ? photoOne : photoTwo;
     return makeCharacter(gender, name, color, bg1, bg2, photo);
   });
-
-  roundComment = sanitizeComment(readCommentValue());
-  revealedNames = cards.map(c => c.name);
-  saveLastNames(cards[0].name, cards[1].name);
 }
 
+/*
+ * cardMarkup — рендер карты.
+ * Фото/портрет внутри .card-photo. При перевороте (.card.flipped)
+ * весь .card-front поворачивается, а img имеет backface-visibility: visible
+ * и плавную анимацию появления — фото не «схлопывается».
+ */
 function cardMarkup(character, index, faceUp = false) {
   if (!character) return "";
   const isMale = character.gender === "Мужской";
@@ -2089,14 +2333,111 @@ function cardMarkup(character, index, faceUp = false) {
     </button>`;
 }
 
+function cardWrapMarkup(character, index, faceUp = false) {
+  return `
+    <div class="card-wrap" data-wrap-index="${index}">
+      ${cardMarkup(character, index, faceUp)}
+      <div class="card-edit-overlay">
+        <button type="button" class="card-edit-btn" data-edit-name="${index}" title="Изменить имя">✏️</button>
+        <button type="button" class="card-edit-btn" data-edit-photo="${index}" title="Загрузить фото">📷</button>
+        <button type="button" class="card-edit-btn" data-edit-gender="${index}" title="Изменить пол">👥</button>
+      </div>
+    </div>
+  `;
+}
+
 function renderGameCards(faceUp) {
-  $("gameCards").innerHTML = cards.map((c,i) => cardMarkup(c,i,faceUp)).join("");
-  $("gameCards").querySelectorAll(".card").forEach(card => {
+  const container = $("gameCards");
+  container.innerHTML = cards.map((c,i) => cardWrapMarkup(c,i,faceUp)).join("");
+
+  container.querySelectorAll(".card").forEach(card => {
     card.disabled = (phase !== "choice");
     card.addEventListener("click", () => {
       if (phase === "choice") chooseCard(Number(card.dataset.index));
     });
   });
+
+  container.querySelectorAll("[data-edit-name]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openEditNameDialog(Number(btn.dataset.editName));
+    });
+  });
+  container.querySelectorAll("[data-edit-photo]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      triggerPhotoUpload(Number(btn.dataset.editPhoto));
+    });
+  });
+  container.querySelectorAll("[data-edit-gender]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openEditGenderDialog(Number(btn.dataset.editGender));
+    });
+  });
+}
+
+function refreshGameCards() {
+  if (phase !== "setup" && phase !== "preview" && phase !== "choice") return;
+  const faceUp = (phase === "setup" || phase === "preview");
+  cards = buildCharacters();
+  revealedNames = cards.map(c => c.name);
+  renderGameCards(faceUp);
+}
+
+function openEditNameDialog(idx) {
+  const ch = cards[idx];
+  if (!ch) return;
+  $("modalTitle").textContent = "Изменить имя";
+  $("modalContent").innerHTML = `
+    <label class="field-label">Имя карты ${idx + 1}</label>
+    <input type="text" id="editNameInput" maxlength="15" value="${escapeHTML(ch.name)}">
+    <div class="actions" style="margin-top:14px">
+      <button class="action-button primary" id="saveEditName" style="width:100%">Сохранить</button>
+    </div>`;
+  const input = $("modalContent").querySelector("#editNameInput");
+  input.addEventListener("input", () => {
+    const clean = sanitizeName(input.value);
+    if (clean !== input.value) input.value = clean;
+  });
+  $("modalContent").querySelector("#saveEditName").addEventListener("click", () => {
+    const name = sanitizeName(input.value);
+    if (!name) { showToast("Введите имя."); return; }
+    if (idx === 0) { if ($("nameOneBar")) $("nameOneBar").value = name; }
+    else { if ($("nameTwoBar")) $("nameTwoBar").value = name; }
+    closeModal();
+    refreshGameCards();
+    showToast("Имя обновлено.");
+  });
+  $("modalBackdrop").classList.remove("hidden");
+}
+
+function triggerPhotoUpload(idx) {
+  const inputId = idx === 0 ? "photoFileOneBar" : "photoFileTwoBar";
+  const fileInput = $(inputId);
+  if (fileInput) fileInput.click();
+}
+
+function openEditGenderDialog(idx) {
+  $("modalTitle").textContent = "Изменить пол";
+  $("modalContent").innerHTML = `
+    <p class="muted">Смена пола карты переключает тип пары. Выберите вариант:</p>
+    <div class="gender-options" style="grid-template-columns:1fr 1fr; margin-top:10px">
+      <button class="gender-option" data-gender="mm"><span class="pair-icons">👨 👨</span>М / М</button>
+      <button class="gender-option" data-gender="mf"><span class="pair-icons">👨 👩</span>М / Ж</button>
+      <button class="gender-option" data-gender="ff"><span class="pair-icons">👩 👩</span>Ж / Ж</button>
+    </div>`;
+  $("modalContent").querySelectorAll("[data-gender]").forEach(b => {
+    b.classList.toggle("selected", b.dataset.gender === selectedGender);
+    b.addEventListener("click", () => {
+      selectedGender = b.dataset.gender;
+      syncGenderSelection();
+      closeModal();
+      refreshGameCards();
+      showToast("Пара обновлена.");
+    });
+  });
+  $("modalBackdrop").classList.remove("hidden");
 }
 
 /* =========================================================
@@ -2112,19 +2453,23 @@ function startRound() {
 
   if (rawOne.trim() && !cleanOne) {
     showToast("Имя 1: только буквы, пробел, дефис.");
-    setAllNames(1, "");
+    if ($("nameOneBar")) $("nameOneBar").value = "";
     return;
   }
   if (rawTwo.trim() && !cleanTwo) {
     showToast("Имя 2: только буквы, пробел, дефис.");
-    setAllNames(2, "");
+    if ($("nameTwoBar")) $("nameTwoBar").value = "";
     return;
   }
 
-  setAllNames(1, cleanOne);
-  setAllNames(2, cleanTwo);
+  if ($("nameOneBar")) $("nameOneBar").value = cleanOne;
+  if ($("nameTwoBar")) $("nameTwoBar").value = cleanTwo;
 
-  prepareCharacters();
+  roundComment = sanitizeComment(readCommentValue());
+  cards = buildCharacters();
+  revealedNames = cards.map(c => c.name);
+  saveLastNames(cards[0].name, cards[1].name);
+
   selectedCardIndex = -1;
   currentRecord = null;
 
@@ -2134,7 +2479,6 @@ function startRound() {
   $("resultCard").innerHTML = "";
   $("flipButton").classList.add("hidden");
 
-  closeSettingsPanel();
   closeBarPanels();
 
   setPhase("preview");
@@ -2161,23 +2505,10 @@ function startRound() {
   };
 }
 
-function setAllNames(idx, value) {
-  const ids = idx === 1
-    ? ["nameOneBar", "nameOnePanel", "nameOne"]
-    : ["nameTwoBar", "nameTwoPanel", "nameTwo"];
-  for (const id of ids) { const el = $(id); if (el) el.value = value; }
-}
-
-/*
- * Рандомное переворачивание: для 2 карт — 50% swap, 50% без обмена.
- * Допускается, что карта визуально остаётся на том же месте.
- */
 function shuffleCards() {
   const n = cards.length;
   if (n === 2) {
-    if (Math.random() < 0.5) {
-      cards = [cards[1], cards[0]];
-    }
+    if (Math.random() < 0.5) cards = [cards[1], cards[0]];
   } else {
     cards = cards.slice().sort(() => Math.random() - .5);
   }
@@ -2278,61 +2609,36 @@ function saveRecord() {
 
 function goBack() {
   if (roundTimer) { clearInterval(roundTimer); roundTimer = null; }
-  if (phase === "preview" || phase === "choice") {
-    setPhase("setup");
-    renderGameCards(false);
-    $("flipButton").classList.add("hidden");
-  } else if (phase === "result") {
-    setPhase("setup");
-  }
+  setPhase("setup");
+  $("flipButton").classList.add("hidden");
+  refreshGameCards();
 }
 
 function newGame() {
   if (roundTimer) { clearInterval(roundTimer); roundTimer = null; }
-  if ($("battleComment")) $("battleComment").value = "";
-  if ($("battleCommentPanel")) $("battleCommentPanel").value = "";
-  if ($("battleCommentBar")) $("battleCommentBar").value = "";
-  setAllNames(1, "");
-  setAllNames(2, "");
   roundComment = "";
   currentRecord = null;
   selectedCardIndex = -1;
-  cards = [];
-  revealedNames = [];
   $("resultCard").innerHTML = "";
-  refreshFormSectionState();
+  if ($("battleCommentBar")) $("battleCommentBar").value = "";
   setPhase("setup");
+  refreshGameCards();
 }
 
 /* =========================================================
-   СЕРАЯ ПЛИТКА / ПОДСКАЗКИ
+   ПОДСКАЗКИ — с кнопкой обновления (🔄)
    ========================================================= */
-const formSection = $("formSection");
-const nameOneEl = $("nameOne");
-const nameTwoEl = $("nameTwo");
-const battleCommentEl = $("battleComment");
-
-function formHasData() {
-  return Boolean(
-    ($("nameOne")?.value.trim()) || ($("nameTwo")?.value.trim()) ||
-    ($("battleComment")?.value.trim()) || photoOne || photoTwo
-  );
-}
-function refreshFormSectionState() {
-  if (formSection) formSection.classList.toggle("is-active", formHasData());
-}
-
-/* NEW: фокус-подсказки с обновлением списка при каждом открытии */
 function closeSuggest() {
   if (suggestPanel) { suggestPanel.remove(); suggestPanel = null; }
   suggestExpanded = false;
 }
 
-function showSuggest(anchor, allTiles) {
+function showSuggest(anchor, allTiles, refreshCb) {
   closeSuggest();
   const wrap = anchor.closest(".field-wrap") || anchor.parentElement;
   suggestPanel = document.createElement("div");
   suggestPanel.className = "suggest-panel";
+
   const visible = suggestExpanded ? allTiles : allTiles.slice(0, 5);
   visible.forEach(t => {
     const btn = document.createElement("button");
@@ -2346,97 +2652,77 @@ function showSuggest(anchor, allTiles) {
     });
     suggestPanel.appendChild(btn);
   });
-  if (!suggestExpanded && allTiles.length > 5) {
-    const moreBtn = document.createElement("button");
-    moreBtn.type = "button";
-    moreBtn.className = "suggest-tile more";
-    moreBtn.textContent = "+";
-    moreBtn.title = "Ещё варианты";
-    /* NEW: (+) обновляет список — пересобирает все варианты */
-    moreBtn.addEventListener("click", (e) => {
+
+  if (refreshCb) {
+    const refreshBtn = document.createElement("button");
+    refreshBtn.type = "button";
+    refreshBtn.className = "suggest-tile refresh";
+    refreshBtn.innerHTML = `<span class="refresh-ico">🔄</span><span>Обновить</span>`;
+    refreshBtn.title = suggestExpanded ? "Обновить список" : "Показать все и обновить";
+    refreshBtn.addEventListener("click", (e) => {
       e.preventDefault(); e.stopPropagation();
+      refreshBtn.classList.add("spinning");
+      setTimeout(() => refreshBtn.classList.remove("spinning"), 600);
       suggestExpanded = true;
-      // NEW: пересобираем свежий список при каждом «+»
-      const fresh = anchor._freshTiles ? anchor._freshTiles() : allTiles;
-      showSuggest(anchor, fresh);
+      const fresh = refreshCb();
+      showSuggest(anchor, fresh, refreshCb);
     });
-    suggestPanel.appendChild(moreBtn);
+    suggestPanel.appendChild(refreshBtn);
   }
+
   wrap.style.position = "relative";
   wrap.appendChild(suggestPanel);
 }
 
-/* NEW: функция-фабрика подсказок с обновлением при каждом вызове */
-function makeNameSuggestFn(input, genderFn) {
-  return () => {
-    const gender = genderFn ? genderFn() : "Мужской";
-    const list = (gender === "Мужской" ? maleNames : femaleNames).slice();
-    const tiles = list.map(name => ({
-      text: name, type: "",
-      onPick: () => { input.value = sanitizeName(name); refreshFormSectionState(); }
-    }));
-    showSuggest(input, tiles);
-  };
-}
-
-function makeCommentSuggestFn(textarea) {
-  return () => {
-    const tiles = commentSuggestions.map(item => ({
-      text: item.text, type: item.type,
-      onPick: () => { textarea.value = sanitizeComment(item.text); refreshFormSectionState(); }
-    }));
-    showSuggest(textarea, tiles);
-  };
-}
-
-/* NEW: навешиваем подсказки на все три набора полей */
 function bindSuggestFor(el, kind, genderFn) {
   if (!el) return;
-  // NEW: сохраняем фабрику — она возвращает СВЕЖИЙ список при каждом вызове
-  el._freshTiles = kind === "name" ? makeNameSuggestFn(el, genderFn) : makeCommentSuggestFn(el);
-  el.addEventListener("focus", () => {
-    const fn = el._freshTiles;
-    if (fn) {
-      // вызываем фабрику и передаём готовый список
-      const old = el._freshTiles;
-      // пересобираем список
+
+  const buildTiles = () => {
+    if (kind === "name") {
       const gender = genderFn ? genderFn() : "Мужской";
-      if (kind === "name") {
-        const list = (gender === "Мужской" ? maleNames : femaleNames).slice();
-        const tiles = list.map(name => ({
-          text: name, type: "",
-          onPick: () => { el.value = sanitizeName(name); refreshFormSectionState(); }
-        }));
-        showSuggest(el, tiles);
-      } else {
-        const tiles = commentSuggestions.map(item => ({
-          text: item.text, type: item.type,
-          onPick: () => { el.value = sanitizeComment(item.text); refreshFormSectionState(); }
-        }));
-        showSuggest(el, tiles);
-      }
+      const pool = (gender === "Мужской" ? maleNames : femaleNames).slice();
+      const shuffled = pool.slice().sort(() => Math.random() - 0.5);
+      const subset = shuffled.slice(0, 30);
+      return subset.map(name => ({
+        text: name, type: "",
+        onPick: () => { el.value = sanitizeName(name); refreshGameCards(); }
+      }));
+    } else {
+      const pool = commentSuggestions.slice();
+      const shuffled = pool.slice().sort(() => Math.random() - 0.5);
+      return shuffled.map(item => ({
+        text: item.text, type: item.type,
+        onPick: () => { el.value = sanitizeComment(item.text); }
+      }));
     }
+  };
+
+  const refreshCb = () => {
+    suggestExpanded = true;
+    return buildTiles();
+  };
+
+  el.addEventListener("focus", () => {
+    suggestExpanded = false;
+    const tiles = buildTiles();
+    showSuggest(el, tiles, refreshCb);
   });
 }
 
-bindSuggestFor($("nameOne"), "name", () => (selectedGender === "ff") ? "Женский" : "Мужской");
-bindSuggestFor($("nameTwo"), "name", () => (selectedGender === "mm") ? "Мужской" : "Женский");
-bindSuggestFor($("nameOnePanel"), "name", () => (selectedGender === "ff") ? "Женский" : "Мужской");
-bindSuggestFor($("nameTwoPanel"), "name", () => (selectedGender === "mm") ? "Мужской" : "Женский");
 bindSuggestFor($("nameOneBar"), "name", () => (selectedGender === "ff") ? "Женский" : "Мужской");
 bindSuggestFor($("nameTwoBar"), "name", () => (selectedGender === "mm") ? "Мужской" : "Женский");
-bindSuggestFor($("battleComment"), "comment");
-bindSuggestFor($("battleCommentPanel"), "comment");
 bindSuggestFor($("battleCommentBar"), "comment");
 
 document.addEventListener("click", (e) => {
   if (suggestPanel && !suggestPanel.contains(e.target) &&
-      !["nameOne","nameTwo","battleComment","nameOnePanel","nameTwoPanel","battleCommentPanel","nameOneBar","nameTwoBar","battleCommentBar"].includes(e.target.id)) {
+      !["nameOneBar","nameTwoBar","battleCommentBar"].includes(e.target.id)) {
     closeSuggest();
   }
 });
 
-/* NEW: санитайзинг для всех полей */
+/* =========================================================
+   САНИТАЙЗИНГ ПОЛЕЙ
+   ========================================================= */
 function bindNameInput(el) {
   if (!el) return;
   el.addEventListener("input", () => {
@@ -2451,11 +2737,7 @@ function bindCommentInput(el) {
     if (clean !== el.value) el.value = clean;
   });
 }
-bindNameInput($("nameOne")); bindNameInput($("nameTwo"));
-bindNameInput($("nameOnePanel")); bindNameInput($("nameTwoPanel"));
 bindNameInput($("nameOneBar")); bindNameInput($("nameTwoBar"));
-bindCommentInput($("battleComment"));
-bindCommentInput($("battleCommentPanel"));
 bindCommentInput($("battleCommentBar"));
 
 $("resultNote").addEventListener("input", () => {
@@ -2466,21 +2748,6 @@ $("resultNote").addEventListener("input", () => {
   saveRecord();
   $("resultNoteSaved").textContent = clean ? "Сохранено" : "";
 });
-
-function prefillLastNames() {
-  const last = loadLastNames();
-  if (last.one) {
-    if ($("nameOne") && !$("nameOne").value) $("nameOne").value = last.one;
-    if ($("nameOnePanel") && !$("nameOnePanel").value) $("nameOnePanel").value = last.one;
-    if ($("nameOneBar") && !$("nameOneBar").value) $("nameOneBar").value = last.one;
-  }
-  if (last.two) {
-    if ($("nameTwo") && !$("nameTwo").value) $("nameTwo").value = last.two;
-    if ($("nameTwoPanel") && !$("nameTwoPanel").value) $("nameTwoPanel").value = last.two;
-    if ($("nameTwoBar") && !$("nameTwoBar").value) $("nameTwoBar").value = last.two;
-  }
-  refreshFormSectionState();
-}
 
 /* =========================================================
    ТЕМА / ФОН
@@ -2524,31 +2791,8 @@ function applyBgIcons(setIndex) {
 /* =========================================================
    ПАНЕЛИ
    ========================================================= */
-const settingsPanel = $("settingsPanel");
 const genderBarPanel = $("genderBarPanel");
 const dataBarPanel = $("dataBarPanel");
-
-function closeSettingsPanel() { settingsPanel.classList.remove("is-open"); }
-function toggleSettingsPanel() {
-  if (settingsPanel.classList.contains("is-open")) closeSettingsPanel();
-  else { openSettingsPanel(); closeBarPanels(); }
-}
-function openSettingsPanel() {
-  settingsPanel.classList.add("is-open");
-  $("genderOptionsPanel").querySelectorAll("[data-gender]").forEach(b => {
-    b.classList.toggle("selected", b.dataset.gender === selectedGender);
-  });
-  syncNamesToPanel();
-}
-
-function syncNamesToPanel() {
-  if ($("nameOnePanel") && !$("nameOnePanel").value) $("nameOnePanel").value = readNameValue(1);
-  if ($("nameTwoPanel") && !$("nameTwoPanel").value) $("nameTwoPanel").value = readNameValue(2);
-  if ($("battleCommentPanel") && !$("battleCommentPanel").value) $("battleCommentPanel").value = readCommentValue();
-  if ($("nameOneBar") && !$("nameOneBar").value) $("nameOneBar").value = readNameValue(1);
-  if ($("nameTwoBar") && !$("nameTwoBar").value) $("nameTwoBar").value = readNameValue(2);
-  if ($("battleCommentBar") && !$("battleCommentBar").value) $("battleCommentBar").value = readCommentValue();
-}
 
 function closeBarPanels() {
   genderBarPanel.classList.remove("is-open");
@@ -2559,11 +2803,9 @@ function closeBarPanels() {
   $("barDataBtn").setAttribute("aria-pressed", "false");
 }
 
-/* NEW: панели «Пол» и «Данные» — те же позиция и размер, что у settings */
 function toggleGenderBarPanel() {
   const willOpen = !genderBarPanel.classList.contains("is-open");
   closeBarPanels();
-  closeSettingsPanel();
   if (willOpen) {
     genderBarPanel.classList.add("is-open");
     $("barGenderBtn").classList.add("active");
@@ -2577,28 +2819,21 @@ function toggleGenderBarPanel() {
 function toggleDataBarPanel() {
   const willOpen = !dataBarPanel.classList.contains("is-open");
   closeBarPanels();
-  closeSettingsPanel();
   if (willOpen) {
     dataBarPanel.classList.add("is-open");
     $("barDataBtn").classList.add("active");
     $("barDataBtn").setAttribute("aria-pressed", "true");
-    syncNamesToPanel();
   }
 }
 
-$("settingsButton").addEventListener("click", (e) => { e.stopPropagation(); toggleSettingsPanel(); });
-$("settingsPanelClose").addEventListener("click", closeSettingsPanel);
 $("barGenderBtn").addEventListener("click", (e) => { e.stopPropagation(); toggleGenderBarPanel(); });
 $("barDataBtn").addEventListener("click", (e) => { e.stopPropagation(); toggleDataBarPanel(); });
 $("genderBarClose").addEventListener("click", closeBarPanels);
 $("dataBarClose").addEventListener("click", closeBarPanels);
 
 document.addEventListener("click", (e) => {
-  const inSettings = e.target.closest("#settingsPanel");
-  const onSettingsBtn = e.target.closest("#settingsButton");
   const inBarPanel = e.target.closest("#genderBarPanel") || e.target.closest("#dataBarPanel");
   const onBarBtn = e.target.closest("#barGenderBtn") || e.target.closest("#barDataBtn");
-  if (!inSettings && !onSettingsBtn) closeSettingsPanel();
   if (!inBarPanel && !onBarBtn) closeBarPanels();
 });
 
@@ -2608,26 +2843,21 @@ function bindGenderOptions(container) {
     btn.addEventListener("click", () => {
       selectedGender = btn.dataset.gender;
       syncGenderSelection();
+      refreshGameCards();
     });
   });
 }
 function syncGenderSelection() {
-  ["genderOptions", "genderOptionsPanel", "genderOptionsBar"].forEach(id => {
-    const c = $(id);
-    if (!c) return;
-    c.querySelectorAll("[data-gender]").forEach(b => {
-      b.classList.toggle("selected", b.dataset.gender === selectedGender);
-    });
+  const c = $("genderOptionsBar");
+  if (!c) return;
+  c.querySelectorAll("[data-gender]").forEach(b => {
+    b.classList.toggle("selected", b.dataset.gender === selectedGender);
   });
 }
-bindGenderOptions($("genderOptions"));
-bindGenderOptions($("genderOptionsPanel"));
 bindGenderOptions($("genderOptionsBar"));
 
-/* NEW: кнопка «Начать» в bottom bar — растянута, вызывает startRound */
 $("startBarBtn").addEventListener("click", () => {
   closeBarPanels();
-  closeSettingsPanel();
   startRound();
 });
 
@@ -2637,7 +2867,6 @@ $("startBarBtn").addEventListener("click", () => {
 function openModal(type) {
   $("topMenu").classList.add("hidden");
   closeProfileMenu();
-  closeSettingsPanel();
   closeBarPanels();
   closeSuggest();
   const backdrop = $("modalBackdrop");
@@ -2834,7 +3063,7 @@ function openModal(type) {
   } else if (type === "about") {
     title.textContent = "О игре";
     content.innerHTML = `
-      <p class="about-intro">«Переворот» — романтическая карточная игра на выбор. Выбери пару, дай имена и фото персонажам, запомни карты — и доверься случаю. Игра покажет, кто окажется рядом.</p>
+      <p class="about-intro">«Переворот» — романтическая карточная игра на выбор. Выбери пару, дай имена и фото персонажам, запомни карты — и доверься случаю.</p>
       <div class="rules-title">Правила игры</div>
       <div class="rules-grid">
         ${gameRules.map(r => `
@@ -2846,6 +3075,11 @@ function openModal(type) {
         `).join("")}
       </div>
     `;
+  } else if (type === "news") {
+    /* NEW: Новости — только официальный шрифт, адаптивные */
+    title.textContent = "Новости";
+    content.innerHTML = `<div class="news-list" id="newsList"></div>`;
+    renderNewsList(content);
   } else if (type === "support") {
     title.textContent = "Техподдержка";
     supportSelectedTags = new Set();
@@ -3017,7 +3251,7 @@ function openModal(type) {
           <input id="donateWallet" type="text" readonly value="${DONATE_WALLET}">
           <button class="donate-copy-btn" id="donateCopy" type="button">Скопировать</button>
         </div>
-        <div class="donate-hint">Нажми «Скопировать» — адрес попадёт в буфер. Отправь любую сумму в TON на этот кошелёк.</div>
+        <div class="donate-hint">Нажми «Скопировать» — адрес попадёт в буфер.</div>
       </div>
     `;
     content.querySelector("#donateCopy").addEventListener("click", async () => {
@@ -3026,11 +3260,149 @@ function openModal(type) {
         showToast("Адрес кошелька скопирован.");
       } catch { showToast("Не удалось скопировать."); }
     });
-  } else {
+  } else if (type === "services") {
     title.textContent = "Сервисы";
     content.innerHTML = `<p class="muted">Дополнительные сервисы.</p>`;
   }
   backdrop.classList.remove("hidden");
+}
+
+/* NEW: рендер списка новостей (только официальный шрифт) */
+function renderNewsList(content) {
+  const list = content.querySelector("#newsList");
+  if (!list) return;
+  list.innerHTML = news.map(item => `
+    <div class="news-tile" data-news-id="${item.id}">
+      <div class="news-photo">
+        <div class="news-photo-emoji">${item.icon || "📰"}</div>
+      </div>
+      <div class="news-fade"></div>
+      <div class="news-body">
+        <div>
+          <div class="news-headline">${escapeHTML(item.title)}</div>
+          <div class="news-meta">
+            <span class="news-tag">${escapeHTML(item.tag)}</span>
+            <span>${escapeHTML(item.date)}</span>
+          </div>
+          <div class="news-preview">${escapeHTML(item.preview)}</div>
+        </div>
+        <div class="news-actions">
+          <button class="news-action-btn ${item.liked ? "liked" : ""}" data-news-like="${item.id}">
+            <span class="news-ico">${item.liked ? "❤️" : "🤍"}</span><span>${item.likes}</span>
+          </button>
+          <button class="news-action-btn" data-news-view="${item.id}">
+            <span class="news-ico">👁</span><span>${item.views}</span>
+          </button>
+          <button class="news-action-btn" data-news-open="${item.id}">
+            <span class="news-ico">📖</span><span>Читать</span>
+          </button>
+          <button class="news-action-btn" data-news-share="${item.id}">
+            <span class="news-ico">📤</span><span>Поделиться</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  list.querySelectorAll("[data-news-like]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.newsLike;
+      const rec = news.find(n => n.id === id);
+      if (!rec) return;
+      if (rec.liked) { rec.liked = false; rec.likes = Math.max(0, rec.likes - 1); }
+      else { rec.liked = true; rec.likes += 1; }
+      saveNews();
+      renderNewsList(content);
+    });
+  });
+  list.querySelectorAll("[data-news-view]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.newsView;
+      const rec = news.find(n => n.id === id);
+      if (!rec) return;
+      rec.views += 1;
+      saveNews();
+      renderNewsList(content);
+    });
+  });
+  list.querySelectorAll("[data-news-open]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openNewsDetail(btn.dataset.newsOpen);
+    });
+  });
+  list.querySelectorAll("[data-news-share]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const rec = news.find(n => n.id === btn.dataset.newsShare);
+      if (!rec) return;
+      shareText(`📰 ${rec.title}\n\n${rec.preview}\n\nПереворот · новости`);
+    });
+  });
+}
+
+/* NEW: детальный просмотр новости + комментарии */
+function openNewsDetail(id) {
+  const rec = news.find(n => n.id === id);
+  if (!rec) return;
+  rec.views += 1;
+  saveNews();
+
+  $("modalTitle").textContent = "Новость";
+  const content = $("modalContent");
+  content.innerHTML = `
+    <div class="news-detail-photo">
+      <div class="news-photo-emoji" style="width:100%;height:100%;display:grid;place-items:center;font-size:64px;background:linear-gradient(135deg, rgba(84,169,235,.25), rgba(255,79,131,.25));">${rec.icon || "📰"}</div>
+    </div>
+    <h2 class="news-detail-title">${escapeHTML(rec.title)}</h2>
+    <div class="news-detail-meta">
+      <span class="news-tag" style="padding:2px 6px;border-radius:6px;background:rgba(0,136,204,.12);color:#0088cc;font-weight:700;font-size:10px;text-transform:uppercase;">${escapeHTML(rec.tag)}</span>
+      <span>${escapeHTML(rec.date)}</span>
+      <span>👁 ${rec.views}</span>
+      <span>❤️ ${rec.likes}</span>
+    </div>
+    <div class="news-detail-body">${escapeHTML(rec.body)}</div>
+    <div class="news-comments">
+      <div class="news-comments-title">Комментарии (${rec.comments.length})</div>
+      <div id="newsCommentsList"></div>
+      <div class="news-comment-row">
+        <input type="text" id="newsCommentInput" maxlength="200" placeholder="Оставить комментарий…">
+        <button class="action-button primary" id="newsCommentSend" type="button">Отправить</button>
+      </div>
+    </div>
+  `;
+  renderNewsComments(content, rec);
+
+  content.querySelector("#newsCommentSend").addEventListener("click", () => {
+    const input = content.querySelector("#newsCommentInput");
+    const text = sanitizeComment(input.value.trim());
+    if (!text) { showToast("Напиши комментарий."); return; }
+    rec.comments.push({
+      name: sanitizeName(settings.profileName || "Игрок") || "Игрок",
+      text, ts: Date.now()
+    });
+    saveNews();
+    input.value = "";
+    renderNewsComments(content, rec);
+    showToast("Комментарий добавлен.");
+  });
+}
+
+function renderNewsComments(content, rec) {
+  const holder = content.querySelector("#newsCommentsList");
+  if (!holder) return;
+  if (!rec.comments.length) {
+    holder.innerHTML = `<p class="muted" style="font-size:11px;">Пока нет комментариев.</p>`;
+    return;
+  }
+  holder.innerHTML = rec.comments.map(c => `
+    <div class="news-comment">
+      <div class="nc-name">${escapeHTML(c.name)}</div>
+      <div class="nc-text">${escapeHTML(c.text)}</div>
+    </div>
+  `).join("");
 }
 
 function openTicket(rec) {
@@ -3115,7 +3487,6 @@ $("profileButton").addEventListener("click", (e) => {
   e.stopPropagation();
   toggleProfileMenu();
   closeBarPanels();
-  closeSettingsPanel();
 });
 document.addEventListener("click", (e) => {
   if (!e.target.closest("#profileMenu") && !e.target.closest("#profileButton")) closeProfileMenu();
@@ -3126,8 +3497,8 @@ profileMenu.querySelectorAll("[data-profile-action]").forEach(btn => {
     const action = btn.dataset.profileAction;
     closeProfileMenu();
     switch (action) {
-      case "avatar": openAvatarModal(); break;
       case "settings": openProfileSettings(); break;
+      case "promo": openPromosModal(); break;
       case "archive": openModal("archive"); break;
       case "wallpaper": openModal("wallpaper"); break;
       case "wallet": openWallet(); break;
@@ -3139,6 +3510,112 @@ profileMenu.querySelectorAll("[data-profile-action]").forEach(btn => {
     }
   });
 });
+
+/* NEW: панель промокодов — с пустым состоянием */
+function openPromosModal() {
+  $("modalTitle").textContent = "Промокоды";
+  const content = $("modalContent");
+
+  if (!promos.length) {
+    /* NEW: пустое состояние — эмодзи печали */
+    content.innerHTML = `
+      <div class="promo-empty">
+        <div class="pe-emoji" aria-hidden="true">😔</div>
+        <div class="pe-text">Пока нет промокодов, купонов и подарочных карт. Как только появятся — они тут.</div>
+      </div>
+      <div class="promo-section-title">Активировать код</div>
+      <div class="promo-input-row">
+        <input type="text" id="promoInput" maxlength="24" placeholder="Введите промокод" autocomplete="off">
+        <button class="promo-btn primary" id="promoActivate" type="button">Активировать</button>
+      </div>
+    `;
+    const input = content.querySelector("#promoInput");
+    input.addEventListener("input", () => {
+      input.value = input.value.toUpperCase().replace(/[^A-Z0-9\-]/g, "").slice(0, 24);
+    });
+    content.querySelector("#promoActivate").addEventListener("click", () => {
+      const code = (content.querySelector("#promoInput").value || "").trim().toUpperCase();
+      if (!code) { showToast("Введите промокод."); return; }
+      const found = DEFAULT_PROMOS.find(p => p.code === code);
+      if (!found) { showToast("Промокод не найден."); return; }
+      promos.push({ ...found, used: false });
+      savePromos();
+      content.querySelector("#promoInput").value = "";
+      renderPromoList(content);
+      showToast(`Промокод «${found.name}» добавлен!`);
+    });
+    return;
+  }
+
+  content.innerHTML = `
+    <p class="muted" style="margin-top:0;">Здесь собраны ваши купоны, промокоды и подарочные карты. Введите код, чтобы активировать новый.</p>
+    <div class="promo-section-title">Активные</div>
+    <div class="promo-grid" id="promoList"></div>
+    <div class="promo-section-title">Активировать код</div>
+    <div class="promo-input-row">
+      <input type="text" id="promoInput" maxlength="24" placeholder="Введите промокод" autocomplete="off">
+      <button class="promo-btn primary" id="promoActivate" type="button">Активировать</button>
+    </div>
+    <div class="muted" style="margin-top:8px;font-size:11px;">Доступные коды: START2026 · TON15 · GIFT10NFT</div>
+  `;
+  renderPromoList(content);
+
+  const input = content.querySelector("#promoInput");
+  input.addEventListener("input", () => {
+    input.value = input.value.toUpperCase().replace(/[^A-Z0-9\-]/g, "").slice(0, 24);
+  });
+
+  content.querySelector("#promoActivate").addEventListener("click", () => {
+    const code = (content.querySelector("#promoInput").value || "").trim().toUpperCase();
+    if (!code) { showToast("Введите промокод."); return; }
+    const found = promos.find(p => p.code === code) || DEFAULT_PROMOS.find(p => p.code === code);
+    if (!found) { showToast("Промокод не найден."); return; }
+    const existing = promos.find(p => p.code === code);
+    if (existing && existing.used) { showToast("Этот промокод уже активирован."); return; }
+    if (existing) { existing.used = true; }
+    else { promos.push({ ...found, used: true }); }
+    savePromos();
+    content.querySelector("#promoInput").value = "";
+    renderPromoList(content);
+    showToast(`Промокод «${found.name}» активирован!`);
+  });
+}
+
+function renderPromoList(content) {
+  const holder = content.querySelector("#promoList");
+  if (!holder) return;
+  if (!promos.length) {
+    holder.innerHTML = `<p class="muted" style="font-size:12px;">Пока нет промокодов.</p>`;
+    return;
+  }
+  holder.innerHTML = promos.map(p => `
+    <div class="promo-item ${p.used ? "used" : ""}" data-promo-id="${p.id}">
+      <div class="promo-ico">${p.icon || "🎟️"}</div>
+      <div class="promo-body">
+        <div class="promo-name">${escapeHTML(p.name)}</div>
+        <div class="promo-desc">${escapeHTML(p.desc)}</div>
+        <span class="promo-code">${escapeHTML(p.code)}</span>
+        <div class="promo-actions">
+          <button class="promo-btn primary" data-promo-copy="${p.id}" ${p.used ? "disabled" : ""}>
+            ${p.used ? "Активирован" : "Скопировать код"}
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  holder.querySelectorAll("[data-promo-copy]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const id = btn.getAttribute("data-promo-copy");
+      const rec = promos.find(p => p.id === id);
+      if (!rec) return;
+      try {
+        await navigator.clipboard.writeText(rec.code);
+        showToast("Код скопирован.");
+      } catch { showToast("Не удалось скопировать."); }
+    });
+  });
+}
 
 function openWallet() {
   $("modalTitle").textContent = "Кошелёк";
@@ -3235,40 +3712,49 @@ function openSubscribe() {
   $("modalBackdrop").classList.remove("hidden");
 }
 
-function openAvatarModal() {
-  $("modalTitle").textContent = "Аватарка";
+/* NEW: Настройки профиля — с аватаркой (перенесена сюда) */
+function openProfileSettings() {
+  $("modalTitle").textContent = "Настройки профиля";
   const content = $("modalContent");
   const currentType = settings.avatarType || "emoji";
   const currentEmoji = settings.avatarEmoji || "♙";
   const currentPhoto = settings.avatarPhoto || "";
+
   content.innerHTML = `
-    <div class="section-title">Эмодзи</div>
-    <div class="emoji-grid" id="emojiGrid">
-      ${avatarEmojis.map(e => `<button class="emoji-option ${currentType === "emoji" && e === currentEmoji ? "selected" : ""}" data-emoji="${e}">${e}</button>`).join("")}
-    </div>
+    <label class="field-label">Имя</label>
+    <input type="text" id="profileNameInput" maxlength="15" value="${escapeHTML(sanitizeName(settings.profileName || "Игрок"))}">
+
     <hr>
-    <div class="section-title">Своё фото</div>
-    <input type="file" id="photoFile" accept="image/png,image/jpeg,image/jpg" style="display:none">
-    <div style="display:flex; gap:8px; margin-top:10px; align-items:center; flex-wrap:wrap">
-      <button class="action-button primary" id="pickFile" style="width:100%">📁 Загрузить PNG / JPG</button>
-    </div>
-    <div style="margin-top:14px; text-align:center">
-      <div id="avatarPreview" style="width:72px; height:72px; border-radius:50%; background:var(--tg-blue); display:grid; place-items:center; font-size:34px; margin:0 auto; overflow:hidden;">
+    <div class="section-title">Аватарка</div>
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+      <div id="avatarPreview" style="width:64px; height:64px; border-radius:50%; background:var(--tg-blue); display:grid; place-items:center; font-size:30px; overflow:hidden; flex-shrink:0;">
         ${currentType === "photo" && currentPhoto ? `<img src="${currentPhoto}" style="width:100%;height:100%;object-fit:cover;">` : `<span>${currentEmoji}</span>`}
       </div>
+      <div style="display:flex; flex-direction:column; gap:6px; flex:1;">
+        <input type="file" id="photoFile" accept="image/png,image/jpeg,image/jpg" style="display:none">
+        <button class="action-button primary" id="pickFile" type="button" style="width:100%">📁 Загрузить PNG / JPG</button>
+        <button class="action-button" id="pickEmoji" type="button" style="width:100%">😀 Выбрать эмодзи</button>
+      </div>
+    </div>
+
+    <div id="emojiSection" class="hidden">
+      <div class="section-title">Эмодзи</div>
+      <div class="emoji-grid" id="emojiGrid">
+        ${avatarEmojis.map(e => `<button class="emoji-option ${currentType === "emoji" && e === currentEmoji ? "selected" : ""}" data-emoji="${e}" type="button">${e}</button>`).join("")}
+      </div>
+    </div>
+
+    <div class="actions" style="margin-top:14px">
+      <button class="action-button primary" id="saveProfileName" style="width:100%">Сохранить</button>
     </div>`;
-  content.querySelectorAll("[data-emoji]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      content.querySelectorAll("[data-emoji]").forEach(b => b.classList.remove("selected"));
-      btn.classList.add("selected");
-      settings.avatarType = "emoji";
-      settings.avatarEmoji = btn.dataset.emoji;
-      settings.avatarPhoto = "";
-      saveSettings();
-      updateProfileAvatar();
-      content.querySelector("#avatarPreview").innerHTML = `<span>${btn.dataset.emoji}</span>`;
-    });
+
+  const input = content.querySelector("#profileNameInput");
+  input.addEventListener("input", () => {
+    const clean = sanitizeName(input.value);
+    if (clean !== input.value) input.value = clean;
   });
+
+  // NEW: аватарка — файл
   content.querySelector("#pickFile").addEventListener("click", () => content.querySelector("#photoFile").click());
   content.querySelector("#photoFile").addEventListener("change", (e) => {
     const f = e.target.files[0];
@@ -3288,23 +3774,24 @@ function openAvatarModal() {
     };
     r.readAsDataURL(f);
   });
-  $("modalBackdrop").classList.remove("hidden");
-}
 
-function openProfileSettings() {
-  $("modalTitle").textContent = "Настройки профиля";
-  const content = $("modalContent");
-  content.innerHTML = `
-    <label class="field-label">Имя</label>
-    <input type="text" id="profileNameInput" maxlength="15" value="${escapeHTML(sanitizeName(settings.profileName || "Игрок"))}">
-    <div class="actions" style="margin-top:14px">
-      <button class="action-button primary" id="saveProfileName" style="width:100%">Сохранить</button>
-    </div>`;
-  const input = content.querySelector("#profileNameInput");
-  input.addEventListener("input", () => {
-    const clean = sanitizeName(input.value);
-    if (clean !== input.value) input.value = clean;
+  // NEW: аватарка — эмодзи
+  content.querySelector("#pickEmoji").addEventListener("click", () => {
+    content.querySelector("#emojiSection").classList.toggle("hidden");
   });
+  content.querySelectorAll("[data-emoji]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      content.querySelectorAll("[data-emoji]").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      settings.avatarType = "emoji";
+      settings.avatarEmoji = btn.dataset.emoji;
+      settings.avatarPhoto = "";
+      saveSettings();
+      updateProfileAvatar();
+      content.querySelector("#avatarPreview").innerHTML = `<span>${btn.dataset.emoji}</span>`;
+    });
+  });
+
   content.querySelector("#saveProfileName").addEventListener("click", () => {
     const name = sanitizeName(content.querySelector("#profileNameInput").value) || "Игрок";
     settings.profileName = name;
@@ -3417,7 +3904,6 @@ $("backButton").addEventListener("click", goBack);
 $("menuButton").addEventListener("click", (e) => {
   e.stopPropagation();
   closeProfileMenu();
-  closeSettingsPanel();
   closeBarPanels();
   closeSuggest();
   $("topMenu").classList.toggle("hidden");
@@ -3437,7 +3923,6 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     closeModal();
     closeProfileMenu();
-    closeSettingsPanel();
     closeBarPanels();
     $("topMenu").classList.add("hidden");
     closeSuggest();
@@ -3447,7 +3932,7 @@ document.addEventListener("keydown", (e) => {
 document.addEventListener("contextmenu", (e) => { e.preventDefault(); });
 
 window.addEventListener("resize", () => {
-  if (window.innerWidth < 540) { closeProfileMenu(); closeSettingsPanel(); closeBarPanels(); }
+  if (window.innerWidth < 540) { closeProfileMenu(); closeBarPanels(); }
 });
 
 /* =========================================================
@@ -3469,18 +3954,18 @@ function initApp() {
   if (Number.isInteger(settings.bgIconsSet)) applyBgIcons(settings.bgIconsSet);
   else applyBgIcons(0);
   updateProfileAvatar();
-  refreshFormSectionState();
-  prefillLastNames();
 
-  setupPhotoLoader(1);
-  setupPhotoLoader(2);
-  setupPanelPhotoLoader(1);
-  setupPanelPhotoLoader(2);
   setupBarPhotoLoader(1);
   setupBarPhotoLoader(2);
 
+  const last = loadLastNames();
+  if (last.one && $("nameOneBar") && !$("nameOneBar").value) $("nameOneBar").value = last.one;
+  if (last.two && $("nameTwoBar") && !$("nameTwoBar").value) $("nameTwoBar").value = last.two;
+
+  cards = buildCharacters();
+  revealedNames = cards.map(c => c.name);
   setPhase("setup");
-  closeSettingsPanel();
+  renderGameCards(true);
   closeBarPanels();
   syncGenderSelection();
 
