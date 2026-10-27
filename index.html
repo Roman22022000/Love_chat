@@ -2,71 +2,71 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Переворот</title>
 <style>
 /* =========================================================
-   TELEGRAM-СТИЛЬ: ШРИФТ И ПАЛИТРА
-   Официальный шрифт Telegram — системный (Roboto/SF/Helvetica),
-   но для веба используем Inter как ближайший аналог.
+   ШРИФТЫ
    ========================================================= */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Caveat:wght@700&family=Pacifico&display=swap');
 
 :root {
-  /* Палитра Telegram */
   --tg-blue: #0088cc;
   --tg-blue-light: #54a9eb;
-  --tg-bg-dark: #17212b;
-  --tg-panel-dark: #232e3c;
-  --tg-header-dark: #1c2733;
-  --tg-text-dark: #e4ecf3;
-  --tg-muted-dark: #7d8b99;
-  --tg-border-dark: #2f3d4c;
-  
-  --tg-bg-light: #e6ebee;
-  --tg-panel-light: #ffffff;
-  --tg-header-light: #ffffff;
-  --tg-text-light: #1a1a1a;
-  --tg-muted-light: #707579;
-  --tg-border-light: #d6dce1;
+  --bg-dark: #17212b;
+  --panel-dark: #232e3c;
+  --header-dark: #1c2733;
+  --text-dark: #e4ecf3;
+  --muted-dark: #7d8b99;
+  --border-dark: #2f3d4c;
+
+  --bg-light: #e6ebee;
+  --panel-light: #ffffff;
+  --header-light: #ffffff;
+  --text-light: #1a1a1a;
+  --muted-light: #707579;
+  --border-light: #d6dce1;
 
   --accent: var(--tg-blue);
   --accent2: var(--tg-blue-light);
-  --panel: var(--tg-panel-dark);
-  --text: var(--tg-text-dark);
-  --muted: var(--tg-muted-dark);
-  --border-color: var(--tg-border-dark);
-  --menu-bg: var(--tg-header-dark);
-  --modal-bg: var(--tg-panel-dark);
+  --panel: var(--panel-dark);
+  --text: var(--text-dark);
+  --muted: var(--muted-dark);
+  --border-color: var(--border-dark);
+  --menu-bg: var(--header-dark);
+  --modal-bg: var(--panel-dark);
   --input-bg: #1e2836;
   --btn-bg: rgba(255,255,255,.06);
   --btn-bg-hover: rgba(255,255,255,.12);
-  
+
   --card-radius: 14px;
-  --bottom-bar-height: 64px;
+  --bottom-bar-height: 52px;
+  --app-padding: clamp(12px, 3vw, 18px);
+  --app-bottom-padding: clamp(80px, 12vh, 96px);
 }
 
 body.light-theme {
-  --panel: var(--tg-panel-light);
-  --text: var(--tg-text-light);
-  --muted: var(--tg-muted-light);
-  --border-color: var(--tg-border-light);
-  --menu-bg: var(--tg-header-light);
-  --modal-bg: var(--tg-panel-light);
+  --panel: var(--panel-light);
+  --text: var(--text-light);
+  --muted: var(--muted-light);
+  --border-color: var(--border-light);
+  --menu-bg: var(--header-light);
+  --modal-bg: var(--panel-light);
   --input-bg: #f4f4f5;
   --btn-bg: rgba(0,0,0,.04);
   --btn-bg-hover: rgba(0,0,0,.08);
 }
 
 * { box-sizing: border-box; }
-html { min-height: 100%; }
+html { min-height: 100%; -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
   min-height: 100vh;
+  min-height: 100dvh;
   color: var(--text);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-size: clamp(13px, 1.05vw, 14px);
   line-height: 1.4;
   background: linear-gradient(-45deg,#17212b,#2b5278,#17212b,#4a76a8,#1c2733);
   background-size: 400% 400%;
@@ -75,7 +75,23 @@ body {
   -webkit-user-select: none;
   transition: color .3s;
   -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow-x: hidden;
 }
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--bg-icons, none);
+  background-size: clamp(120px, 20vw, 200px) clamp(120px, 20vw, 200px);
+  background-repeat: repeat;
+  opacity: 0.06;
+  filter: grayscale(100%);
+}
+body.light-theme::before { opacity: 0.05; }
 
 @keyframes wallpaper {
   0%,100% { background-position: 0% 50%; }
@@ -90,6 +106,8 @@ button {
   cursor: pointer;
   border-radius: 8px;
   transition: transform .15s, background .15s;
+  min-height: 44px;
+  touch-action: manipulation;
 }
 button:hover { background: var(--btn-bg-hover); }
 button:active { transform: scale(.98); }
@@ -100,17 +118,16 @@ input, textarea {
   background: var(--input-bg);
   border: 1px solid var(--border-color);
   border-radius: 10px;
-  padding: 10px 12px;
+  padding: clamp(9px, 1.6vw, 11px) clamp(10px, 1.8vw, 13px);
   outline: none;
   width: 100%;
-  font-size: 14px;
+  font-size: clamp(13px, 1.05vw, 14px);
   transition: border-color .2s;
 }
 input:focus, textarea:focus { border-color: var(--accent); }
-textarea { resize: vertical; min-height: 72px; user-select: text; }
+textarea { resize: vertical; min-height: 72px; user-select: text; -webkit-user-select: text; }
 button, .card, .star { -webkit-tap-highlight-color: transparent; }
 
-/* Убираем тени и подсветку */
 .panel, .bottom-bar, .profile-menu, .modal, .card, .card-inner,
 .card-face, .gender-option, .form-section, .dropdown, .toast,
 .theme-switch, .profile-avatar-preview, .profile-button,
@@ -145,16 +162,16 @@ button:focus, button:focus-visible, input:focus, textarea:focus {
 .splash-table {
   position: relative;
   width: min(340px, 80vw);
-  height: 180px;
+  height: clamp(140px, 24vw, 180px);
   margin-bottom: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 18px;
+  gap: clamp(10px, 3vw, 18px);
 }
 .splash-card {
-  width: 90px;
-  height: 130px;
+  width: clamp(60px, 15vw, 90px);
+  height: clamp(86px, 21.6vw, 130px);
   border-radius: 12px;
   border: 2px solid #c9a050;
   background:
@@ -163,7 +180,7 @@ button:focus, button:focus-visible, input:focus, textarea:focus {
   position: relative;
   display: grid;
   place-items: center;
-  font-size: 34px;
+  font-size: clamp(22px, 6vw, 34px);
   color: #a8d4ff;
   animation: cardFloat 3s ease-in-out infinite;
 }
@@ -177,7 +194,7 @@ button:focus, button:focus-visible, input:focus, textarea:focus {
   position: absolute;
   inset: -40px -30px;
   pointer-events: none;
-  font-size: 24px;
+  font-size: clamp(16px, 4vw, 24px);
   opacity: .6;
 }
 .splash-crowd span {
@@ -195,14 +212,15 @@ button:focus, button:focus-visible, input:focus, textarea:focus {
   50% { transform: translateY(-5px) scale(1.06); }
 }
 .splash-title {
-  font-size: clamp(22px, 5vw, 32px);
-  font-weight: 800;
+  font-family: 'Pacifico', cursive;
+  font-size: clamp(24px, 6vw, 42px);
+  font-weight: 700;
   color: #fff;
-  letter-spacing: -.02em;
   margin-bottom: 10px;
+  text-shadow: 0 0 20px rgba(84,169,235,.5);
 }
 .splash-sub {
-  font-size: clamp(13px, 3vw, 16px);
+  font-size: clamp(12px, 3vw, 16px);
   color: #a8d4ff;
   margin-bottom: 28px;
   letter-spacing: .05em;
@@ -231,9 +249,14 @@ button:focus, button:focus-visible, input:focus, textarea:focus {
    ========================================================= */
 .app {
   min-height: 100vh;
+  min-height: 100dvh;
   max-width: 1080px;
   margin: auto;
-  padding: 18px 18px 104px;
+  padding: var(--app-padding);
+  padding-bottom: var(--app-bottom-padding);
+  padding-bottom: max(var(--app-bottom-padding), env(safe-area-inset-bottom));
+  position: relative;
+  z-index: 1;
 }
 
 .topline {
@@ -245,18 +268,20 @@ button:focus, button:focus-visible, input:focus, textarea:focus {
   z-index: 10;
 }
 .icon-button {
-  width: 40px; height: 40px;
+  width: clamp(36px, 5vw, 40px);
+  height: clamp(36px, 5vw, 40px);
   border-radius: 50%;
-  font-size: 22px;
+  font-size: clamp(18px, 2.6vw, 22px);
   display: grid; place-items: center;
   background: var(--btn-bg);
   border: 1px solid var(--border-color);
   color: var(--text);
+  min-height: 0;
 }
 .dropdown {
   position: absolute;
-  top: 48px; right: 0;
-  width: min(260px, calc(100vw - 36px));
+  top: calc(100% + 8px); right: 0;
+  width: min(260px, calc(100vw - 24px));
   padding: 6px;
   border: 1px solid var(--border-color);
   border-radius: 12px;
@@ -267,56 +292,81 @@ button:focus, button:focus-visible, input:focus, textarea:focus {
   width: 100%; text-align: left;
   padding: 10px 12px; border-radius: 8px;
   border-color: transparent; background: transparent;
-  font-size: 14px;
+  font-size: clamp(13px, 1.1vw, 14px);
+  min-height: 40px;
 }
 .dropdown button:hover { background: var(--btn-bg-hover); }
 
 main { width: 100%; max-width: 800px; margin: 14px auto 0; }
-.hero { text-align: center; padding: 10px 8px 16px; }
+.hero { text-align: center; padding: 10px 8px clamp(12px, 2.4vw, 16px); }
 .eyebrow {
   color: var(--accent2);
   text-transform: uppercase;
-  letter-spacing: .2em; font-size: 11px;
+  letter-spacing: .2em;
+  font-size: clamp(10px, 1vw, 11px);
   font-weight: 600;
 }
-h1 { font-size: clamp(28px, 6vw, 42px); margin: 8px 0; letter-spacing: -.03em; font-weight: 800; }
-.subtitle { color: var(--muted); line-height: 1.5; margin: 0 auto; max-width: 520px; }
+h1 {
+  font-family: 'Pacifico', cursive;
+  font-size: clamp(28px, 7vw, 52px);
+  margin: 8px 0;
+  letter-spacing: .01em;
+  font-weight: 700;
+  color: var(--text);
+  text-shadow: 0 2px 10px rgba(0,0,0,.25);
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+.subtitle {
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0 auto;
+  max-width: 520px;
+  font-size: clamp(13px, 1.2vw, 15px);
+  padding: 0 4px;
+}
 
 .panel {
   border: 1px solid var(--border-color);
-  border-radius: 16px;
+  border-radius: clamp(12px, 2vw, 16px);
   background: var(--panel);
-  padding: clamp(15px, 3vw, 22px);
+  padding: clamp(13px, 2.6vw, 22px);
   margin-bottom: 14px;
 }
-.section-title { font-size: 15px; font-weight: 700; margin: 0 0 12px; }
-.muted { color: var(--muted); font-size: 13px; line-height: 1.5; }
+.section-title { font-size: clamp(14px, 1.3vw, 15px); font-weight: 700; margin: 0 0 12px; }
+.muted { color: var(--muted); font-size: clamp(12px, 1.1vw, 13px); line-height: 1.5; }
 
 /* =========================================================
    ВЫБОР ПАРЫ
    ========================================================= */
-.gender-options { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.gender-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(6px, 1.2vw, 8px);
+}
 .gender-option {
   border-radius: 12px;
-  padding: 12px 6px;
-  min-height: 84px;
+  padding: clamp(8px, 1.8vw, 12px) 4px;
+  min-height: clamp(70px, 12vw, 84px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 6px;
   line-height: 1.2;
-  font-size: 11px;
+  font-size: clamp(9px, 1.05vw, 11px);
   letter-spacing: .03em;
   text-transform: uppercase;
   font-weight: 600;
   border: 1px solid var(--border-color);
   background: var(--btn-bg);
+  text-align: center;
+  overflow-wrap: anywhere;
 }
 .gender-option .pair-icons {
   display: flex;
-  gap: 6px;
-  font-size: 26px;
+  gap: 4px;
+  font-size: clamp(18px, 4vw, 26px);
   line-height: 1;
 }
 .gender-option.selected {
@@ -338,20 +388,26 @@ h1 { font-size: clamp(28px, 6vw, 42px); margin: 8px 0; letter-spacing: -.03em; f
 }
 .form-section.is-active { opacity: 1; filter: grayscale(0%); }
 .form-section-title {
-  font-size: 12px;
+  font-size: clamp(11px, 1vw, 12px);
   font-weight: 700;
   letter-spacing: .04em;
   text-transform: uppercase;
   color: var(--muted);
   margin: 0 0 10px;
 }
-.name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.field-label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+.name-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(8px, 1.4vw, 10px); }
+.field-label {
+  display: block;
+  font-size: clamp(11px, 1vw, 12px);
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
 .comment-box { margin-top: 14px; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 
 /* =========================================================
-   КНОПКИ С ГРАДИЕНТОМ
+   КНОПКИ
    ========================================================= */
 .primary {
   border: 0 !important;
@@ -372,44 +428,64 @@ h1 { font-size: clamp(28px, 6vw, 42px); margin: 8px 0; letter-spacing: -.03em; f
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
-.action-button { min-height: 42px; padding: 10px 16px; border-radius: 10px; font-size: 14px; }
+.action-button {
+  min-height: clamp(40px, 6vw, 45px);
+  padding: clamp(9px, 1.6vw, 12px) clamp(12px, 2.2vw, 18px);
+  border-radius: 10px;
+  font-size: clamp(13px, 1.1vw, 14px);
+}
 .actions .primary { flex: 1; }
 .hidden { display: none !important; }
 
 .status {
-  min-height: 22px; margin: 0 0 12px;
-  text-align: center; color: var(--muted); font-size: 13px;
+  min-height: 22px;
+  margin: 0 0 12px;
+  text-align: center;
+  color: var(--muted);
+  font-size: clamp(12px, 1.1vw, 13px);
 }
 
 /* =========================================================
    КАРТЫ
    ========================================================= */
 .cards {
-  display: grid; grid-template-columns: repeat(2,minmax(0,1fr));
-  gap: clamp(12px,3vw,20px);
-  max-width: 560px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(10px, 2.4vw, 20px);
+  max-width: 560px;
+  margin: 0 auto;
 }
 .card {
-  width: 100%; aspect-ratio: 3 / 4;
+  width: 100%;
+  aspect-ratio: 3 / 4;
   perspective: 1000px;
   padding: 0; border: 0; background: transparent;
   border-radius: var(--card-radius);
   min-width: 0;
+  min-height: 0;
 }
 .card:disabled { opacity: 1; cursor: default; }
 .card-inner {
-  display: block; position: relative; width: 100%; height: 100%;
+  display: block;
+  position: relative;
+  width: 100%; height: 100%;
   border-radius: var(--card-radius);
   transform-style: preserve-3d;
   transition: transform .72s cubic-bezier(.2,.75,.2,1);
 }
 .card.flipped .card-inner { transform: rotateY(180deg); }
 .card-face {
-  display: flex; position: absolute; inset: 0;
-  width: 100%; height: 100%; box-sizing: border-box;
-  flex-direction: column; align-items: center; justify-content: center;
-  overflow: hidden; border-radius: var(--card-radius);
-  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  display: flex;
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--card-radius);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 .card-back {
   background:
@@ -418,9 +494,15 @@ h1 { font-size: clamp(28px, 6vw, 42px); margin: 8px 0; letter-spacing: -.03em; f
   border: 1px solid var(--border-color);
 }
 .card-back::before {
-  content: "✦"; display: grid; place-items: center;
-  width: 70px; height: 70px; border: 1px solid rgba(255,255,255,.25);
-  border-radius: 50%; font-size: 32px; color: #a8d4ff;
+  content: "✦";
+  display: grid;
+  place-items: center;
+  width: clamp(40px, 12vw, 70px);
+  height: clamp(40px, 12vw, 70px);
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 50%;
+  font-size: clamp(20px, 5vw, 32px);
+  color: #a8d4ff;
 }
 .card-front {
   transform: rotateY(180deg);
@@ -428,22 +510,32 @@ h1 { font-size: clamp(28px, 6vw, 42px); margin: 8px 0; letter-spacing: -.03em; f
   background:
     radial-gradient(ellipse at 50% 30%, rgba(255,255,255,.1), transparent 50%),
     linear-gradient(150deg,var(--person-bg1,#1b5685),var(--person-bg2,#10253f));
-  padding: 12px;
+  padding: clamp(6px, 1.4vw, 12px);
 }
-.card-front .crown { font-size: clamp(24px,5.5vw,40px); margin-bottom: 8px; }
+.card-front .crown { font-size: clamp(20px, 5vw, 40px); margin-bottom: 6px; }
 .card-front .portrait {
-  display: grid; place-items: center;
-  width: 64%; aspect-ratio: 1; border-radius: 50%;
+  display: grid;
+  place-items: center;
+  width: 64%;
+  aspect-ratio: 1;
+  border-radius: 50%;
   border: 1px solid rgba(255,255,255,.35);
   background: radial-gradient(circle at 35% 25%, rgba(255,255,255,.25), transparent 45%), rgba(255,255,255,.06);
-  font-size: clamp(42px,9vw,66px);
+  font-size: clamp(32px, 8vw, 66px);
 }
 .card-front .person-name {
-  margin-top: 12px; font-size: clamp(14px,3vw,18px);
-  font-weight: 800; text-align: center; overflow-wrap: anywhere;
+  margin-top: clamp(6px, 1.4vw, 12px);
+  font-size: clamp(12px, 2.6vw, 18px);
+  font-weight: 800;
+  text-align: center;
+  overflow-wrap: anywhere;
+  padding: 0 2px;
 }
 .card-front .person-label {
-  margin-top: 4px; color: rgba(255,255,255,.75); font-size: 10px; letter-spacing: .12em;
+  margin-top: 4px;
+  color: rgba(255,255,255,.75);
+  font-size: clamp(8px, 1vw, 10px);
+  letter-spacing: .12em;
   text-transform: uppercase;
 }
 .card.chosen .card-inner { filter: drop-shadow(0 0 14px rgba(84,169,235,.5)); }
@@ -451,15 +543,28 @@ h1 { font-size: clamp(28px, 6vw, 42px); margin: 8px 0; letter-spacing: -.03em; f
 /* =========================================================
    РЕЗУЛЬТАТ
    ========================================================= */
-.result-card { max-width: 280px; margin: 0 auto; }
+.result-card { max-width: min(280px, 70vw); margin: 0 auto; }
 .result-summary { text-align: center; margin-top: 16px; }
-.result-summary h2 { font-size: 20px; margin: 0 0 6px; font-weight: 700; }
-.result-summary p { margin: 4px 0; color: var(--muted); line-height: 1.5; overflow-wrap: anywhere; }
+.result-summary h2 {
+  font-size: clamp(17px, 2.2vw, 20px);
+  margin: 0 0 6px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+  padding: 0 4px;
+}
+.result-summary p {
+  margin: 4px 0;
+  color: var(--muted);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  font-size: clamp(12px, 1.15vw, 14px);
+  padding: 0 4px;
+}
 .result-quote {
   font-style: italic;
-  font-size: 14px;
+  font-size: clamp(12px, 1.2vw, 14px);
   color: var(--text);
-  padding: 12px 16px;
+  padding: clamp(10px, 1.8vw, 12px) clamp(12px, 2vw, 16px);
   margin: 10px 0;
   border-left: 3px solid var(--accent);
   background: rgba(0,136,204,.1);
@@ -467,32 +572,33 @@ h1 { font-size: clamp(28px, 6vw, 42px); margin: 8px 0; letter-spacing: -.03em; f
   text-align: left;
   line-height: 1.55;
 }
-body.light-theme .result-quote {
-  background: rgba(0,136,204,.08);
-}
+body.light-theme .result-quote { background: rgba(0,136,204,.08); }
 .result-comment {
-  text-align: left; white-space: pre-wrap; overflow-wrap: anywhere;
-  margin-top: 14px; padding: 12px;
-  border-radius: 10px; background: rgba(255,255,255,.04);
+  text-align: left;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.04);
   border: 1px solid var(--border-color);
-  font-size: 13px;
+  font-size: clamp(12px, 1.1vw, 13px);
 }
-.rating { display: flex; justify-content: center; gap: 4px; margin: 10px 0 4px; }
+.rating { display: flex; justify-content: center; gap: 4px; margin: 10px 0 4px; flex-wrap: wrap; }
 .star {
   padding: 0 2px;
   background: transparent;
   border: 0;
   outline: none;
   color: #7d8b99;
-  font-size: 28px;
+  font-size: clamp(24px, 4vw, 28px);
   line-height: 1.2;
+  min-height: 0;
+  min-width: 0;
 }
 .star:hover, .star:focus { background: transparent; border: 0; outline: none; }
 .star.active, .star.hovered { color: #ffd166; }
 
-/* =========================================================
-   НОВОЕ: КОММЕНТАРИЙ К РЕЗУЛЬТАТУ
-   ========================================================= */
 .result-note-box {
   margin-top: 14px;
   padding-top: 14px;
@@ -500,16 +606,13 @@ body.light-theme .result-quote {
   text-align: left;
 }
 .result-note-box label {
-  font-size: 12px;
+  font-size: clamp(11px, 1vw, 12px);
   color: var(--muted);
   font-weight: 600;
   margin-bottom: 6px;
   display: block;
 }
-.result-note-box textarea {
-  min-height: 60px;
-  font-size: 13px;
-}
+.result-note-box textarea { min-height: 60px; font-size: clamp(12px, 1.05vw, 13px); }
 .result-note-saved {
   font-size: 11px;
   color: #00c853;
@@ -523,20 +626,65 @@ body.light-theme .result-quote {
    ========================================================= */
 .archive-list { display: grid; gap: 10px; margin-top: 12px; }
 .archive-item {
-  border: 1px solid var(--border-color); background: rgba(255,255,255,.03);
-  padding: 12px; border-radius: 12px; min-width: 0;
+  border: 1px solid var(--border-color);
+  background: rgba(255,255,255,.03);
+  padding: clamp(10px, 1.8vw, 12px) clamp(10px, 1.8vw, 12px) clamp(10px, 1.8vw, 12px) 26px;
+  border-radius: 12px;
+  min-width: 0;
+  position: relative;
 }
-.archive-head { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center; }
-.archive-title { font-weight: 700; overflow-wrap: anywhere; font-size: 14px; }
-.archive-meta { color: var(--muted); font-size: 12px; margin-top: 6px; line-height: 1.5; }
+/* Язычок змеи */
+.archive-item::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 12px;
+  bottom: 12px;
+  width: 6px;
+  border-radius: 3px;
+  background: var(--bookmark-color, #ffd166);
+  clip-path: polygon(
+    0 0, 100% 0, 100% 45%, 50% 45%, 100% 50%, 50% 55%, 100% 55%, 100% 100%, 0 100%
+  );
+}
+.archive-item::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  width: 10px;
+  height: 6px;
+  transform: translateY(-50%);
+  background: var(--bookmark-color, #ffd166);
+  clip-path: polygon(0 0, 100% 30%, 80% 50%, 100% 70%, 0 100%, 20% 50%);
+}
+
+.archive-head { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; align-items: center; }
+.archive-title {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+  font-size: clamp(13px, 1.2vw, 14px);
+  min-width: 0;
+}
+.archive-meta {
+  color: var(--muted);
+  font-size: clamp(11px, 1vw, 12px);
+  margin-top: 6px;
+  line-height: 1.5;
+}
 .archive-comment {
-  white-space: pre-wrap; overflow-wrap: anywhere;
-  margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-color);
-  color: var(--text); font-size: 12px; line-height: 1.5; opacity: .85;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color);
+  color: var(--text);
+  font-size: clamp(11px, 1vw, 12px);
+  line-height: 1.5;
+  opacity: .85;
 }
 .archive-stars { color: #ffd166; letter-spacing: 1.5px; }
 
-/* НОВОЕ: заметка и кнопки архива */
 .archive-note-row {
   display: flex;
   gap: 6px;
@@ -546,35 +694,22 @@ body.light-theme .result-quote {
 .archive-note-row textarea {
   flex: 1 1 100%;
   min-height: 50px;
-  font-size: 12px;
+  font-size: clamp(11px, 1vw, 12px);
 }
-.archive-note-row .note-color-picker {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-}
-.note-color-btn {
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  border: 2px solid var(--border-color);
-  padding: 0;
-  cursor: pointer;
-  transition: transform .15s;
-}
-.note-color-btn:hover { transform: scale(1.12); }
-.note-color-btn.selected { border-color: var(--text); transform: scale(1.15); }
 
 .archive-share-btn {
   padding: 6px 10px;
   border-radius: 8px;
   background: var(--btn-bg);
   border: 1px solid var(--border-color);
-  font-size: 12px;
+  font-size: clamp(11px, 1vw, 12px);
   color: var(--text);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  min-height: 32px;
+  flex-shrink: 0;
 }
 .archive-share-btn:hover { background: var(--btn-bg-hover); }
 
@@ -582,65 +717,105 @@ body.light-theme .result-quote {
   margin-top: 8px;
   padding: 8px 10px;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: clamp(11px, 1vw, 12px);
   line-height: 1.5;
   color: #1a1a1a;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 
+.bookmark-picker {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  align-items: center;
+}
+.bookmark-picker .bk-label {
+  font-size: clamp(10px, .95vw, 11px);
+  color: var(--muted);
+  font-weight: 600;
+  margin-right: 4px;
+}
+.bookmark-color-btn {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+  padding: 0;
+  cursor: pointer;
+  transition: transform .15s;
+  min-height: 0;
+}
+.bookmark-color-btn:hover { transform: scale(1.15); }
+.bookmark-color-btn.selected { border-color: var(--text); transform: scale(1.18); }
+
 /* =========================================================
    НИЖНЯЯ ПАНЕЛЬ
    ========================================================= */
 .bottom-bar {
-  position: fixed; z-index: 20; bottom: 12px; left: 50%;
+  position: fixed;
+  z-index: 20;
+  bottom: max(10px, env(safe-area-inset-bottom, 10px));
+  left: 50%;
   transform: translateX(-50%);
-  width: min(760px,calc(100% - 24px));
-  min-height: var(--bottom-bar-height); padding: 8px 12px;
-  display: flex; align-items: center; gap: 10px;
-  border-radius: 14px;
+  width: min(760px, calc(100% - 20px));
+  height: var(--bottom-bar-height);
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 26px;
   background: var(--menu-bg);
   border: 1px solid var(--border-color);
   transition: transform .4s cubic-bezier(.2,.75,.2,1), opacity .3s ease;
 }
 .bottom-bar.is-hidden {
-  transform: translate(-50%, calc(100% + 20px));
+  transform: translate(-50%, calc(100% + 30px));
   opacity: 0;
   pointer-events: none;
 }
 .back-button {
-  width: 40px; height: 40px; flex: 0 0 40px;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
   border-radius: 50%;
   font-size: 18px;
-  display: grid; place-items: center;
+  display: grid;
+  place-items: center;
   background: var(--btn-bg);
   border: 1px solid var(--border-color);
   color: var(--text);
+  min-height: 0;
 }
 .back-button:hover { background: var(--btn-bg-hover); }
 .back-button.hidden { display: none !important; }
 .profile-button {
-  width: 40px; height: 40px; flex: 0 0 40px;
-  border-radius: 50%; background: var(--tg-blue); border: 0;
-  display: grid; place-items: center; font-size: 18px;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  border-radius: 50%;
+  background: var(--tg-blue);
+  border: 0;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
   overflow: hidden;
   color: #fff;
+  min-height: 0;
 }
-.bottom-info { min-width: 0; flex: 1; }
-.bottom-name { font-size: 13px; font-weight: 700; }
-.bottom-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
 .bottom-revealed-names {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
   align-items: center;
-  margin-left: 6px;
+  margin-left: 4px;
   padding-left: 8px;
   border-left: 1px solid var(--border-color);
   font-size: 11px;
   color: var(--muted);
-  max-width: 220px;
+  max-width: min(280px, 45vw);
+  min-width: 0;
 }
 .bottom-revealed-names .rev-name {
   padding: 3px 8px;
@@ -649,6 +824,10 @@ body.light-theme .result-quote {
   color: var(--text);
   font-weight: 600;
   white-space: nowrap;
+  font-size: clamp(10px, .95vw, 11px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 .bottom-revealed-names .rev-label {
   font-size: 10px;
@@ -665,10 +844,10 @@ body.light-theme .result-quote {
 .profile-menu {
   position: fixed;
   z-index: 40;
-  bottom: calc(12px + var(--bottom-bar-height) + 10px);
+  bottom: calc(max(10px, env(safe-area-inset-bottom, 10px)) + var(--bottom-bar-height) + 10px);
   left: 50%;
   transform: translateX(-50%) translateY(20px);
-  width: min(320px, calc(100vw - 24px));
+  width: min(320px, calc(100vw - 20px));
   padding: 12px;
   border-radius: 14px;
   background: var(--menu-bg);
@@ -676,6 +855,9 @@ body.light-theme .result-quote {
   opacity: 0;
   pointer-events: none;
   transition: transform .35s cubic-bezier(.2,.75,.2,1), opacity .3s ease;
+  max-height: min(80vh, 600px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .profile-menu.is-open {
   opacity: 1;
@@ -691,10 +873,12 @@ body.light-theme .result-quote {
   margin-bottom: 10px;
 }
 .profile-avatar-preview {
-  width: 48px; height: 48px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: var(--tg-blue);
-  display: grid; place-items: center;
+  display: grid;
+  place-items: center;
   font-size: 24px;
   flex-shrink: 0;
   border: 2px solid var(--border-color);
@@ -719,15 +903,40 @@ body.light-theme .result-quote {
   border-radius: 8px;
   border: 1px solid transparent;
   background: transparent;
-  font-size: 13px;
+  font-size: clamp(12px, 1.1vw, 13px);
   transition: background .15s;
+  min-height: 40px;
 }
-.profile-menu-item:hover {
-  background: var(--btn-bg-hover);
-}
+.profile-menu-item:hover { background: var(--btn-bg-hover); }
 .profile-menu-item .icon { width: 20px; text-align: center; font-size: 15px; flex-shrink: 0; }
-.profile-menu-item .label { flex: 1; }
+.profile-menu-item .label { flex: 1; min-width: 0; }
 .profile-menu-divider { height: 1px; background: var(--border-color); margin: 4px 0; }
+
+/* Подписка — градиентный текст */
+.subscribe-btn {
+  background: var(--btn-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  font-weight: 800;
+}
+.subscribe-btn:hover { background: var(--btn-bg-hover) !important; }
+.subscribe-btn .label {
+  background: linear-gradient(90deg, #ff4f83, #ffb347, #00c853, #00b0ff, #c8339a, #ff4f83);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: rainbowFlow 3s ease infinite;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+.subscribe-btn:hover .label { animation: rainbowFlow 1.6s ease infinite; }
+.subscribe-btn .icon { -webkit-text-fill-color: initial; }
+@keyframes rainbowFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
 /* =========================================================
    ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ
@@ -739,7 +948,7 @@ body.light-theme .result-quote {
   gap: 12px;
   padding: 8px 0;
 }
-.theme-toggle-label { font-size: 13px; font-weight: 600; }
+.theme-toggle-label { font-size: clamp(12px, 1.1vw, 13px); font-weight: 600; }
 .theme-switch {
   position: relative;
   width: 60px;
@@ -752,6 +961,7 @@ body.light-theme .result-quote {
   flex-shrink: 0;
   padding: 0;
   overflow: hidden;
+  min-height: 0;
 }
 .theme-switch .thumb {
   position: absolute;
@@ -773,44 +983,64 @@ body.light-theme .result-quote {
    МОДАЛКИ
    ========================================================= */
 .modal-backdrop {
-  position: fixed; inset: 0; z-index: 50;
-  display: grid; place-items: center; padding: 16px;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: clamp(10px, 2vw, 16px);
+  padding-bottom: max(clamp(10px, 2vw, 16px), env(safe-area-inset-bottom));
   background: rgba(0,0,0,.6);
   backdrop-filter: blur(6px);
 }
 body.light-theme .modal-backdrop { background: rgba(0,0,0,.35); }
 .modal {
-  width: min(520px,100%); max-height: 85vh; overflow-y: auto;
+  width: min(520px, 100%);
+  max-height: min(85vh, 90dvh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background: var(--modal-bg);
   border: 1px solid var(--border-color);
-  border-radius: 14px; padding: 18px;
+  border-radius: 14px;
+  padding: clamp(14px, 2.4vw, 18px);
 }
 .modal-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; }
-.modal-head h2 { font-size: 17px; margin: 0; font-weight: 700; }
-.close-button { border-radius: 50%; width: 32px; height: 32px; }
-.theme-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+.modal-head h2 { font-size: clamp(15px, 1.5vw, 17px); margin: 0; font-weight: 700; overflow-wrap: anywhere; }
+.close-button { border-radius: 50%; width: 32px; height: 32px; min-height: 0; flex-shrink: 0; }
+.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
 .theme-button {
-  border-radius: 10px; padding: 10px; min-height: 56px;
-  text-align: left; font-size: 12px; overflow: hidden;
+  border-radius: 10px;
+  padding: 10px;
+  min-height: 56px;
+  text-align: left;
+  font-size: clamp(11px, 1vw, 12px);
+  overflow: hidden;
+  min-height: 0;
 }
 .theme-swatch { height: 20px; border-radius: 6px; margin-bottom: 6px; }
-.color-grid { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 6px; margin: 10px 0; }
-.color-input { padding: 3px; height: 40px; cursor: pointer; }
+.color-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; margin: 10px 0; }
+.color-input { padding: 3px; height: 40px; cursor: pointer; min-height: 0; }
 hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
 
 .toast {
-  position: fixed; z-index: 80; left: 50%; bottom: 88px;
+  position: fixed;
+  z-index: 80;
+  left: 50%;
+  bottom: calc(max(10px, env(safe-area-inset-bottom, 10px)) + 76px);
   transform: translateX(-50%);
-  padding: 10px 14px; border-radius: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
   background: var(--menu-bg);
   border: 1px solid var(--border-color);
-  color: var(--text); font-size: 13px; max-width: calc(100% - 30px);
+  color: var(--text);
+  font-size: clamp(12px, 1.1vw, 13px);
+  max-width: calc(100% - 20px);
   text-align: center;
 }
 
 .emoji-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
   gap: 8px;
   margin-top: 10px;
 }
@@ -819,12 +1049,13 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
   border-radius: 10px;
   display: grid;
   place-items: center;
-  font-size: 26px;
+  font-size: clamp(20px, 4vw, 26px);
   background: var(--btn-bg);
   border: 2px solid transparent;
   padding: 0;
   cursor: pointer;
   transition: border-color .15s, transform .12s;
+  min-height: 0;
 }
 .emoji-option:hover { transform: translateY(-2px); background: var(--btn-bg-hover); }
 .emoji-option.selected {
@@ -833,7 +1064,7 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
 }
 
 /* =========================================================
-   ВЫПАДАЮЩИЕ ПЛИТКИ: ИМЕНА И КОММЕНТАРИИ
+   ВЫПАДАЮЩИЕ ПЛИТКИ
    ========================================================= */
 .suggest-panel {
   position: absolute;
@@ -841,8 +1072,9 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  max-height: 240px;
+  max-height: min(240px, 40vh);
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 6px;
   border-radius: 12px;
   background: var(--menu-bg);
@@ -861,16 +1093,17 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
   border: 1px solid transparent;
   background: #ffffff;
   color: #1a1a1a;
-  font-size: 13px;
+  font-size: clamp(12px, 1.1vw, 13px);
   line-height: 1.4;
   cursor: pointer;
   transition: transform .12s, background .12s;
   white-space: normal;
+  min-height: 0;
+  overflow-wrap: anywhere;
 }
 .suggest-tile:hover { transform: translateY(-1px); background: #f0f0f0; }
 .suggest-tile:active { transform: scale(.98); }
 
-/* Кнопка "Ещё варианты" (+) */
 .suggest-tile.more {
   background: var(--accent);
   color: #fff;
@@ -882,7 +1115,6 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
 }
 .suggest-tile.more:hover { background: var(--accent2); }
 
-/* Радужная плитка */
 .suggest-tile.rainbow {
   color: #fff;
   text-shadow: 0 1px 2px rgba(0,0,0,.4);
@@ -891,20 +1123,13 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
   animation: rainbowFlow 4s ease infinite;
 }
 .suggest-tile.rainbow:hover { animation: rainbowFlow 2s ease infinite; }
-@keyframes rainbowFlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
 
-/* Голубая плитка */
 .suggest-tile.blue {
   background: linear-gradient(135deg, #a8e0ff, #5bc0ff);
   color: #0a2540;
 }
 .suggest-tile.blue:hover { background: linear-gradient(135deg, #c2ecff, #7dcfff); }
 
-/* Розовая плитка */
 .suggest-tile.pink {
   background: linear-gradient(135deg, #ffc2d9, #ff8fb8);
   color: #4a0d28;
@@ -914,28 +1139,273 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
 .field-wrap { position: relative; }
 
 /* =========================================================
+   ЧЕК / БИЛЕТ
+   ========================================================= */
+.ticket {
+  background: #ffffff;
+  color: #1a1a1a;
+  border-radius: 12px;
+  padding: clamp(12px, 2.4vw, 16px);
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  border: 1px dashed #b0b0b0;
+  overflow: hidden;
+}
+.ticket::before, .ticket::after {
+  content: "";
+  position: absolute;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--modal-bg);
+  left: -12px;
+}
+.ticket::before { top: 20px; }
+.ticket::after { bottom: 20px; }
+.ticket-head {
+  font-family: 'Pacifico', cursive;
+  font-size: clamp(16px, 2.4vw, 20px);
+  text-align: center;
+  margin-bottom: 8px;
+  color: #1a1a1a;
+}
+.ticket-divider { border-top: 1px dashed #b0b0b0; margin: 10px 0; }
+.ticket-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: clamp(12px, 1.1vw, 13px);
+  flex-wrap: wrap;
+}
+.ticket-row .k { color: #707579; font-weight: 600; }
+.ticket-row .v { color: #1a1a1a; font-weight: 700; text-align: right; overflow-wrap: anywhere; }
+.ticket-note {
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: clamp(11px, 1vw, 12px);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   ПОДПИСКА
+   ========================================================= */
+.sub-section { margin-top: 6px; }
+.sub-section-title {
+  font-size: clamp(11px, 1vw, 12px);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  font-weight: 700;
+  margin: 14px 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sub-cards { display: grid; gap: 8px; }
+.sub-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: clamp(10px, 1.8vw, 12px) clamp(10px, 1.8vw, 14px);
+  border-radius: 12px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border-color);
+  transition: transform .15s, border-color .15s;
+  min-width: 0;
+}
+.sub-card:hover { transform: translateY(-1px); border-color: var(--accent); }
+.sub-card .sub-ico {
+  width: clamp(32px, 6vw, 38px);
+  height: clamp(32px, 6vw, 38px);
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: clamp(16px, 3vw, 20px);
+  flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(255,79,131,.25), rgba(0,176,255,.25));
+}
+.sub-card .sub-info { flex: 1; min-width: 0; }
+.sub-card .sub-name {
+  font-weight: 700;
+  font-size: clamp(12px, 1.15vw, 13.5px);
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+.sub-card .sub-sub {
+  font-size: clamp(10px, .95vw, 11px);
+  color: var(--muted);
+  margin-top: 2px;
+  overflow-wrap: anywhere;
+}
+.sub-card .sub-price {
+  font-weight: 800;
+  font-size: clamp(13px, 1.4vw, 15px);
+  background: linear-gradient(90deg, #ff4f83, #ffb347, #00c853, #00b0ff);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbowFlow 4s ease infinite;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.sub-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(0,200,83,.18);
+  color: #00c853;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.sub-note {
+  font-size: clamp(10px, 1vw, 11px);
+  color: var(--muted);
+  margin-top: 12px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* =========================================================
    АДАПТИВНОСТЬ
    ========================================================= */
-@media (max-width: 540px) {
-  .app { padding: 12px 12px 100px; }
-  .hero { padding-top: 8px; }
-  .panel { border-radius: 14px; }
-  .gender-options { gap: 6px; }
-  .gender-option { font-size: 10px; padding: 10px 4px; min-height: 76px; }
-  .gender-option .pair-icons { font-size: 20px; }
-  .name-grid { grid-template-columns: 1fr; gap: 8px; }
-  .bottom-bar { bottom: 7px; width: calc(100% - 14px); border-radius: 12px; }
-  .cards { gap: 8px; }
-  .card-front { padding: 6px; }
-  .card-front .person-name { margin-top: 8px; }
-  .card-front .person-label { font-size: 8px; }
-  .profile-menu {
-    bottom: calc(7px + var(--bottom-bar-height) + 8px);
-    width: calc(100vw - 16px);
-    padding: 10px;
+
+/* Планшеты */
+@media (max-width: 900px) {
+  :root { --app-padding: 14px; }
+  main { max-width: 100%; }
+}
+
+/* Малые планшеты / большие телефоны */
+@media (max-width: 700px) {
+  :root {
+    --app-padding: 12px;
+    --bottom-bar-height: 50px;
   }
-  .bottom-revealed-names { max-width: 120px; font-size: 10px; }
+  .theme-grid { grid-template-columns: repeat(2, 1fr); }
+  .color-grid { grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .color-input { height: 36px; }
+  .result-card { max-width: min(260px, 68vw); }
+}
+
+/* Телефоны */
+@media (max-width: 540px) {
+  :root {
+    --app-padding: 10px;
+    --app-bottom-padding: 78px;
+    --bottom-bar-height: 46px;
+  }
+  .hero { padding: 6px 4px 12px; }
+  h1 { font-size: clamp(26px, 8vw, 34px); }
+  .subtitle { font-size: 12.5px; }
+  .panel { border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+  .gender-options { gap: 5px; }
+  .gender-option { font-size: 9px; padding: 8px 3px; min-height: 66px; gap: 4px; }
+  .gender-option .pair-icons { font-size: 18px; gap: 2px; }
+  .name-grid { grid-template-columns: 1fr; gap: 8px; }
+  .form-section { margin-top: 12px; padding-top: 10px; }
+  .actions { gap: 6px; margin-top: 12px; }
+  .action-button { min-height: 40px; padding: 9px 12px; font-size: 13px; }
+  .cards { gap: 8px; max-width: 100%; }
+  .card-front { padding: 6px; }
+  .card-front .person-name { margin-top: 6px; font-size: 12px; }
+  .card-front .person-label { font-size: 8px; letter-spacing: .08em; }
+  .card-back::before { width: 40px; height: 40px; font-size: 20px; }
+  .bottom-bar {
+    bottom: max(6px, env(safe-area-inset-bottom, 6px));
+    width: calc(100% - 12px);
+    padding: 4px 8px;
+    border-radius: 23px;
+    gap: 6px;
+  }
+  .back-button, .profile-button { width: 32px; height: 32px; flex-basis: 32px; font-size: 15px; }
+  .bottom-revealed-names { max-width: 55vw; padding-left: 6px; margin-left: 2px; }
+  .bottom-revealed-names .rev-name { padding: 2px 6px; font-size: 10px; }
+  .profile-menu {
+    width: calc(100vw - 12px);
+    max-height: 75vh;
+    padding: 10px;
+    border-radius: 12px;
+  }
+  .profile-menu-item { padding: 8px 9px; font-size: 12.5px; }
+  .modal { border-radius: 12px; }
+  .theme-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-button { padding: 8px; font-size: 11px; }
+  .emoji-grid { grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 6px; }
+  .emoji-option { font-size: 20px; }
   .result-note-box textarea { min-height: 50px; font-size: 12px; }
+  .sub-card { padding: 9px 10px; gap: 8px; }
+  .sub-card .sub-ico { width: 30px; height: 30px; font-size: 15px; }
+  .ticket-row { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .ticket-row .v { text-align: left; }
+}
+
+/* Маленькие телефоны */
+@media (max-width: 380px) {
+  :root { --app-padding: 8px; }
+  h1 { font-size: 26px; }
+  .panel { padding: 10px; }
+  .gender-option { min-height: 60px; font-size: 8.5px; }
+  .gender-option .pair-icons { font-size: 16px; }
+  .card-front .person-name { font-size: 11px; }
+  .bottom-revealed-names { display: none; }
+  .actions { flex-direction: column; }
+  .actions .primary { width: 100%; }
+  .sub-card .sub-price { font-size: 12px; }
+  .result-summary h2 { font-size: 16px; }
+}
+
+/* Ландшафт на телефоне */
+@media (max-height: 500px) and (orientation: landscape) {
+  :root { --bottom-bar-height: 40px; --app-bottom-padding: 60px; }
+  .hero { padding: 4px 4px 8px; }
+  h1 { font-size: 26px; margin: 4px 0; }
+  .splash-table { display: none; }
+  .splash-title { margin-bottom: 4px; }
+  .splash-sub { margin-bottom: 12px; }
+  .profile-menu { max-height: 70vh; }
+  .modal { max-height: 92vh; }
+  .bottom-bar { height: 40px; }
+  .back-button, .profile-button { width: 30px; height: 30px; flex-basis: 30px; }
+}
+
+/* Очень маленькие экраны по высоте */
+@media (max-height: 600px) {
+  .modal { max-height: 92vh; }
+  .profile-menu { max-height: 80vh; }
+}
+
+/* Широкие экраны / 4K */
+@media (min-width: 1400px) {
+  :root { --app-padding: 22px; }
+  .app { max-width: 1200px; }
+  main { max-width: 900px; }
+}
+
+/* Уменьшенная анимация */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Тёмная тема на уровне ОС (по желанию — можно оставить) */
+@media (prefers-color-scheme: light) {
+  /* Ничего не делаем: тема управляется вручную */
+}
+
+/* Печать — скрываем лишнее */
+@media print {
+  .bottom-bar, .profile-menu, .toast, #splashScreen, .modal-backdrop { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
+  body::before { display: none; }
 }
 </style>
 </head>
@@ -950,7 +1420,7 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
       <span>👤</span><span>👤</span><span>👤</span>
     </div>
   </div>
-  <div class="splash-title">Романтическая игра</div>
+  <div class="splash-title">Переворот</div>
   <div class="splash-sub">Две карты. Один выбор</div>
   <div class="splash-bar"><div class="splash-fill"></div></div>
 </div>
@@ -1030,10 +1500,9 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
         <div id="resultQuote" class="result-quote"></div>
         <div id="resultComment" class="result-comment hidden"></div>
         <hr>
-        <div style="font-weight:700;font-size:13px;">Оценка</div>
+        <div style="font-weight:700;font-size:clamp(12px,1.1vw,13px);">Оценка</div>
         <div class="rating" id="resultRating" aria-label="Оценка"></div>
 
-        <!-- НОВОЕ: комментарий к результату -->
         <div class="result-note-box">
           <label for="resultNote">Комментарий к результату</label>
           <textarea id="resultNote" maxlength="500" placeholder="Заметка для себя"></textarea>
@@ -1051,10 +1520,6 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
 <div class="bottom-bar" id="bottomBar">
   <button class="back-button hidden" id="backButton" aria-label="Назад">←</button>
   <button class="profile-button" id="profileButton" aria-label="Профиль">♙</button>
-  <div class="bottom-info">
-    <div class="bottom-name" id="profileName">Игрок</div>
-    <div class="bottom-sub" id="profileStats">Битв: 0</div>
-  </div>
   <div class="bottom-revealed-names hidden" id="bottomRevealedNames">
     <span class="rev-label">За картами</span>
     <div id="revNamesList" style="display:flex; gap:4px; flex-wrap:wrap;"></div>
@@ -1081,6 +1546,13 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
     </button>
     <button class="profile-menu-item" data-profile-action="wallpaper">
       <span class="icon">✦</span><span class="label">Настройки фона</span>
+    </button>
+    <div class="profile-menu-divider"></div>
+    <button class="profile-menu-item" data-profile-action="wallet">
+      <span class="icon">👛</span><span class="label">Кошелёк</span>
+    </button>
+    <button class="profile-menu-item subscribe-btn" data-profile-action="subscribe">
+      <span class="icon">✨</span><span class="label">Подписка</span>
     </button>
     <div class="profile-menu-divider"></div>
     <button class="profile-menu-item" data-profile-action="share-costume">
@@ -1115,7 +1587,7 @@ hr { border: 0; border-top: 1px solid var(--border-color); margin: 14px 0; }
 "use strict";
 
 /* =========================================================
-   ЦИТАТЫ О ЛЮБВИ
+   ЦИТАТЫ
    ========================================================= */
 const loveQuotes = [
   "«Любовь — это не то, что ты находишь. Любовь — это то, что находит тебя.» — Лорен Оливер",
@@ -1125,24 +1597,17 @@ const loveQuotes = [
   "«Ты — причина, по которой я улыбаюсь без повода.» — Неизвестный автор"
 ];
 
-/* =========================================================
-   КОММЕНТАРИИ-ПОДСКАЗКИ (по 5 на тип)
-   type: rainbow — сложное, blue — для мальчиков, pink — для девочек
-   ========================================================= */
 const commentSuggestions = [
-  // rainbow (5)
   { text: "Пусть судьба решит за нас — я готов к любому повороту", type: "rainbow" },
   { text: "Сердце подсказывает, что сегодня будет особенный выбор", type: "rainbow" },
   { text: "Два сердца — одна история. Кто же окажется рядом?", type: "rainbow" },
   { text: "Иногда самый смелый шаг — просто довериться случаю", type: "rainbow" },
   { text: "Я верю в знаки судьбы и романтику случайных встреч", type: "rainbow" },
-  // blue (5)
   { text: "Хочу, чтобы сегодня удача улыбнулась мне", type: "blue" },
   { text: "Настоящий рыцарь не боится сделать выбор", type: "blue" },
   { text: "Король должен уметь принимать решения — проверю себя", type: "blue" },
   { text: "Положусь на интуицию и мужскую логику", type: "blue" },
   { text: "Сегодня мой день — я это чувствую", type: "blue" },
-  // pink (5)
   { text: "Красота спасёт мир, а любовь — моё сердце", type: "pink" },
   { text: "Пусть этот выбор станет началом красивой истории", type: "pink" },
   { text: "Дамская интуиция никогда не подводит", type: "pink" },
@@ -1153,9 +1618,9 @@ const commentSuggestions = [
 /* =========================================================
    ДАННЫЕ
    ========================================================= */
-const STORAGE_KEY = "perevorot_archive_v7";
-const SETTINGS_KEY = "perevorot_settings_v7";
-const LAST_NAMES_KEY = "perevorot_lastnames_v7";
+const STORAGE_KEY = "perevorot_archive_v10";
+const SETTINGS_KEY = "perevorot_settings_v10";
+const LAST_NAMES_KEY = "perevorot_lastnames_v10";
 
 const maleNames = ["Александр","Максим","Артём","Михаил","Иван","Даниил","Дмитрий","Кирилл","Андрей","Егор","Алексей","Роман","Никита","Матвей","Илья","Тимур","Лев","Марк","Денис","Павел","Адам","Ноа","Лиам","Оливер","Джеймс","Лукас","Лео","Этан","Джек","Генри","Луи","Габриэль","Артур","Оскар","Феликс","Хуго","Карлос","Диего","Матео","Лука","Энцо","Марко","Давид","Рафаэль","Тео","Алекс","Эмиль","Юсуф","Амир","Омар","Хасан","Раян","Ибрагим","Зейн","Кай","Рэн","Харуто","Сота","Юто","Такуми","Минхо","Джун","Сону","Хён","Джихун","Вэй","Цзюнь","Чэнь","Бо","Линь","Арджун","Рахул","Викрам","Кабир","Дев","Рохан","Аарон","Самуэль","Бенджамин","Джозеф","Финн","Коннор","Шон","Патрик","Эрик","Антон","Ян","Мартин","Нильс","Свен","Андреас","Филипп","Томас","Милан","Никола","Стефан","Пётр","Якуб","Матеуш","Алексей"];
 const femaleNames = ["Анна","Мария","София","Алиса","Виктория","Полина","Ева","Арина","Дарья","Екатерина","Анастасия","Варвара","Милана","Александра","Кира","Вероника","Диана","Ульяна","Таисия","Мирослава","Эмма","Оливия","Амелия","Шарлотта","Ава","Изабелла","Миа","Луна","Элла","Лили","Софи","Камилла","Жюли","Клэр","Амели","Хлоя","Манон","Элоиза","Лея","Ноэми","Кармен","Лусия","Валерия","Мартина","Лола","Альба","Сара","Инес","Элена","Паула","Джулия","Джорджия","Франческа","Бьянка","Элеттра","Аурора","Ливия","Серена","Виола","Маргарита","Ясмин","Лейла","Нура","Амира","Малика","Сальма","Хана","Марьям","Зара","Алия","Сакура","Юи","Хина","Аой","Мэй","Рин","Ами","Мисаки","Юна","Хару","Соён","Джису","Минджи","Наён","Йеджи","Суён","Хэин","Ара","Сэри","Ерин","Прия","Анья","Иша","Мира","Кавья","Неха","Сита","Лакшми","Тара","Алия"];
@@ -1171,14 +1636,26 @@ const themes = [
   { name:"Малиновый лёд", colors:["#281432","#652052","#d83f80","#ff9cbb","#492346"] },
   { name:"Тёмная роза", colors:["#160b1b","#3c1230","#7e1c48","#c84971","#2a1029"] },
   { name:"Космическая любовь", colors:["#140d2e","#4d1d58","#a63b7d","#f18ca8","#30204b"] },
-  // Telegram-палитра
-  { name:"Telegram Blue", colors:["#17212b","#2b5278","#0088cc","#4a76a8","#1c2733"] },
-  { name:"Telegram Night", colors:["#0e1621","#17212b","#232e3c","#2b5278","#4a76a8"] }
+  { name:"Синий вечер", colors:["#17212b","#2b5278","#0088cc","#4a76a8","#1c2733"] },
+  { name:"Ночная синева", colors:["#0e1621","#17212b","#232e3c","#2b5278","#4a76a8"] }
+];
+
+const bgIconSets = [
+  { name:"Любовь", icons:["❤️","💖","💕","😘","💋","🌹","🌸","🌞","🐰","🐣","🐥","🎈","⭐","✨","💫","🎀"] },
+  { name:"Сердечки", icons:["❤️","🧡","💛","💚","💙","💜","🖤","🤍","💖","💗","💓","💞","💕","❣️","💘","💝"] },
+  { name:"Цветы", icons:["🌹","🌸","🌺","🌻","🌷","💐","🌼","🏵️","💮","🪷","🌱","🍀","🌿","🍃","🪴","🌾"] },
+  { name:"Небо", icons:["☀️","🌞","🌤️","⛅","🌥️","☁️","🌦️","🌧️","⛈️","🌩️","🌨️","❄️","🌙","⭐","✨","🌟"] },
+  { name:"Милые звери", icons:["🐰","🐇","🐣","🐥","🐤","🐦","🕊️","🦋","🐝","🐞","🐱","🐶","🦊","🐼","🐨","🦁"] },
+  { name:"Праздник", icons:["🎈","🎉","🎊","🎁","🎀","🎂","🍰","🧁","🎠","🎡","🎢","🎪","🎭","🎨","🎯","🎲"] }
 ];
 
 const avatarEmojis = ["♙","👤","👑","🤴","👸","🧙","🧚","🦊","🐼","🐱","🐶","🦁","🐯","🦄","🐺","🌹","🌸","🌙","⭐","💎","🔥","❄","🍀","🦋","🎭","🎩","🃏","♔","♕","♖"];
 
-/* Палитра для цветных заметок в архиве */
+const bookmarkColors = [
+  "#ff4f83", "#ffb347", "#00c853", "#00b0ff", "#c8339a",
+  "#ffd166", "#54a9eb", "#e04472", "#8b174b", "#a8e0ff"
+];
+
 const noteColors = [
   { name: "Жёлтый", bg: "#fff3b0" },
   { name: "Зелёный", bg: "#c8f5c8" },
@@ -1186,6 +1663,22 @@ const noteColors = [
   { name: "Розовый", bg: "#ffc8e0" },
   { name: "Оранжевый", bg: "#ffe0b0" },
   { name: "Сирень", bg: "#e0c8ff" }
+];
+
+const pricesTon = [
+  { name: "Подписка месяц", price: "4.99 TON", ico: "🌙", sub: "Все игры без ограничений" },
+  { name: "Единоразовая игра", price: "0.99 TON", ico: "🎲", sub: "Одна партия" },
+  { name: "3 игры", price: "2.49 TON", ico: "🎯", sub: "Три партии со скидкой" }
+];
+const pricesRub = [
+  { name: "Подписка месяц", price: "299 ₽", ico: "🌙", sub: "Все игры без ограничений" },
+  { name: "Единоразовая игра", price: "59 ₽", ico: "🎲", sub: "Одна партия" },
+  { name: "3 игры", price: "149 ₽", ico: "🎯", sub: "Три партии со скидкой" }
+];
+const pricesNft = [
+  { name: "Подписка месяц", price: "1 NFT", ico: "🌙", sub: "Все игры без ограничений" },
+  { name: "Подписка в 1 игру", price: "0.2 NFT", ico: "🎲", sub: "Одна партия" },
+  { name: "Подписка в 3 игры", price: "0.5 NFT", ico: "🎯", sub: "Три партии со скидкой" }
 ];
 
 /* =========================================================
@@ -1206,7 +1699,7 @@ let toastTimer = null;
 let revealedNames = [];
 let currentQuote = "";
 let suggestPanel = null;
-let suggestExpanded = false; // для кнопки "+"
+let suggestExpanded = false;
 
 const $ = (id) => document.getElementById(id);
 
@@ -1221,14 +1714,10 @@ function loadLastNames() {
       return { one: "", two: "" };
     }
     return { one: raw.one || "", two: raw.two || "" };
-  } catch {
-    return { one: "", two: "" };
-  }
+  } catch { return { one: "", two: "" }; }
 }
 function saveLastNames(one, two) {
-  try {
-    localStorage.setItem(LAST_NAMES_KEY, JSON.stringify({ one, two, savedAt: Date.now() }));
-  } catch {}
+  try { localStorage.setItem(LAST_NAMES_KEY, JSON.stringify({ one, two, savedAt: Date.now() })); } catch {}
 }
 function checkLastNamesExpiry() {
   try {
@@ -1247,16 +1736,14 @@ function loadArchive() {
   catch { return []; }
 }
 function saveArchive() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(archive)); }
-  catch { showToast("Не удалось сохранить."); }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(archive)); } catch { showToast("Не удалось сохранить."); }
 }
 function loadSettings() {
   try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}") || {}; }
   catch { return {}; }
 }
 function saveSettings() {
-  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
-  catch {}
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch {}
 }
 function showToast(msg) {
   const el = $("toast");
@@ -1290,8 +1777,6 @@ function setPhase(next) {
   const showBack = (next !== "setup");
   $("backButton").classList.toggle("hidden", !showBack);
   updateRevealedNames();
-  document.body.style.paddingBottom = "104px";
-  document.querySelector(".app").style.paddingBottom = "104px";
 }
 
 function updateRevealedNames() {
@@ -1304,10 +1789,6 @@ function updateRevealedNames() {
     wrap.classList.add("hidden");
     list.innerHTML = "";
   }
-}
-
-function updateStats() {
-  $("profileStats").textContent = "Битв: " + archive.length;
 }
 
 /* =========================================================
@@ -1448,7 +1929,9 @@ function chooseCard(index) {
     quote: currentQuote,
     rating: 0,
     resultNote: "",
-    resultNoteColor: noteColors[0].bg
+    resultNoteColor: noteColors[0].bg,
+    pairType: selectedGender,
+    bookmarkColor: bookmarkColors[0]
   };
   renderResult();
   saveRecord();
@@ -1457,10 +1940,15 @@ function chooseCard(index) {
 
 function renderResult() {
   const chosen = cards[selectedCardIndex];
-  $("resultCard").innerHTML = cardMarkup(chosen, selectedCardIndex, true);
+  $("resultCard").innerHTML = cardMarkup(chosen, selectedCardIndex, false);
   const card = $("resultCard").querySelector(".card");
   card.disabled = true;
-  card.classList.add("chosen");
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      card.classList.add("flipped");
+      card.classList.add("chosen");
+    });
+  });
   $("resultTitle").textContent = chosen.name;
   $("resultGender").textContent = genderLabel(chosen.gender);
   $("resultQuote").textContent = currentQuote;
@@ -1475,23 +1963,6 @@ function renderResult() {
   $("resultNote").value = "";
   $("resultNoteSaved").textContent = "";
   buildRating();
-}
-
-/* =========================================================
-   КОММЕНТАРИЙ К РЕЗУЛЬТАТУ (сохранение в currentRecord)
-   ========================================================= */
-function saveResultNote() {
-  if (!currentRecord) return;
-  const text = $("resultNote").value.trim();
-  currentRecord.resultNote = text;
-  currentRecord.resultNoteColor = currentRecord.resultNoteColor || noteColors[0].bg;
-  saveRecord();
-  if (text) {
-    $("resultNoteSaved").textContent = "Сохранено";
-    showToast("Заметка сохранена.");
-  } else {
-    $("resultNoteSaved").textContent = "";
-  }
 }
 
 /* =========================================================
@@ -1543,9 +2014,6 @@ function setRating(value) {
   saveRecord();
 }
 
-/* =========================================================
-   СОХРАНЕНИЕ
-   ========================================================= */
 function saveRecord() {
   if (!currentRecord) return;
   const idx = archive.findIndex(i => i.id === currentRecord.id);
@@ -1553,12 +2021,8 @@ function saveRecord() {
   else archive.unshift({...currentRecord});
   archive = archive.slice(0, 200);
   saveArchive();
-  updateStats();
 }
 
-/* =========================================================
-   КНОПКА "НАЗАД"
-   ========================================================= */
 function goBack() {
   clearTimeout(roundTimer);
   if (phase === "preview" || phase === "choice") {
@@ -1605,44 +2069,32 @@ formSection.addEventListener("focusout", () => setTimeout(refreshFormSectionStat
 
 /* =========================================================
    ВЫПАДАЮЩИЕ СПИСКИ
-   Ограничение: показываем 5 плиток + кнопка "+"
-   При ручном вводе подсказки пропадают.
    ========================================================= */
 const SUGGEST_LIMIT = 5;
 
 function closeSuggest() {
-  if (suggestPanel) {
-    suggestPanel.remove();
-    suggestPanel = null;
-  }
+  if (suggestPanel) { suggestPanel.remove(); suggestPanel = null; }
   suggestExpanded = false;
 }
 
-// Показывает панель с плитками
-// allTiles — полный массив, показываем первые SUGGEST_LIMIT или все если expanded
 function showSuggest(anchor, allTiles) {
   closeSuggest();
   const wrap = anchor.closest(".field-wrap") || anchor.parentElement;
   suggestPanel = document.createElement("div");
   suggestPanel.className = "suggest-panel";
-
   const visible = suggestExpanded ? allTiles : allTiles.slice(0, SUGGEST_LIMIT);
-
   visible.forEach(t => {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "suggest-tile " + (t.type || "");
     btn.textContent = t.text;
     btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
+      e.preventDefault(); e.stopPropagation();
       t.onPick();
       closeSuggest();
     });
     suggestPanel.appendChild(btn);
   });
-
-  // Кнопка "Ещё варианты" (+)
   if (!suggestExpanded && allTiles.length > SUGGEST_LIMIT) {
     const moreBtn = document.createElement("button");
     moreBtn.type = "button";
@@ -1650,46 +2102,33 @@ function showSuggest(anchor, allTiles) {
     moreBtn.textContent = "+";
     moreBtn.title = "Ещё варианты";
     moreBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
+      e.preventDefault(); e.stopPropagation();
       suggestExpanded = true;
       showSuggest(anchor, allTiles);
     });
     suggestPanel.appendChild(moreBtn);
   }
-
   wrap.style.position = "relative";
   wrap.appendChild(suggestPanel);
 }
 
-// Список имён (белые плитки)
 function showNameSuggest(input, gender) {
   const list = (gender === "Мужской" ? maleNames : femaleNames).slice();
   const tiles = list.map(name => ({
-    text: name,
-    type: "",
-    onPick: () => {
-      input.value = name;
-      refreshFormSectionState();
-    }
+    text: name, type: "",
+    onPick: () => { input.value = name; refreshFormSectionState(); }
   }));
   showSuggest(input, tiles);
 }
 
-// Список комментариев (цветные плитки)
 function showCommentSuggest(textarea) {
   const tiles = commentSuggestions.map(item => ({
-    text: item.text,
-    type: item.type,
-    onPick: () => {
-      textarea.value = item.text;
-      refreshFormSectionState();
-    }
+    text: item.text, type: item.type,
+    onPick: () => { textarea.value = item.text; refreshFormSectionState(); }
   }));
   showSuggest(textarea, tiles);
 }
 
-// При фокусе на поле имени — показываем варианты
 nameOneEl.addEventListener("focus", () => {
   const gender = (selectedGender === "ff") ? "Женский" : "Мужской";
   showNameSuggest(nameOneEl, gender);
@@ -1701,13 +2140,10 @@ nameTwoEl.addEventListener("focus", () => {
 battleCommentEl.addEventListener("focus", () => {
   showCommentSuggest(battleCommentEl);
 });
-
-// ПРИ РУЧНОМ ВВОДЕ — скрываем подсказки
 nameOneEl.addEventListener("input", closeSuggest);
 nameTwoEl.addEventListener("input", closeSuggest);
 battleCommentEl.addEventListener("input", closeSuggest);
 
-// Клик вне выпадающего списка — закрываем
 document.addEventListener("click", (e) => {
   if (suggestPanel && !suggestPanel.contains(e.target) &&
       e.target !== nameOneEl && e.target !== nameTwoEl && e.target !== battleCommentEl) {
@@ -1715,7 +2151,6 @@ document.addEventListener("click", (e) => {
   }
 });
 
-/* Автозаполнение при загрузке */
 function prefillLastNames() {
   const last = loadLastNames();
   if (last.one && !nameOneEl.value) nameOneEl.value = last.one;
@@ -1743,13 +2178,36 @@ function updateThemeSwitch() {
 }
 
 /* =========================================================
+   ФОНОВЫЕ ИКОНКИ
+   ========================================================= */
+function applyBgIcons(setIndex) {
+  const set = bgIconSets[setIndex];
+  if (!set) return;
+  const cell = 60, cols = 4, rows = 4, size = cols * cell;
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">`;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const idx = (r * cols + c) % set.icons.length;
+      const emoji = set.icons[idx];
+      const x = c * cell + cell / 2;
+      const y = r * cell + cell / 2 + 12;
+      svg += `<text x="${x}" y="${y}" font-size="28" text-anchor="middle" fill="#888" opacity="0.9">${emoji}</text>`;
+    }
+  }
+  svg += `</svg>`;
+  const dataUri = `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`;
+  document.body.style.setProperty("--bg-icons", dataUri);
+  settings.bgIconsSet = setIndex;
+  saveSettings();
+}
+
+/* =========================================================
    МОДАЛКИ
    ========================================================= */
 function openModal(type) {
   $("topMenu").classList.add("hidden");
   closeProfileMenu();
   closeSuggest();
-
   const backdrop = $("modalBackdrop");
   const title = $("modalTitle");
   const content = $("modalContent");
@@ -1762,10 +2220,10 @@ function openModal(type) {
       content.innerHTML = `
         <div class="archive-list">
         ${archive.map((item, i) => `
-          <article class="archive-item" data-id="${item.id}">
+          <article class="archive-item" data-id="${item.id}" style="--bookmark-color:${item.bookmarkColor || bookmarkColors[0]};">
             <div class="archive-head">
               <div class="archive-title">${i + 1}. ${escapeHTML(item.name || "Без имени")}</div>
-              <button class="archive-share-btn" data-share-id="${item.id}" title="Поделиться">📤</button>
+              <button class="archive-share-btn" data-share-id="${item.id}" title="Поделиться как чек">📤</button>
             </div>
             <div class="archive-meta">
               ${escapeHTML(item.gender || "—")} · 
@@ -1776,7 +2234,7 @@ function openModal(type) {
             ${item.resultNote ? `<div class="archive-note-display" style="background:${item.resultNoteColor || noteColors[0].bg};">${escapeHTML(item.resultNote)}</div>` : ""}
             <div class="archive-note-row">
               <div class="note-color-picker" data-picker-id="${item.id}">
-                ${noteColors.map((c, ci) => `
+                ${noteColors.map(c => `
                   <button class="note-color-btn ${(item.resultNoteColor === c.bg) ? "selected" : ""}"
                           style="background:${c.bg};"
                           data-color="${c.bg}"
@@ -1786,6 +2244,16 @@ function openModal(type) {
               </div>
               <textarea placeholder="Заметка для тетради" data-note-id="${item.id}">${escapeHTML(item.resultNote || "")}</textarea>
             </div>
+            <div class="bookmark-picker">
+              <span class="bk-label">Закладка:</span>
+              ${bookmarkColors.map(c => `
+                <button class="bookmark-color-btn ${(item.bookmarkColor === c) ? "selected" : ""}"
+                        style="background:${c};"
+                        data-bookmark-id="${item.id}"
+                        data-bookmark-color="${c}"
+                        title="Цвет закладки"></button>
+              `).join("")}
+            </div>
           </article>
         `).join("")}
         </div>
@@ -1794,31 +2262,22 @@ function openModal(type) {
           <button class="action-button" id="clearArchive">Очистить</button>
         </div>`;
 
-      // Экспорт/очистка
       content.querySelector("#exportArchive").addEventListener("click", exportArchive);
       content.querySelector("#clearArchive").addEventListener("click", () => {
         if (confirm("Удалить всю историю?")) {
           archive = [];
           saveArchive();
-          updateStats();
           openModal("archive");
         }
       });
-
-      // Сохранение заметок при вводе
       content.querySelectorAll("textarea[data-note-id]").forEach(ta => {
         ta.addEventListener("input", () => {
           const id = ta.dataset.noteId;
           const rec = archive.find(r => r.id === id);
-          if (rec) {
-            rec.resultNote = ta.value;
-            saveArchive();
-          }
+          if (rec) { rec.resultNote = ta.value; saveArchive(); }
         });
       });
-
-      // Выбор цвета заметки
-      content.querySelectorAll(".note-color-btn").forEach(btn => {
+      content.querySelectorAll(".note-color-btn[data-color]").forEach(btn => {
         btn.addEventListener("click", () => {
           const id = btn.dataset.id;
           const color = btn.dataset.color;
@@ -1826,11 +2285,9 @@ function openModal(type) {
           if (rec) {
             rec.resultNoteColor = color;
             saveArchive();
-            // Обновляем выделение
             const picker = btn.closest(".note-color-picker");
             picker.querySelectorAll(".note-color-btn").forEach(b => b.classList.remove("selected"));
             btn.classList.add("selected");
-            // Обновляем отображение
             const item = btn.closest(".archive-item");
             let display = item.querySelector(".archive-note-display");
             if (!display) {
@@ -1843,17 +2300,25 @@ function openModal(type) {
           }
         });
       });
-
-      // Кнопка "Поделиться результатом"
+      content.querySelectorAll("[data-bookmark-id]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.bookmarkId;
+          const color = btn.dataset.bookmarkColor;
+          const rec = archive.find(r => r.id === id);
+          if (rec) {
+            rec.bookmarkColor = color;
+            saveArchive();
+            const item = btn.closest(".archive-item");
+            item.style.setProperty("--bookmark-color", color);
+            item.querySelectorAll("[data-bookmark-id]").forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+          }
+        });
+      });
       content.querySelectorAll("[data-share-id]").forEach(btn => {
         btn.addEventListener("click", () => {
           const rec = archive.find(r => r.id === btn.dataset.shareId);
-          if (!rec) return;
-          let text = `Результат в «Переворот»:\n${rec.symbol || "♔"} ${rec.name}\n${rec.gender} · ${rec.rating || "—"}/5`;
-          if (rec.quote) text += `\n\n«${rec.quote}»`;
-          if (rec.comment) text += `\n\nДо игры: ${rec.comment}`;
-          if (rec.resultNote) text += `\n\nЗаметка: ${rec.resultNote}`;
-          shareText(text);
+          if (rec) openTicket(rec);
         });
       });
     }
@@ -1877,18 +2342,26 @@ function openModal(type) {
           </button>`).join("")}
       </div>
       <hr>
+      <p class="muted">Иконки на фоне</p>
+      <div class="theme-grid">
+        ${bgIconSets.map((set, i) => `
+          <button class="theme-button" data-bg-icons="${i}">
+            <div class="theme-swatch" style="background:rgba(255,255,255,.06);display:grid;place-items:center;font-size:14px;letter-spacing:1px;">
+              ${set.icons.slice(0, 6).join("")}
+            </div>
+            ${escapeHTML(set.name)}
+          </button>`).join("")}
+      </div>
+      <hr>
       <div class="section-title">Своя палитра</div>
       <div class="color-grid" id="customColors">
         ${[0,1,2,3,4].map(i => `<input class="color-input" type="color" value="${(settings.customColors || themes[0].colors)[i]}" data-color="${i}">`).join("")}
       </div>
       <button class="action-button primary" id="applyCustom" style="width:100%">Применить</button>`;
-
     updateThemeSwitch();
-
     content.querySelector("#themeSwitch").addEventListener("click", () => {
       applyTheme(settings.themeMode === "light" ? "dark" : "light");
     });
-
     content.querySelectorAll("[data-theme]").forEach(btn => {
       btn.addEventListener("click", () => {
         applyWallpaper(themes[Number(btn.dataset.theme)].colors);
@@ -1897,7 +2370,12 @@ function openModal(type) {
         showToast("Тема применена.");
       });
     });
-
+    content.querySelectorAll("[data-bg-icons]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        applyBgIcons(Number(btn.dataset.bgIcons));
+        showToast("Иконки фона обновлены.");
+      });
+    });
     content.querySelector("#applyCustom").addEventListener("click", () => {
       const colors = [...content.querySelectorAll("[data-color]")].map(input => input.value);
       settings.customColors = colors;
@@ -1926,13 +2404,47 @@ function openModal(type) {
     title.textContent = "Сервисы";
     content.innerHTML = `<p class="muted">Дополнительные сервисы.</p>`;
   }
-
   backdrop.classList.remove("hidden");
 }
 
-function closeModal() {
-  $("modalBackdrop").classList.add("hidden");
+function openTicket(rec) {
+  $("modalTitle").textContent = "Чек игры";
+  const pairLabel = rec.pairType === "mm" ? "М / М" : rec.pairType === "ff" ? "Ж / Ж" : "М / Ж";
+  const content = $("modalContent");
+  const stars = rec.rating ? "★".repeat(rec.rating) + "☆".repeat(5 - rec.rating) : "—";
+  content.innerHTML = `
+    <div class="ticket">
+      <div class="ticket-head">✦ Переворот ✦</div>
+      <div class="ticket-row"><span class="k">Кто играл</span><span class="v">${pairLabel}</span></div>
+      <div class="ticket-divider"></div>
+      <div class="ticket-row"><span class="k">Победитель</span><span class="v">${escapeHTML(rec.symbol || "♔")} ${escapeHTML(rec.name || "—")}</span></div>
+      <div class="ticket-row"><span class="k">Пол</span><span class="v">${escapeHTML(rec.gender || "—")}</span></div>
+      <div class="ticket-row"><span class="k">Оценка</span><span class="v">${stars}</span></div>
+      ${rec.quote ? `<div class="ticket-divider"></div><div style="font-style:italic;font-size:12px;line-height:1.5;">${escapeHTML(rec.quote)}</div>` : ""}
+      ${rec.comment ? `<div class="ticket-divider"></div><div style="font-size:12px;line-height:1.5;"><b>До игры:</b> ${escapeHTML(rec.comment)}</div>` : ""}
+      ${rec.resultNote ? `<div class="ticket-divider"></div><div class="ticket-note" style="background:${rec.resultNoteColor || noteColors[0].bg};">${escapeHTML(rec.resultNote)}</div>` : ""}
+      <div class="ticket-divider"></div>
+      <div style="text-align:center;font-size:11px;color:#707579;">Переворот · романтическая игра</div>
+    </div>
+    <div class="actions" style="margin-top:12px;">
+      <button class="action-button primary" id="ticketShare" style="width:100%">📤 Отправить чек</button>
+    </div>
+  `;
+  content.querySelector("#ticketShare").addEventListener("click", () => {
+    let text = `✦ ЧЕК ИГРЫ «ПЕРЕВОРОТ» ✦\n`;
+    text += `Кто играл: ${pairLabel}\n`;
+    text += `Победитель: ${rec.symbol || "♔"} ${rec.name}\n`;
+    text += `Пол: ${rec.gender}\n`;
+    text += `Оценка: ${rec.rating ? rec.rating + "/5" : "—"}\n`;
+    if (rec.quote) text += `\n${rec.quote}\n`;
+    if (rec.comment) text += `\nДо игры: ${rec.comment}`;
+    if (rec.resultNote) text += `\nЗаметка: ${rec.resultNote}`;
+    shareText(text);
+  });
+  $("modalBackdrop").classList.remove("hidden");
 }
+
+function closeModal() { $("modalBackdrop").classList.add("hidden"); }
 
 function applyWallpaper(colors) {
   if (!Array.isArray(colors) || colors.length < 3) return;
@@ -1941,7 +2453,7 @@ function applyWallpaper(colors) {
   document.body.style.backgroundImage = `linear-gradient(-45deg,${p[0]},${p[1]},${p[2]},${p[3]},${p[4]})`;
   document.body.style.backgroundSize = "400% 400%";
   document.documentElement.style.setProperty("--accent", p[3]);
-  document.documentElement.style.setProperty("--accent2", p[4]);
+  document.documentElement.setProperty?.("--accent2", p[4]) || document.documentElement.style.setProperty("--accent2", p[4]);
 }
 
 function exportArchive() {
@@ -1995,6 +2507,8 @@ profileMenu.querySelectorAll("[data-profile-action]").forEach(btn => {
       case "settings": openProfileSettings(); break;
       case "archive": openModal("archive"); break;
       case "wallpaper": openModal("wallpaper"); break;
+      case "wallet": openWallet(); break;
+      case "subscribe": openSubscribe(); break;
       case "share-costume": shareCostume(); break;
       case "create-card": createCharacterCard(); break;
       case "share-result": shareGameResult(); break;
@@ -2003,13 +2517,83 @@ profileMenu.querySelectorAll("[data-profile-action]").forEach(btn => {
   });
 });
 
+function openWallet() {
+  $("modalTitle").textContent = "Кошелёк";
+  const content = $("modalContent");
+  const balance = settings.walletBalance || { ton: 0, rub: 0, nft: 0 };
+  content.innerHTML = `
+    <p class="muted">Баланс кошелька</p>
+    <div class="sub-cards">
+      <div class="sub-card"><div class="sub-ico">💎</div><div class="sub-info"><div class="sub-name">TON</div><div class="sub-sub">Криптовалюта</div></div><div class="sub-price">${balance.ton}</div></div>
+      <div class="sub-card"><div class="sub-ico">₽</div><div class="sub-info"><div class="sub-name">Рубли</div><div class="sub-sub">Российский рубль</div></div><div class="sub-price">${balance.rub}</div></div>
+      <div class="sub-card"><div class="sub-ico">🎫</div><div class="sub-info"><div class="sub-name">NFT</div><div class="sub-sub">Билеты</div></div><div class="sub-price">${balance.nft}</div></div>
+    </div>
+    <p class="muted" style="margin-top:14px;">Пополнение и вывод в разработке.</p>
+  `;
+  $("modalBackdrop").classList.remove("hidden");
+}
+
+function openSubscribe() {
+  $("modalTitle").textContent = "Подписка";
+  const content = $("modalContent");
+  content.innerHTML = `
+    <p class="muted">Выбери удобный способ оплаты и тариф.</p>
+    <div class="sub-section">
+      <div class="sub-section-title">💎 Оплата в TON</div>
+      <div class="sub-cards">
+        ${pricesTon.map(p => `
+          <div class="sub-card">
+            <div class="sub-ico">${p.ico}</div>
+            <div class="sub-info">
+              <div class="sub-name">${p.name}${p.name === "3 игры" ? '<span class="sub-badge">-15%</span>' : ""}</div>
+              <div class="sub-sub">${p.sub}</div>
+            </div>
+            <div class="sub-price">${p.price}</div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+    <div class="sub-section">
+      <div class="sub-section-title">₽ Оплата в рублях</div>
+      <div class="sub-cards">
+        ${pricesRub.map(p => `
+          <div class="sub-card">
+            <div class="sub-ico">${p.ico}</div>
+            <div class="sub-info">
+              <div class="sub-name">${p.name}${p.name === "3 игры" ? '<span class="sub-badge">-15%</span>' : ""}</div>
+              <div class="sub-sub">${p.sub}</div>
+            </div>
+            <div class="sub-price">${p.price}</div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+    <div class="sub-section">
+      <div class="sub-section-title">🎫 Оплата в NFT (Билет)</div>
+      <div class="sub-cards">
+        ${pricesNft.map(p => `
+          <div class="sub-card">
+            <div class="sub-ico">${p.ico}</div>
+            <div class="sub-info">
+              <div class="sub-name">${p.name}${p.name === "Подписка в 3 игры" ? '<span class="sub-badge">-15%</span>' : ""}</div>
+              <div class="sub-sub">${p.sub}</div>
+            </div>
+            <div class="sub-price">${p.price}</div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+    <p class="sub-note">Оплата в разработке. Скоро можно будет купить.</p>
+  `;
+  $("modalBackdrop").classList.remove("hidden");
+}
+
 function openAvatarModal() {
   $("modalTitle").textContent = "Аватарка";
   const content = $("modalContent");
   const currentType = settings.avatarType || "emoji";
   const currentEmoji = settings.avatarEmoji || "♙";
   const currentPhoto = settings.avatarPhoto || "";
-
   content.innerHTML = `
     <div class="section-title">Эмодзи</div>
     <div class="emoji-grid" id="emojiGrid">
@@ -2028,7 +2612,6 @@ function openAvatarModal() {
         ${currentType === "photo" && currentPhoto ? `<img src="${escapeHTML(currentPhoto)}" style="width:100%;height:100%;object-fit:cover;">` : `<span>${currentEmoji}</span>`}
       </div>
     </div>`;
-
   content.querySelectorAll("[data-emoji]").forEach(btn => {
     btn.addEventListener("click", () => {
       content.querySelectorAll("[data-emoji]").forEach(b => b.classList.remove("selected"));
@@ -2041,7 +2624,6 @@ function openAvatarModal() {
       content.querySelector("#avatarPreview").innerHTML = `<span>${btn.dataset.emoji}</span>`;
     });
   });
-
   content.querySelector("#applyPhoto").addEventListener("click", () => {
     const url = content.querySelector("#photoUrl").value.trim();
     if (!url) return;
@@ -2051,7 +2633,6 @@ function openAvatarModal() {
     updateProfileAvatar();
     content.querySelector("#avatarPreview").innerHTML = `<img src="${escapeHTML(url)}" style="width:100%;height:100%;object-fit:cover;">`;
   });
-
   content.querySelector("#pickFile").addEventListener("click", () => content.querySelector("#photoFile").click());
   content.querySelector("#photoFile").addEventListener("change", (e) => {
     const f = e.target.files[0];
@@ -2066,7 +2647,6 @@ function openAvatarModal() {
     };
     r.readAsDataURL(f);
   });
-
   $("modalBackdrop").classList.remove("hidden");
 }
 
@@ -2083,7 +2663,6 @@ function openProfileSettings() {
     const name = content.querySelector("#profileNameInput").value.trim() || "Игрок";
     settings.profileName = name;
     saveSettings();
-    $("profileName").textContent = name;
     $("profileMenuName").textContent = name;
     showToast("Сохранено.");
     closeModal();
@@ -2134,11 +2713,12 @@ function createCharacterCard() {
       rating: 0,
       isCustom: true,
       resultNote: "",
-      resultNoteColor: noteColors[0].bg
+      resultNoteColor: noteColors[0].bg,
+      pairType: "custom",
+      bookmarkColor: bookmarkColors[0]
     };
     archive.unshift(custom);
     saveArchive();
-    updateStats();
     showToast("Карточка «" + name + "» создана!");
     closeModal();
   });
@@ -2147,11 +2727,7 @@ function createCharacterCard() {
 
 function shareGameResult() {
   if (!currentRecord) { showToast("Сыграй раунд."); return; }
-  let text = `Результат в «Переворот»:\n${currentRecord.symbol} ${currentRecord.name}\n${currentRecord.gender} · ${currentRecord.rating || "—"}/5`;
-  if (currentQuote) text += `\n\n«${currentQuote}»`;
-  if (currentRecord.comment) text += `\n\nДо игры: ${currentRecord.comment}`;
-  if (currentRecord.resultNote) text += `\n\nЗаметка: ${currentRecord.resultNote}`;
-  shareText(text);
+  openTicket(currentRecord);
 }
 
 function openIdeasModal() {
@@ -2199,7 +2775,6 @@ $("startButton").addEventListener("click", startRound);
 $("exitButton").addEventListener("click", newGame);
 $("backButton").addEventListener("click", goBack);
 
-// Сохранение комментария к результату при вводе
 $("resultNote").addEventListener("input", () => {
   if (!currentRecord) return;
   currentRecord.resultNote = $("resultNote").value.trim();
@@ -2231,24 +2806,32 @@ document.addEventListener("contextmenu", (e) => {
   if (!e.target.closest("#profileButton")) { e.preventDefault(); openModal("wallpaper"); }
 });
 
+/* Обработка изменения размера — при необходимости пересчитываем */
+window.addEventListener("resize", () => {
+  // Панель уже на CSS — просто закрываем меню при переходе в мобильный режим
+  if (window.innerWidth < 540) closeProfileMenu();
+});
+
 /* =========================================================
    ЗАГРУЗКА
    ========================================================= */
 function hideSplash() {
   const splash = $("splashScreen");
+  if (!splash) return;
   splash.classList.add("fade-out");
   setTimeout(() => splash.remove(), 600);
 }
 
 function initApp() {
   checkLastNamesExpiry();
-  if (settings.profileName) $("profileName").textContent = settings.profileName;
+  if (settings.profileName) $("profileMenuName").textContent = settings.profileName;
   if (settings.themeMode === "light") document.body.classList.add("light-theme");
   if (Array.isArray(settings.customColors)) applyWallpaper(settings.customColors);
   else if (Number.isInteger(settings.theme) && themes[settings.theme]) applyWallpaper(themes[settings.theme].colors);
+  if (Number.isInteger(settings.bgIconsSet)) applyBgIcons(settings.bgIconsSet);
+  else applyBgIcons(0);
   updateProfileAvatar();
   refreshFormSectionState();
-  updateStats();
   prefillLastNames();
   setTimeout(hideSplash, 3000);
 }
